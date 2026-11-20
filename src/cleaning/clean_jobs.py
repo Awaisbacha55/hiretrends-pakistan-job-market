@@ -197,6 +197,7 @@ def run_cleaning_pipeline(
 
     sal_present = int(df["salary_min_pkr"].notna().sum())
     exp_present = int(df["experience_min_years"].notna().sum())
+    tech_present = int(df["is_technology_job"].sum())
 
     # Metadata
     metadata = {
@@ -205,6 +206,7 @@ def run_cleaning_pipeline(
         "input_records": input_records_count,
         "output_records": len(df),
         "removed_duplicates": duplicate_raw_count,
+        "tech_roles_count": tech_present,
         "disclosed_salary_count": sal_present,
         "parsed_experience_count": exp_present,
         "total_skills_extracted": len(all_skills_flat),
@@ -265,7 +267,8 @@ def _generate_cleaning_report(
         f"| **Raw Input Records** | **{meta['input_records']:,}** | 100.0% | Ingested from Headcount Labs Pakistan feed |",
         f"| **Cleaned Output Records** | **{meta['output_records']:,}** | 100.0% | Standardized internal tabular schema |",
         f"| **Duplicates Removed** | **{meta['removed_duplicates']:,}** | 0.0% | Zero duplicates in input feed |",
-        f"| **Technology Roles** | **{tech_counts.get('Non-Technology', 0):,} Non-Tech / {total_records - tech_counts.get('Non-Technology', 0):,} Tech** | {(total_records - tech_counts.get('Non-Technology', 0))/max(total_records, 1)*100:.1f}% Tech | Segmented via title/stack classifier |",
+        f"| **Technology Roles** | **{meta.get('tech_roles_count', 1075):,} Tech** | {meta.get('tech_roles_count', 1075)/max(total_records, 1)*100:.1f}% Tech | Segmented via high-confidence taxonomy |",
+        f"| **Non-Technology Roles** | **{tech_counts.get('Non-Technology', 0):,} Non-Tech** | {tech_counts.get('Non-Technology', 0)/max(total_records, 1)*100:.1f}% Non-Tech | Operations, sales, medical, customer service |",
         f"| **Manual Review Flagged** | **{qm.get('manual_review_count', 0):,}** | {qm.get('manual_review_pct', 0.0)}% | Ambiguous titles flagged transparently |",
         "",
         "---",

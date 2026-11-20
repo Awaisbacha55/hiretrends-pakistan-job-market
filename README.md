@@ -5,7 +5,7 @@ An ethical, data-driven intelligence platform tracking technology job vacancies,
 [![Automated Tests](https://github.com/Awaisbacha55/hiretrends-pakistan-job-market/actions/workflows/tests.yml/badge.svg)](https://github.com/Awaisbacha55/hiretrends-pakistan-job-market/actions/workflows/tests.yml)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status: Day 3 Complete](https://img.shields.io/badge/Development%20Status-Day%203%20Complete-brightgreen.svg)]()
+[![Status: Day 4 Complete](https://img.shields.io/badge/Development%20Status-Day%204%20Complete-brightgreen.svg)]()
 
 ---
 
@@ -14,7 +14,7 @@ An ethical, data-driven intelligence platform tracking technology job vacancies,
 **HireTrends** is an applied data engineering and market intelligence project engineered to collect, clean, standardize, and analyze tech recruitment listings in Pakistan. By transforming noisy, unstructured job descriptions into structured tabular schemas and interactive analytics, HireTrends aims to empower students, software engineers, and engineering managers with empirical market data.
 
 > [!NOTE]
-> **Development Phase — Day 3 Complete:** Days 1, 2, and 3 are fully completed and verified. The platform features an ethical ingestion engine, official Headcount Labs API bulk collector (4,491 Pakistan job records), a robust cleaning and normalization pipeline (`src/cleaning/`), regular-expression skill extractor (69 technical skills identified), and a 98-test automated test suite. Exploratory data analysis (EDA), statistical modeling, and the Streamlit dashboard will be delivered in Days 4–6.
+> **Development Phase — Day 4 Complete:** Days 1, 2, 3, and 4 are fully completed and verified. The platform features an ethical ingestion engine, official Headcount Labs API bulk collector (4,491 Pakistan job records), a robust cleaning pipeline (`src/cleaning/`), an extensive exploratory data analysis engine (`src/analysis/`), 14 Plotly HTML & Matplotlib/Seaborn publication figures (`reports/figures/`), comprehensive market report ([`reports/market_analysis_report.md`](reports/market_analysis_report.md)), and a 109-test offline unit test suite. Days 5–6 will deliver production pipeline hardening and the interactive Streamlit dashboard.
 
 ---
 
@@ -89,8 +89,14 @@ hiretrends-pakistan-job-market/
 │   │   ├── skill_extractor.py # Regex taxonomy matcher with word boundaries
 │   │   └── quality_checks.py # Quality audit (duplicates, ranges, coverage)
 │   │
-│   ├── analysis/             # Statistical analysis and skill aggregations
-│   │   └── __init__.py
+│   ├── analysis/             # Statistical analysis, salary benchmarking & EDA
+│   │   ├── __init__.py
+│   │   ├── skills_analysis.py # Top skills, domains, and role-wise analysis
+│   │   ├── salary_analysis.py # Parametric/non-parametric salary metrics
+│   │   ├── location_analysis.py # Top hiring cities & foreign segregation
+│   │   ├── workplace_analysis.py # Remote, Hybrid, On-site distributions
+│   │   ├── cooccurrence.py   # Pairwise co-occurrence matrix & Jaccard
+│   │   └── generate_visualizations.py # Plotly HTML & Matplotlib PNG generator
 │   │
 │   └── utils/                # Logging, file handling, and helpers
 │       └── __init__.py
@@ -108,7 +114,8 @@ hiretrends-pakistan-job-market/
 │   ├── headcount_api_sample_report.md # 10-record sample analysis report
 │   ├── headcount_collection_report.md # Day 2 bulk collection audit
 │   ├── data_cleaning_report.md # Day 3 cleaning, normalization & skills report
-│   └── figures/              # Rendered analytical charts and plots
+│   ├── market_analysis_report.md # Day 4 EDA & market intelligence findings
+│   └── figures/              # Rendered Plotly HTML and PNG charts (14 files)
 │
 ├── tests/
 │   ├── __init__.py
@@ -117,7 +124,8 @@ hiretrends-pakistan-job-market/
 │   ├── test_headcount_api.py # Unit tests for API authentication & config
 │   ├── test_headcount_sample.py # Unit tests for sample ingestion & fields
 │   ├── test_bulk_collection.py  # Unit tests for cursor pagination & mapping
-│   └── test_cleaning_pipeline.py # Unit tests for title, city, pay, exp, skills
+│   ├── test_cleaning_pipeline.py # Unit tests for title, city, pay, exp, skills
+│   └── test_analysis_pipeline.py # Unit tests for skills, salary, location, co-occurrence
 │
 ├── .github/
 │   └── workflows/
@@ -235,7 +243,7 @@ python -m src.collection.check_sources --base-url https://example.com --target-u
 
 ## 11. Running Automated Tests
 
-HireTrends includes a comprehensive unit test suite ensuring parsing correctness, URL validation, cursor pagination, data cleaning, and fail-closed compliance logic. All tests run **100% offline** using mocked fixtures:
+HireTrends includes a comprehensive unit test suite ensuring parsing correctness, URL validation, cursor pagination, data cleaning, statistical modeling, and fail-closed compliance logic. All tests run **100% offline** using mocked fixtures:
 
 ```powershell
 pytest -v
@@ -243,13 +251,14 @@ pytest -v
 
 Expected output:
 ```text
-tests/test_bulk_collection.py .....................                      [ 21%]
-tests/test_cleaning_pipeline.py ...................................      [ 57%]
-tests/test_headcount_api.py ..........                                   [ 67%]
-tests/test_headcount_sample.py ........                                  [ 75%]
-tests/test_scraper.py ...........                                        [ 86%]
+tests/test_analysis_pipeline.py ...........                              [ 10%]
+tests/test_bulk_collection.py .....................                      [ 29%]
+tests/test_cleaning_pipeline.py ...................................      [ 61%]
+tests/test_headcount_api.py ..........                                   [ 70%]
+tests/test_headcount_sample.py ........                                  [ 77%]
+tests/test_scraper.py ...........                                        [ 88%]
 tests/test_source_checker.py .............                               [100%]
-============================== 98 passed in 1.14s ==============================
+============================= 109 passed in 2.50s ==============================
 ```
 
 ---
@@ -290,10 +299,21 @@ tests/test_source_checker.py .............                               [100%]
 - [x] Authored comprehensive Day 3 report ([`reports/data_cleaning_report.md`](reports/data_cleaning_report.md)).
 - [x] Expanded automated test suite to 98 passing unit tests (`tests/test_cleaning_pipeline.py`).
 
-### Upcoming Milestones (Days 4–6)
-* **Day 4: Exploratory Data Analysis & Statistical Modeling:** Wage distributions, hub comparisons, and co-occurrence correlation matrix.
-* **Day 5: Production Ingestion & Pipeline Hardening:** Large-scale dataset ingestion with fault tolerance and SQLite/Parquet caching.
-* **Day 6: Streamlit Interactive Dashboard:** Web application deployment with Plotly interactive charts and filters.
+### Day 4: Exploratory Data Analysis & Market Intelligence (Completed)
+- [x] Reconciled Day 2 vs Day 3 classification divergence (1,075 verified tech vs 1,074 manual-review roles).
+- [x] Built top skills and taxonomy clustering engine (`src/analysis/skills_analysis.py`).
+- [x] Analyzed skills across 12 specific tech occupations with exact sample sizes.
+- [x] Implemented compensation benchmarking separating USD and native PKR (`src/analysis/salary_analysis.py`).
+- [x] Evaluated regional hub density across Pakistani cities and foreign origins (`src/analysis/location_analysis.py`).
+- [x] Analyzed workplace arrangements using known denominators (`src/analysis/workplace_analysis.py`).
+- [x] Computed pairwise technical skill co-occurrence matrix and Jaccard metrics (`src/analysis/cooccurrence.py`).
+- [x] Generated 14 interactive Plotly HTML and publication PNG figures (`src/analysis/generate_visualizations.py`).
+- [x] Published comprehensive Day 4 intelligence report ([`reports/market_analysis_report.md`](reports/market_analysis_report.md)).
+- [x] Expanded automated test suite to 109 passing unit tests (`tests/test_analysis_pipeline.py`).
+
+### Upcoming Milestones (Days 5–6)
+* **Day 5: Production Ingestion & Pipeline Hardening:** Large-scale dataset ingestion with fault tolerance, sqlite/parquet serialization, and pipeline automation.
+* **Day 6: Streamlit Interactive Dashboard:** Multi-page web application deployment with Plotly interactive charts and filters.
 
 ---
 

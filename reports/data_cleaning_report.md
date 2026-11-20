@@ -14,7 +14,8 @@
 | **Raw Input Records** | **4,491** | 100.0% | Ingested from Headcount Labs Pakistan feed |
 | **Cleaned Output Records** | **4,491** | 100.0% | Standardized internal tabular schema |
 | **Duplicates Removed** | **0** | 0.0% | Zero duplicates in input feed |
-| **Technology Roles** | **2,342 Non-Tech / 2,149 Tech** | 47.9% Tech | Segmented via title/stack classifier |
+| **Technology Roles** | **1,075 Tech** | 23.9% Tech | Segmented via high-confidence taxonomy |
+| **Non-Technology Roles** | **2,342 Non-Tech** | 52.1% Non-Tech | Operations, sales, medical, customer service |
 | **Manual Review Flagged** | **1,074** | 23.91% | Ambiguous titles flagged transparently |
 
 ---

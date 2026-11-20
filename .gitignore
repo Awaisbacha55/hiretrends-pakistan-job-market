@@ -76,6 +76,8 @@ data/samples/*
 !data/samples/.gitkeep
 reports/figures/*
 !reports/figures/.gitkeep
+!reports/figures/*.png
+!reports/figures/*.html
 
 # Playwright browser binaries
 .playwright/
