@@ -5,7 +5,7 @@ An ethical, data-driven intelligence platform tracking technology job vacancies,
 [![Automated Tests](https://github.com/Awaisbacha55/hiretrends-pakistan-job-market/actions/workflows/tests.yml/badge.svg)](https://github.com/Awaisbacha55/hiretrends-pakistan-job-market/actions/workflows/tests.yml)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status: Day 4 Complete](https://img.shields.io/badge/Development%20Status-Day%204%20Complete-brightgreen.svg)]()
+[![Status: Day 5 Complete](https://img.shields.io/badge/Development%20Status-Day%205%20Complete-brightgreen.svg)]()
 
 ---
 
@@ -14,7 +14,7 @@ An ethical, data-driven intelligence platform tracking technology job vacancies,
 **HireTrends** is an applied data engineering and market intelligence project engineered to collect, clean, standardize, and analyze tech recruitment listings in Pakistan. By transforming noisy, unstructured job descriptions into structured tabular schemas and interactive analytics, HireTrends aims to empower students, software engineers, and engineering managers with empirical market data.
 
 > [!NOTE]
-> **Development Phase — Day 4 Complete:** Days 1, 2, 3, and 4 are fully completed and verified. The platform features an ethical ingestion engine, official Headcount Labs API bulk collector (4,491 Pakistan job records), a robust cleaning pipeline (`src/cleaning/`), an extensive exploratory data analysis engine (`src/analysis/`), 14 Plotly HTML & Matplotlib/Seaborn publication figures (`reports/figures/`), comprehensive market report ([`reports/market_analysis_report.md`](reports/market_analysis_report.md)), and a 109-test offline unit test suite. Days 5–6 will deliver production pipeline hardening and the interactive Streamlit dashboard.
+> **Development Phase — Day 5 Complete:** Days 1 through 5 are fully completed, tested, and verified. The platform features an ethical ingestion engine, official Headcount Labs API bulk collector (4,491 Pakistan job records), a robust cleaning pipeline (`src/cleaning/`), an extensive exploratory data analysis engine (`src/analysis/`), 14 Plotly HTML & Matplotlib/Seaborn publication figures (`reports/figures/`), comprehensive market report ([`reports/market_analysis_report.md`](reports/market_analysis_report.md)), a complete 8-page interactive Streamlit dashboard (`dashboard/app.py`), and a 123-test offline unit test suite. Day 6 will deliver production pipeline hardening and presentation readiness.
 
 ---
 
@@ -101,8 +101,22 @@ hiretrends-pakistan-job-market/
 │   └── utils/                # Logging, file handling, and helpers
 │       └── __init__.py
 │
-├── dashboard/                # Streamlit dashboard implementation
-│   └── README.md
+├── dashboard/                # Interactive Streamlit multi-page analytics platform
+│   ├── app.py                # Main application entry point (st.navigation)
+│   ├── data_loader.py        # Cached data ingestion and multi-criteria filters
+│   ├── components.py         # Standardized KPI cards, sidebar, and layout
+│   └── pages/                # Modern multipage architecture
+│       ├── overview.py       # Market overview & executive KPIs
+│       ├── skills_explorer.py # Deep-dive into 69 technical skills
+│       ├── role_explorer.py  # 12-target occupation skill profiles
+│       ├── salary_insights.py # Disclosed salary benchmarking (PKR & USD)
+│       ├── location_analysis.py # Geographic hub analysis & foreign partition
+│       ├── workplace_analysis.py # Remote vs on-site vs hybrid trends
+│       ├── skill_cooccurrence.py # Pairwise co-occurrence heatmap & stack explorer
+│       └── methodology.py    # Dataset provenance, SBP rates & licenses
+│
+├── .streamlit/
+│   └── config.toml           # Streamlit professional light theme & server config
 │
 ├── config/
 │   ├── sources.json          # Source registry and legal permission statuses
@@ -125,7 +139,8 @@ hiretrends-pakistan-job-market/
 │   ├── test_headcount_sample.py # Unit tests for sample ingestion & fields
 │   ├── test_bulk_collection.py  # Unit tests for cursor pagination & mapping
 │   ├── test_cleaning_pipeline.py # Unit tests for title, city, pay, exp, skills
-│   └── test_analysis_pipeline.py # Unit tests for skills, salary, location, co-occurrence
+│   ├── test_analysis_pipeline.py # Unit tests for skills, salary, location, co-occurrence
+│   └── test_dashboard.py     # Unit tests for dashboard loader, filters, formatters
 │
 ├── .github/
 │   └── workflows/
@@ -241,9 +256,49 @@ python -m src.collection.check_sources --base-url https://example.com --target-u
 
 ---
 
-## 11. Running Automated Tests
+## 11. Running the Interactive Streamlit Dashboard
 
-HireTrends includes a comprehensive unit test suite ensuring parsing correctness, URL validation, cursor pagination, data cleaning, statistical modeling, and fail-closed compliance logic. All tests run **100% offline** using mocked fixtures:
+Launch the full 8-page analytics web dashboard locally on Windows / PowerShell:
+
+```powershell
+# Ensure virtual environment is activated
+.\venv\Scripts\Activate.ps1
+
+# Run Streamlit dashboard
+streamlit run dashboard/app.py
+```
+
+The web dashboard opens automatically at `http://localhost:8501` featuring:
+1. **Market Overview:** Executive KPI cards, technology segmentation, regional density, and seniority.
+2. **Skills Explorer:** Interactive frequency rankings and penetration across 69 technical skills.
+3. **Role Explorer:** In-depth skill, experience, location, and salary profiles for 12 key tech occupations.
+4. **Salary Insights:** Disclosed salary distributions, USD vs PKR benchmarks, and experience scaling.
+5. **Location Analysis:** Geographic tech hub rankings (Lahore, Karachi, Islamabad) and cross-city comparison tool.
+6. **Workplace Analysis:** Remote vs On-site vs Hybrid trends with known denominators.
+7. **Skill Co-occurrence:** Synergistic technology combinations, interactive heatmaps, and companion stack builder.
+8. **Data & Methodology:** Lineage documentation, SBP currency rates, and legal attribution notices.
+
+---
+
+## 12. Streamlit Community Cloud Deployment Instructions
+
+HireTrends is engineered for seamless one-click deployment to [Streamlit Community Cloud](https://streamlit.io/cloud):
+
+1. **Push Repository to GitHub:** Ensure all code and documentation are committed to your public GitHub repository (`main` branch).
+2. **Connect Streamlit Community Cloud:** Log in with GitHub and click **New App**.
+3. **Select Repository Settings:**
+   - **Repository:** `Awaisbacha55/hiretrends-pakistan-job-market`
+   - **Branch:** `main`
+   - **Main file path:** `dashboard/app.py`
+4. **Environment & Secrets:**
+   - No external database or API secrets are required to run the public dashboard view (it loads from the pre-processed `data/processed/jobs_cleaned.csv`).
+5. **Deploy:** Click **Deploy!**. Streamlit Cloud installs dependencies from `requirements.txt` and serves the app globally.
+
+---
+
+## 13. Running Automated Tests
+
+HireTrends includes a comprehensive unit test suite ensuring parsing correctness, URL validation, cursor pagination, data cleaning, statistical modeling, and dashboard components. All tests run **100% offline** using mocked fixtures:
 
 ```powershell
 pytest -v
@@ -251,19 +306,20 @@ pytest -v
 
 Expected output:
 ```text
-tests/test_analysis_pipeline.py ...........                              [ 10%]
-tests/test_bulk_collection.py .....................                      [ 29%]
-tests/test_cleaning_pipeline.py ...................................      [ 61%]
-tests/test_headcount_api.py ..........                                   [ 70%]
-tests/test_headcount_sample.py ........                                  [ 77%]
-tests/test_scraper.py ...........                                        [ 88%]
+tests/test_analysis_pipeline.py ...........                              [  8%]
+tests/test_bulk_collection.py .....................                      [ 26%]
+tests/test_cleaning_pipeline.py ...................................      [ 54%]
+tests/test_dashboard.py ..............                                   [ 65%]
+tests/test_headcount_api.py ..........                                   [ 73%]
+tests/test_headcount_sample.py ........                                  [ 80%]
+tests/test_scraper.py ...........                                        [ 89%]
 tests/test_source_checker.py .............                               [100%]
-============================= 109 passed in 2.50s ==============================
+============================= 123 passed in 4.84s ==============================
 ```
 
 ---
 
-## 12. Current Progress & Development Roadmap
+## 14. Current Progress & Development Roadmap
 
 ### Day 1: Project Foundation (Completed)
 - [x] Cloned and initialized Git repository structure.
@@ -311,9 +367,23 @@ tests/test_source_checker.py .............                               [100%]
 - [x] Published comprehensive Day 4 intelligence report ([`reports/market_analysis_report.md`](reports/market_analysis_report.md)).
 - [x] Expanded automated test suite to 109 passing unit tests (`tests/test_analysis_pipeline.py`).
 
-### Upcoming Milestones (Days 5–6)
-* **Day 5: Production Ingestion & Pipeline Hardening:** Large-scale dataset ingestion with fault tolerance, sqlite/parquet serialization, and pipeline automation.
-* **Day 6: Streamlit Interactive Dashboard:** Multi-page web application deployment with Plotly interactive charts and filters.
+### Day 5: Interactive Streamlit Dashboard (Completed)
+- [x] Created multi-page application entry point (`dashboard/app.py`) using `st.Page` and `st.navigation`.
+- [x] Configured professional light theme in `.streamlit/config.toml`.
+- [x] Engineered cached data loading and validation utility (`dashboard/data_loader.py`).
+- [x] Built reusable KPI cards, global filters, and header banners (`dashboard/components.py`).
+- [x] Implemented Market Overview page with executive metrics and charts (`dashboard/pages/overview.py`).
+- [x] Implemented Skills Explorer page with search and domain filters (`dashboard/pages/skills_explorer.py`).
+- [x] Implemented Role Explorer page drilling down into 12 tech occupations (`dashboard/pages/role_explorer.py`).
+- [x] Implemented Salary Insights page separating PKR and USD contracts (`dashboard/pages/salary_insights.py`).
+- [x] Implemented Location Analysis page with interactive city comparison (`dashboard/pages/location_analysis.py`).
+- [x] Implemented Workplace Analysis page with verified denominators (`dashboard/pages/workplace_analysis.py`).
+- [x] Implemented Skill Co-occurrence page with interactive heatmap and companion explorer (`dashboard/pages/skill_cooccurrence.py`).
+- [x] Implemented Data & Methodology page with legal attribution and SBP rate disclosures (`dashboard/pages/methodology.py`).
+- [x] Expanded automated test suite to 123 passing unit tests (`tests/test_dashboard.py`).
+
+### Upcoming Milestones (Day 6)
+* **Day 6: Production Hardening, Packaging & Final Review:** Final packaging, comprehensive documentation polish, and project demonstration readiness.
 
 ---
 
