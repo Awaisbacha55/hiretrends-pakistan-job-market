@@ -1,0 +1,105 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-11-20",
+  "categories": {
+    "programming_languages": {
+      "name": "Programming Languages",
+      "skills": [
+        {"name": "Python", "aliases": ["python3", "py"]},
+        {"name": "Java", "aliases": ["core java", "java 8", "java 11", "java 17", "java 21"]},
+        {"name": "JavaScript", "aliases": ["js", "ecmascript", "es6"]},
+        {"name": "TypeScript", "aliases": ["ts"]},
+        {"name": "C++", "aliases": ["cpp", "c/c++"]},
+        {"name": "C#", "aliases": ["csharp", "c# .net", ".net c#"]},
+        {"name": "PHP", "aliases": ["php7", "php8"]},
+        {"name": "Go", "aliases": ["golang"]},
+        {"name": "Ruby", "aliases": ["ruby on rails"]},
+        {"name": "Rust", "aliases": ["rust-lang"]},
+        {"name": "Swift", "aliases": ["swift lang"]},
+        {"name": "Kotlin", "aliases": ["kotlin android"]},
+        {"name": "R", "aliases": ["r programming", "r-project"]},
+        {"name": "SQL", "aliases": ["structured query language", "t-sql", "pl-sql"]}
+      ]
+    },
+    "data_engineering_and_analytics": {
+      "name": "Data Engineering & Analytics",
+      "skills": [
+        {"name": "Pandas", "aliases": ["pandas-dataframe"]},
+        {"name": "NumPy", "aliases": ["numpy array"]},
+        {"name": "Power BI", "aliases": ["powerbi", "ms power bi", "dax"]},
+        {"name": "Tableau", "aliases": ["tableau desktop", "tableau server"]},
+        {"name": "Excel", "aliases": ["advanced excel", "ms excel", "excel vba"]},
+        {"name": "Apache Spark", "aliases": ["spark", "pyspark", "spark sql"]},
+        {"name": "Apache Hadoop", "aliases": ["hadoop", "hdfs", "mapreduce"]},
+        {"name": "Databricks", "aliases": ["databricks lakehouse"]},
+        {"name": "Apache Kafka", "aliases": ["kafka", "kafka streaming"]},
+        {"name": "Apache Airflow", "aliases": ["airflow", "airflow dags"]},
+        {"name": "dbt", "aliases": ["data build tool"]},
+        {"name": "Snowflake", "aliases": ["snowflake dw"]},
+        {"name": "BigQuery", "aliases": ["google bigquery", "bq"]}
+      ]
+    },
+    "ai_and_machine_learning": {
+      "name": "Artificial Intelligence & Machine Learning",
+      "skills": [
+        {"name": "Machine Learning", "aliases": ["ml", "applied ml"]},
+        {"name": "Deep Learning", "aliases": ["dl", "neural networks"]},
+        {"name": "TensorFlow", "aliases": ["tf", "tf2"]},
+        {"name": "PyTorch", "aliases": ["torch"]},
+        {"name": "Scikit-Learn", "aliases": ["sklearn", "scikit"]},
+        {"name": "Natural Language Processing", "aliases": ["nlp", "text processing"]},
+        {"name": "Computer Vision", "aliases": ["cv", "image processing", "opencv"]},
+        {"name": "Large Language Models", "aliases": ["llm", "llms", "generative ai", "genai"]},
+        {"name": "Hugging Face", "aliases": ["huggingface", "transformers"]},
+        {"name": "LangChain", "aliases": ["langchain framework"]},
+        {"name": "LlamaIndex", "aliases": ["llamaindex"]}
+      ]
+    },
+    "web_development": {
+      "name": "Web Development",
+      "skills": [
+        {"name": "React", "aliases": ["reactjs", "react.js"]},
+        {"name": "Next.js", "aliases": ["nextjs", "next.js"]},
+        {"name": "Node.js", "aliases": ["nodejs", "node.js"]},
+        {"name": "Express.js", "aliases": ["expressjs", "express"]},
+        {"name": "Django", "aliases": ["django rest framework", "drf"]},
+        {"name": "Flask", "aliases": ["flask rest"]},
+        {"name": "FastAPI", "aliases": ["fastapi framework"]},
+        {"name": "Laravel", "aliases": ["laravel php"]},
+        {"name": "ASP.NET Core", "aliases": ["asp.net", ".net core", "dotnet"]},
+        {"name": "Spring Boot", "aliases": ["springboot", "spring framework"]},
+        {"name": "Vue.js", "aliases": ["vue", "vuejs", "vue 3"]},
+        {"name": "Angular", "aliases": ["angularjs", "angular 2+"]},
+        {"name": "HTML", "aliases": ["html5"]},
+        {"name": "CSS", "aliases": ["css3", "tailwind", "bootstrap", "sass"]}
+      ]
+    },
+    "cloud_and_devops": {
+      "name": "Cloud & DevOps",
+      "skills": [
+        {"name": "AWS", "aliases": ["amazon web services", "ec2", "s3", "lambda"]},
+        {"name": "Microsoft Azure", "aliases": ["azure", "azure devops"]},
+        {"name": "Google Cloud Platform", "aliases": ["gcp", "google cloud"]},
+        {"name": "Docker", "aliases": ["docker containers", "docker compose"]},
+        {"name": "Kubernetes", "aliases": ["k8s", "k8s cluster"]},
+        {"name": "Terraform", "aliases": ["hashicorp terraform", "iac"]},
+        {"name": "Git", "aliases": ["git vcs", "version control"]},
+        {"name": "GitHub Actions", "aliases": ["gh actions", "github ci/cd"]},
+        {"name": "CI/CD", "aliases": ["continuous integration", "continuous deployment", "jenkins", "gitlab ci"]},
+        {"name": "Linux", "aliases": ["ubuntu", "debian", "redhat", "centos", "bash", "shell scripting"]}
+      ]
+    },
+    "databases": {
+      "name": "Databases & Storage",
+      "skills": [
+        {"name": "PostgreSQL", "aliases": ["postgres", "pgsql"]},
+        {"name": "MySQL", "aliases": ["mysql server"]},
+        {"name": "MongoDB", "aliases": ["mongo", "nosql mongodb"]},
+        {"name": "Redis", "aliases": ["redis cache"]},
+        {"name": "Oracle", "aliases": ["oracle db", "plsql"]},
+        {"name": "Microsoft SQL Server", "aliases": ["mssql", "sql server"]},
+        {"name": "Elasticsearch", "aliases": ["elastic search", "elk"]}
+      ]
+    }
+  ]
+}
