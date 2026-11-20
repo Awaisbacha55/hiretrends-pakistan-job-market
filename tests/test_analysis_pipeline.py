@@ -22,6 +22,7 @@ from src.analysis.skills_analysis import (
     get_top_skills,
     parse_job_skills,
 )
+from src.analysis.trend_analysis import analyze_skill_growth
 from src.analysis.workplace_analysis import analyze_workplace_distribution
 
 
@@ -364,3 +365,41 @@ class TestSkillCooccurrence:
         if len(skills) >= 2:
             s1, s2 = skills[0], skills[1]
             assert matrix_dict[s1][s2] == matrix_dict[s2][s1]
+
+
+class TestTrendAnalysis:
+    """Verify longitudinal skill growth calculations and single-snapshot limitation flagging."""
+
+    def test_single_snapshot_insufficient(self, mock_job_dataframe):
+        # Empty/None snapshots
+        result_none = analyze_skill_growth(snapshots=None, current_df=mock_job_dataframe)
+        assert result_none["status"] == "UNAVAILABLE_INSUFFICIENT_SNAPSHOTS"
+        assert result_none["growth_metrics_available"] is False
+        assert result_none["available_snapshots_count"] == 1
+        assert "extensible_fields_supported" in result_none
+
+        # Single snapshot list
+        snap_single = [{"timestamp": "2026-11-20T00:00:00Z", "dataframe": mock_job_dataframe}]
+        result_single = analyze_skill_growth(snapshots=snap_single)
+        assert result_single["status"] == "UNAVAILABLE_INSUFFICIENT_SNAPSHOTS"
+        assert result_single["available_snapshots_count"] == 1
+
+    def test_multi_snapshot_growth(self, mock_job_dataframe):
+        # Create two distinct chronological snapshots
+        df_t0 = mock_job_dataframe.iloc[:3].copy()
+        df_t1 = mock_job_dataframe.copy()  # contains more jobs, so more skills
+
+        snapshots = [
+            {"timestamp": "2026-10-01T00:00:00Z", "dataframe": df_t0},
+            {"timestamp": "2026-11-01T00:00:00Z", "dataframe": df_t1},
+        ]
+
+        result = analyze_skill_growth(snapshots=snapshots)
+        assert result["status"] == "SUCCESS"
+        assert result["growth_metrics_available"] is True
+        assert result["total_skills_tracked"] > 0
+        assert "fastest_growing_skills" in result
+        assert "fastest_declining_skills" in result
+        assert "emerging_skills" in result
+        assert "declining_skills" in result
+

@@ -113,6 +113,12 @@ if len(skills_df) > 0:
             ),
         },
     )
+    st.download_button(
+        label="📥 Download Skills Demand Table (CSV)",
+        data=display_df.to_csv(index=False),
+        file_name="hiretrends_skills_demand.csv",
+        mime="text/csv",
+    )
 else:
     render_empty_state("No technical skills match your search query or domain selection.")
 

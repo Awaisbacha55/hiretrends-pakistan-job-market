@@ -1,0 +1,125 @@
+{
+  "pipeline_name": "HireTrends Data Cleaning & Normalization Engine",
+  "processed_at": "2026-11-20T16:32:42.882385+00:00",
+  "input_records": 4491,
+  "output_records": 4491,
+  "removed_duplicates": 0,
+  "disclosed_salary_count": 174,
+  "parsed_experience_count": 3014,
+  "total_skills_extracted": 8622,
+  "unique_skills_found": 69,
+  "top_skills": [
+    [
+      "Excel",
+      616
+    ],
+    [
+      "SQL",
+      473
+    ],
+    [
+      "Python",
+      444
+    ],
+    [
+      "Microsoft Azure",
+      391
+    ],
+    [
+      "Git",
+      389
+    ],
+    [
+      "AWS",
+      383
+    ],
+    [
+      "CI/CD",
+      376
+    ],
+    [
+      "JavaScript",
+      355
+    ],
+    [
+      "Apache Spark",
+      278
+    ],
+    [
+      "Large Language Models",
+      243
+    ],
+    [
+      "Machine Learning",
+      225
+    ],
+    [
+      "React",
+      215
+    ],
+    [
+      "Google Cloud Platform",
+      211
+    ],
+    [
+      "Docker",
+      201
+    ],
+    [
+      "Java",
+      194
+    ],
+    [
+      "CSS",
+      193
+    ],
+    [
+      "HTML",
+      193
+    ],
+    [
+      "PostgreSQL",
+      190
+    ],
+    [
+      "Power BI",
+      169
+    ],
+    [
+      "TypeScript",
+      167
+    ]
+  ],
+  "quality_metrics": {
+    "total_records": 4491,
+    "unique_job_ids": 4491,
+    "duplicate_job_ids": 0,
+    "duplicate_job_urls": 777,
+    "missing_fields": {
+      "workplace_type": 2182,
+      "salary_min_pkr": 4317,
+      "experience_min_years": 1477,
+      "description": 4491,
+      "normalized_city": 1807,
+      "company": 37
+    },
+    "missing_percentages": {
+      "workplace_type": 48.59,
+      "salary_min_pkr": 96.13,
+      "experience_min_years": 32.89,
+      "description": 100.0,
+      "normalized_city": 40.24,
+      "company": 0.82
+    },
+    "invalid_dates": 0,
+    "invalid_salary_ranges": 0,
+    "invalid_experience_ranges": 0,
+    "unmapped_cities": 1807,
+    "unknown_workplaces": 2182,
+    "records_with_skills": 2106,
+    "skill_coverage_pct": 46.89,
+    "manual_review_count": 1074,
+    "manual_review_pct": 23.91
+  },
+  "source_license": "ODbL 1.0 & DbCL 1.0 (Headcount Labs)"
+}

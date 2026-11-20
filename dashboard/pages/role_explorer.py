@@ -172,5 +172,11 @@ sample_table = role_df[["job_title", "company", "normalized_city", "workplace_di
 sample_table.columns = ["Job Title", "Company", "City", "Workplace", "Experience Tier", "Salary (if disclosed)"]
 sample_table["Salary (if disclosed)"] = sample_table["Salary (if disclosed)"].fillna("Not Disclosed")
 st.dataframe(sample_table, use_container_width=True, hide_index=True)
+st.download_button(
+    label=f"📥 Download {selected_role} Sample Postings (CSV)",
+    data=sample_table.to_csv(index=False),
+    file_name=f"hiretrends_{selected_role.lower().replace(' ', '_')}_postings.csv",
+    mime="text/csv",
+)
 
 render_attribution_footer()

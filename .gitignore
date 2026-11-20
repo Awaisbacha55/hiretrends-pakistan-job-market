@@ -72,8 +72,11 @@ data/raw/*
 !data/raw/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
+!data/processed/jobs_cleaned.csv
+!data/processed/cleaning_metadata.json
 data/samples/*
 !data/samples/.gitkeep
+scratch/
 reports/figures/*
 !reports/figures/.gitkeep
 !reports/figures/*.png

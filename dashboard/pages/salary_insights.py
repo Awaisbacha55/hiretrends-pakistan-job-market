@@ -180,5 +180,11 @@ if inliers_stats.get("sample_size", 0) > 0:
 
 q_df = pd.DataFrame(quartiles_data)
 st.dataframe(q_df, use_container_width=True, hide_index=True)
+st.download_button(
+    label="📥 Download Salary Quartile Benchmarks (CSV)",
+    data=q_df.to_csv(index=False),
+    file_name="hiretrends_salary_quartiles.csv",
+    mime="text/csv",
+)
 
 render_attribution_footer()

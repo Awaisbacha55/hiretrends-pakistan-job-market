@@ -15,6 +15,7 @@ from .skills_analysis import (
     get_top_skills,
     parse_job_skills,
 )
+from .trend_analysis import analyze_skill_growth
 from .workplace_analysis import analyze_workplace_distribution
 
 __all__ = [
@@ -27,5 +28,6 @@ __all__ = [
     "analyze_locations",
     "analyze_workplace_distribution",
     "compute_skill_cooccurrence",
+    "analyze_skill_growth",
     "parse_job_skills",
 ]
