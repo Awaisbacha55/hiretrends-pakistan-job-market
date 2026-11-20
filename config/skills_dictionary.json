@@ -101,5 +101,5 @@
         {"name": "Elasticsearch", "aliases": ["elastic search", "elk"]}
       ]
     }
-  ]
+  }
 }

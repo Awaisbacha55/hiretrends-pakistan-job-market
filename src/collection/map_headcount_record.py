@@ -148,8 +148,15 @@ def map_headcount_job(raw_job: Dict[str, Any]) -> Dict[str, Any]:
 
     if postings and isinstance(postings, list):
         p0 = postings[0] if isinstance(postings[0], dict) else {}
-        primary_job_url = p0.get("application_url") or p0.get("posting_url")
-        primary_source_url = p0.get("posting_url")
+        app_url_val = extract_state_value(p0.get("application_url")) or p0.get("application_url")
+        if isinstance(app_url_val, dict):
+            app_url_val = app_url_val.get("value") or app_url_val.get("url")
+        post_url_val = extract_state_value(p0.get("posting_url")) or p0.get("posting_url")
+        if isinstance(post_url_val, dict):
+            post_url_val = post_url_val.get("value") or post_url_val.get("url")
+
+        primary_job_url = str(app_url_val) if app_url_val else (str(post_url_val) if post_url_val else None)
+        primary_source_url = str(post_url_val) if post_url_val else None
         posted_date = p0.get("source_posted_at")
         if p0.get("source"):
             primary_source_name = f"headcount_labs:{p0.get('source')}"

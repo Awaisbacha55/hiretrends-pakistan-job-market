@@ -5,7 +5,7 @@ An ethical, data-driven intelligence platform tracking technology job vacancies,
 [![Automated Tests](https://github.com/Awaisbacha55/hiretrends-pakistan-job-market/actions/workflows/tests.yml/badge.svg)](https://github.com/Awaisbacha55/hiretrends-pakistan-job-market/actions/workflows/tests.yml)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status: Day 1 Foundation](https://img.shields.io/badge/Development%20Status-Day%201%20Foundation-orange.svg)]()
+[![Status: Day 3 Complete](https://img.shields.io/badge/Development%20Status-Day%203%20Complete-brightgreen.svg)]()
 
 ---
 
@@ -14,7 +14,7 @@ An ethical, data-driven intelligence platform tracking technology job vacancies,
 **HireTrends** is an applied data engineering and market intelligence project engineered to collect, clean, standardize, and analyze tech recruitment listings in Pakistan. By transforming noisy, unstructured job descriptions into structured tabular schemas and interactive analytics, HireTrends aims to empower students, software engineers, and engineering managers with empirical market data.
 
 > [!NOTE]
-> **Development Phase — Day 1 Foundation:** This repository currently represents the Day 1 architectural milestone. The initial ethical scraping foundation, source compliance verification engine, schema dictionary, and automated test suite are established. Bulk data collection, natural language extraction, statistical modeling, and the Streamlit dashboard will be delivered in subsequent iterations (Days 2–6).
+> **Development Phase — Day 3 Complete:** Days 1, 2, and 3 are fully completed and verified. The platform features an ethical ingestion engine, official Headcount Labs API bulk collector (4,491 Pakistan job records), a robust cleaning and normalization pipeline (`src/cleaning/`), regular-expression skill extractor (69 technical skills identified), and a 98-test automated test suite. Exploratory data analysis (EDA), statistical modeling, and the Streamlit dashboard will be delivered in Days 4–6.
 
 ---
 
@@ -59,8 +59,8 @@ HireTrends solves these issues by establishing a principled, automated pipeline 
 hiretrends-pakistan-job-market/
 │
 ├── data/
-│   ├── raw/                  # Unprocessed raw ingestion records (JSON/CSV)
-│   ├── processed/            # Cleaned, standardized tabular datasets
+│   ├── raw/                  # Unprocessed raw ingestion records (JSONL/CSV)
+│   ├── processed/            # Cleaned, standardized tabular datasets (jobs_cleaned.csv)
 │   └── samples/              # Anonymized sample records for testing
 │
 ├── notebooks/                # Exploratory data analysis (EDA) notebooks
@@ -68,14 +68,26 @@ hiretrends-pakistan-job-market/
 │
 ├── src/
 │   ├── __init__.py
-│   ├── collection/           # Ingestion, source compliance, and scrapers
+│   ├── collection/           # Ingestion, source compliance, Headcount Labs API
 │   │   ├── __init__.py
 │   │   ├── check_sources.py  # CLI tool auditing robots.txt and permissions
 │   │   ├── scraper.py        # Reusable ethical scraper foundation
+│   │   ├── headcount_client.py # Headcount Labs authenticated client
+│   │   ├── headcount_bulk_collector.py # Resilient cursor paginator
+│   │   ├── map_headcount_record.py # State unwrapping & schema mapper
+│   │   ├── classify_technology_jobs.py # Tech classification & audit flags
 │   │   └── collect_jobs.py   # Collection pipeline orchestrator
 │   │
-│   ├── cleaning/             # Data normalization and title standardization
-│   │   └── __init__.py
+│   ├── cleaning/             # Data cleaning, normalization, and NLP extraction
+│   │   ├── __init__.py
+│   │   ├── clean_jobs.py     # End-to-end cleaning pipeline orchestrator
+│   │   ├── title_normalizer.py # Seniority and job title standardizer
+│   │   ├── city_normalizer.py  # Pakistani city mapper & foreign filter
+│   │   ├── workplace_normalizer.py # Remote, Hybrid, On-site classifier
+│   │   ├── experience_parser.py # Regex min/max experience range parser
+│   │   ├── salary_parser.py  # Currency conversion (SBP rates) to Monthly PKR
+│   │   ├── skill_extractor.py # Regex taxonomy matcher with word boundaries
+│   │   └── quality_checks.py # Quality audit (duplicates, ranges, coverage)
 │   │
 │   ├── analysis/             # Statistical analysis and skill aggregations
 │   │   └── __init__.py
@@ -93,12 +105,19 @@ hiretrends-pakistan-job-market/
 ├── reports/
 │   ├── source_audit.md       # Detailed legal & technical source audit
 │   ├── data_dictionary.md    # 19-attribute dataset schema definition
+│   ├── headcount_api_sample_report.md # 10-record sample analysis report
+│   ├── headcount_collection_report.md # Day 2 bulk collection audit
+│   ├── data_cleaning_report.md # Day 3 cleaning, normalization & skills report
 │   └── figures/              # Rendered analytical charts and plots
 │
 ├── tests/
 │   ├── __init__.py
 │   ├── test_source_checker.py# Unit tests for robots.txt & permission logic
-│   └── test_scraper.py       # Unit tests for HTML card parsing & compliance
+│   ├── test_scraper.py       # Unit tests for HTML card parsing & compliance
+│   ├── test_headcount_api.py # Unit tests for API authentication & config
+│   ├── test_headcount_sample.py # Unit tests for sample ingestion & fields
+│   ├── test_bulk_collection.py  # Unit tests for cursor pagination & mapping
+│   └── test_cleaning_pipeline.py # Unit tests for title, city, pay, exp, skills
 │
 ├── .github/
 │   └── workflows/
@@ -216,7 +235,7 @@ python -m src.collection.check_sources --base-url https://example.com --target-u
 
 ## 11. Running Automated Tests
 
-HireTrends includes a comprehensive unit test suite ensuring parsing correctness, URL validation, and fail-closed compliance logic. All tests run **100% offline** using mocked fixtures:
+HireTrends includes a comprehensive unit test suite ensuring parsing correctness, URL validation, cursor pagination, data cleaning, and fail-closed compliance logic. All tests run **100% offline** using mocked fixtures:
 
 ```powershell
 pytest -v
@@ -224,9 +243,13 @@ pytest -v
 
 Expected output:
 ```text
-tests/test_scraper.py ...........                                        [ 45%]
+tests/test_bulk_collection.py .....................                      [ 21%]
+tests/test_cleaning_pipeline.py ...................................      [ 57%]
+tests/test_headcount_api.py ..........                                   [ 67%]
+tests/test_headcount_sample.py ........                                  [ 75%]
+tests/test_scraper.py ...........                                        [ 86%]
 tests/test_source_checker.py .............                               [100%]
-============================== 24 passed in 0.82s ==============================
+============================== 98 passed in 1.14s ==============================
 ```
 
 ---
@@ -236,18 +259,38 @@ tests/test_source_checker.py .............                               [100%]
 ### Day 1: Project Foundation (Completed)
 - [x] Cloned and initialized Git repository structure.
 - [x] Configured Python 3.12 virtual environment and installed 15 required dependencies.
-- [x] Conducted comprehensive ethical source audit (`reports/source_audit.md`).
-- [x] Formalized 19-field dataset schema (`reports/data_dictionary.md`).
-- [x] Designed structured technical skills taxonomy (`config/skills_dictionary.json`).
+- [x] Conducted comprehensive ethical source audit ([`reports/source_audit.md`](reports/source_audit.md)).
+- [x] Formalized 19-field dataset schema ([`reports/data_dictionary.md`](reports/data_dictionary.md)).
+- [x] Designed structured technical skills taxonomy ([`config/skills_dictionary.json`](config/skills_dictionary.json)).
 - [x] Built CLI source compliance and `robots.txt` checker (`src/collection/check_sources.py`).
 - [x] Implemented ethical scraper foundation with fail-closed safeguards (`src/collection/scraper.py`).
 - [x] Created collection entry point (`src/collection/collect_jobs.py`).
 - [x] Authored 24 automated unit tests (`tests/`).
 - [x] Configured GitHub Actions CI workflow (`.github/workflows/tests.yml`).
 
-### Upcoming Milestones (Days 2–6)
-* **Day 2: Data Cleaning & Normalization Engine:** Title clustering, regex-based salary normalizers to Monthly PKR, experience parser.
-* **Day 3: Advanced Skills Extraction:** Context-aware taxonomy matcher using `skills_dictionary.json`, handling compound technical terms.
+### Day 2: Headcount Labs API Bulk Ingestion (Completed)
+- [x] Integrated authenticated Headcount Labs Jobs API client (`src/collection/headcount_client.py`).
+- [x] Implemented cursor-based pagination with snapshot watermark locking (`src/collection/headcount_bulk_collector.py`).
+- [x] Collected 4,491 live Pakistan job records to `data/raw/headcount/jobs_raw.jsonl` (zero duplicates).
+- [x] Unwrapped state envelopes preserving missing fields as strictly `null` (`src/collection/map_headcount_record.py`).
+- [x] Classified technology postings and generated Day 2 audit report ([`reports/headcount_collection_report.md`](reports/headcount_collection_report.md)).
+- [x] Expanded test suite to 63 automated unit tests.
+
+### Day 3: Data Cleaning, Normalization & Skill Extraction (Completed)
+- [x] Built reproducible end-to-end cleaning pipeline (`src/cleaning/clean_jobs.py`).
+- [x] Implemented job title & seniority standardization (`src/cleaning/title_normalizer.py`).
+- [x] Implemented Pakistani city canonicalizer and foreign location filter (`src/cleaning/city_normalizer.py`).
+- [x] Implemented workplace arrangement classifier: Remote, Hybrid, On-site (`src/cleaning/workplace_normalizer.py`).
+- [x] Built regex experience range parser with fresh-grad handling (`src/cleaning/experience_parser.py`).
+- [x] Built salary normalizer to Monthly PKR using official State Bank of Pakistan rates (`src/cleaning/salary_parser.py`).
+- [x] Implemented taxonomy-based regex skill extractor with boundary matching (`src/cleaning/skill_extractor.py`).
+- [x] Added classification confidence scoring & manual review tagging (`src/collection/classify_technology_jobs.py`).
+- [x] Built comprehensive data quality assurance audit (`src/cleaning/quality_checks.py`).
+- [x] Cleaned 4,491 records into 33-column tabular dataset (`data/processed/jobs_cleaned.csv`).
+- [x] Authored comprehensive Day 3 report ([`reports/data_cleaning_report.md`](reports/data_cleaning_report.md)).
+- [x] Expanded automated test suite to 98 passing unit tests (`tests/test_cleaning_pipeline.py`).
+
+### Upcoming Milestones (Days 4–6)
 * **Day 4: Exploratory Data Analysis & Statistical Modeling:** Wage distributions, hub comparisons, and co-occurrence correlation matrix.
 * **Day 5: Production Ingestion & Pipeline Hardening:** Large-scale dataset ingestion with fault tolerance and SQLite/Parquet caching.
 * **Day 6: Streamlit Interactive Dashboard:** Web application deployment with Plotly interactive charts and filters.
@@ -257,11 +300,14 @@ tests/test_source_checker.py .............                               [100%]
 ## 13. Limitations & Responsible Use
 
 * **Historical Data vs. Live Scraping:** Because major Pakistani commercial boards restrict unauthorized automated harvesting, live data ingestion requires official APIs or authorized datasets. Historical open datasets may not reflect real-time 2026 shifts.
-* **Salary Disclosures:** Less than 30% of tech postings advertise explicit salary numbers. Statistical analyses on compensation report sample sizes and confidence boundaries to avoid sample bias.
+* **Salary Disclosures:** Less than 4% of tech postings advertise explicit salary numbers. Statistical analyses on compensation report sample sizes and confidence boundaries to avoid sample bias.
 * **Academic & Non-Commercial Purpose:** This project is intended solely for educational, research, and non-commercial market intelligence.
 
 ---
 
-## 14. License
+## 14. License & Attribution
 
-Distributed under the MIT License. See [`LICENSE`](LICENSE) for details.
+- **Code:** Distributed under the [MIT License](LICENSE).
+- **Headcount Labs Database:** Data courtesy of [Headcount Labs](https://headcountlabs.com), provided under the Open Database License (ODbL) 1.0. Database contents are subject to Database Contents License (DbCL) 1.0.
+- **Employer Rights:** Individual job descriptions remain the copyright of their respective hiring organizations.
+- **Geographic Data:** Location entities © OpenStreetMap contributors and Overture Maps.

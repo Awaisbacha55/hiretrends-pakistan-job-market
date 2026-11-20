@@ -1,7 +1,8 @@
 """HireTrends Technology Job Classifier.
 
 Classifies recruitment postings into 16 standardized technology and non-technology
-categories based on job titles and description content using transparent keyword/regex heuristics.
+categories based on job titles and description content using transparent keyword/regex heuristics,
+confidence thresholds, and explicit manual-review flagging.
 """
 
 import re
@@ -126,11 +127,11 @@ TITLE_RULES = [
         "Job title represents IT, technology operations, or embedded development",
         0.85,
     ),
-    # Non-Technology
+    # Definite Non-Technology Roles
     (
         "Non-Technology",
-        re.compile(r"\b(accountant|sales|marketing|recruiter|hr|human resources|finance|supply chain|logistics|driver|cook|security guard|receptionist|telemarketer|call center|customer support representative|graphic designer|content writer|operations executive|store manager|cashier)\b", re.IGNORECASE),
-        "Job title specifies a non-technology, business, or operational occupation",
+        re.compile(r"\b(accountant|accounting|audit|auditor|sales|marketing|recruiter|hr|human resources|finance|supply chain|logistics|driver|cook|security guard|receptionist|telemarketer|call center|customer support representative|csr|customer service|graphic designer|content writer|operations executive|store manager|cashier|freight|warehouse|mechanic|tailor|waiter|nurse|doctor|pharmacist|teacher|lecturer|professor|legal|counsel)\b", re.IGNORECASE),
+        "Job title matches a known non-technology, business, or operational occupation",
         0.90,
     ),
 ]
@@ -156,7 +157,8 @@ def classify_job(
             "is_technology_job": bool,
             "technology_category": str,
             "classification_reason": str,
-            "classification_confidence": float
+            "classification_confidence": float,
+            "needs_manual_review": bool
         }
     """
     clean_title = (title or "").strip()
@@ -168,9 +170,10 @@ def classify_job(
             "technology_category": "Uncertain / Manual Review",
             "classification_reason": "Listing lacks both title and description text",
             "classification_confidence": 0.0,
+            "needs_manual_review": True,
         }
 
-    # Step 1: Evaluate Title against Rules
+    # Step 1: Evaluate Title against High-Confidence Rules
     if clean_title:
         for cat, pattern, reason, conf in TITLE_RULES:
             if pattern.search(clean_title):
@@ -180,33 +183,48 @@ def classify_job(
                     "technology_category": cat,
                     "classification_reason": f"{reason} (matched title: '{clean_title}')",
                     "classification_confidence": conf,
+                    "needs_manual_review": False,
                 }
 
     # Step 2: Evaluate Description Content if Title was not decisive
     if clean_desc:
         tech_matches = TECH_KEYWORDS_IN_DESC.findall(clean_desc)
         if len(tech_matches) >= 3:
-            # Significant density of technical keywords in description
             matched_terms = list(set([m.lower() for m in tech_matches[:5]]))
             return {
                 "is_technology_job": True,
                 "technology_category": "Other Technology",
                 "classification_reason": f"Description contains dense technical stack ({', '.join(matched_terms)})",
-                "classification_confidence": 0.70,
+                "classification_confidence": 0.75,
+                "needs_manual_review": False,
             }
 
-    # Step 3: Default to Non-Technology or Uncertain
+    # Step 3: Flag ambiguous titles for manual review rather than silently defaulting to non-tech
+    # If the title is generic or ambiguous (e.g., "Officer", "Associate", "Manager", "Consultant", "Specialist")
+    ambiguous_tokens = re.search(r"\b(officer|associate|executive|consultant|specialist|coordinator|trainee|analyst|intern|advisor|lead|director)\b", clean_title, re.IGNORECASE)
+    if ambiguous_tokens:
+        return {
+            "is_technology_job": False,
+            "technology_category": "Uncertain / Manual Review",
+            "classification_reason": f"Ambiguous role title '{clean_title}' requires manual review",
+            "classification_confidence": 0.45,
+            "needs_manual_review": True,
+        }
+
+    # Non-matched general title: classify as Non-Technology with medium confidence
     if clean_title:
         return {
             "is_technology_job": False,
             "technology_category": "Non-Technology",
             "classification_reason": f"Title '{clean_title}' did not match tech taxonomy",
-            "classification_confidence": 0.60,
+            "classification_confidence": 0.65,
+            "needs_manual_review": False,
         }
 
     return {
         "is_technology_job": False,
         "technology_category": "Uncertain / Manual Review",
         "classification_reason": "Insufficient indicators for definitive classification",
-        "classification_confidence": 0.40,
+        "classification_confidence": 0.30,
+        "needs_manual_review": True,
     }
