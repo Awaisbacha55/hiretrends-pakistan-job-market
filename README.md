@@ -2,26 +2,60 @@
 
 An ethical, data-driven intelligence platform tracking technology job vacancies, compensation benchmarks, and skill demands across Pakistan's evolving software landscape.
 
+[![Live Dashboard](https://img.shields.io/badge/Streamlit%20App-Live%20Demo-ff4b4b?style=flat&logo=streamlit)](https://hiretrends-pakistan-job-market-zcyjuxxmt7gyyq3e6dfsl2.streamlit.app/skill_cooccurrence)
+[![YouTube Demo](https://img.shields.io/badge/YouTube-Video%20Demo-red?style=flat&logo=youtube)](https://youtu.be/Gcz30Iix90Q)
 [![Automated Tests](https://img.shields.io/badge/Automated%20Tests-125%20Passing-brightgreen.svg)]()
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
-[![Streamlit Ready](https://img.shields.io/badge/Streamlit%20Cloud-Ready-ff4b4b.svg)](https://share.streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status: QA & Deployment Ready](https://img.shields.io/badge/Development%20Status-QA%20%26%20Deployment%20Ready-brightgreen.svg)]()
+[![Status: Production Ready](https://img.shields.io/badge/Development%20Status-Production%20Ready-brightgreen.svg)]()
 
 ---
 
 ## 1. Project Overview & Introduction
 
-**HireTrends** is an applied data engineering and market intelligence project developed during the **LogicBlaze Technologies 8-Week Internship Learning Path**. It collects, cleans, standardizes, models, and visualizes tech recruitment listings in Pakistan. By transforming noisy, unstructured job descriptions into structured tabular schemas and interactive analytics, HireTrends empowers students, software engineers, and hiring managers with empirical market data.
+**HireTrends** is an applied data engineering and market intelligence platform developed during the **LogicBlaze Technologies 8-Week Internship Learning Path**. It collects, cleans, standardizes, models, and visualizes tech recruitment listings across Pakistan. By transforming noisy, unstructured job descriptions into structured tabular schemas and interactive analytics, HireTrends empowers computer science students, software engineers, and hiring managers with empirical market data.
 
 > [!NOTE]
-> **Week 3 Master Project Audit & QA Complete:** All Day 1–5 implementations have undergone an exhaustive quality assurance audit. The primary dataset contains **4,491 live Pakistan job records** collected via the official **Headcount Labs Jobs API** (ODbL 1.0). The codebase features an extensible longitudinal trend engine (`src/analysis/trend_analysis.py`), a comprehensive 8-page interactive Streamlit dashboard (`dashboard/app.py`), CSV export capabilities, Playwright-automated visual regression tests, and a **125-test offline unit test suite with 100% pass rate**.
+> **Week 3 Production Deployment Complete:** All Day 1–5 implementations have undergone an exhaustive quality assurance audit. The primary dataset contains **4,491 live Pakistan job records** collected via the official **Headcount Labs Jobs API** (ODbL 1.0). The codebase features an extensible longitudinal trend engine (`src/analysis/trend_analysis.py`), a comprehensive 8-page interactive Streamlit dashboard (`dashboard/app.py`), CSV export capabilities, Playwright-automated visual regression tests, and a **125-test offline unit test suite with 100% pass rate**.
+
+---
+
+## 🚀 Explore HireTrends
+
+### 🌐 Live Interactive Dashboard
+The HireTrends dashboard is deployed on Streamlit Community Cloud.
+
+👉 **[Open Live HireTrends Dashboard](https://hiretrends-pakistan-job-market-zcyjuxxmt7gyyq3e6dfsl2.streamlit.app/skill_cooccurrence)**
+
+Explore job market insights, technology skills, job roles, salary analysis, workplace arrangements, location analysis, and skill co-occurrence across 8 interactive pages with zero local setup required.
+
+### 🎥 Project Demonstration Video
+Watch the complete project demonstration on YouTube:
+
+👉 **[▶ Watch HireTrends Project Demo](https://youtu.be/Gcz30Iix90Q)**
+
+The video demonstrates the dashboard, analytical features, visualizations, data methodology, and project workflow in an executive 2–3 minute walkthrough.
+
+---
+
+## 🔗 Quick Links
+
+| Destination | Type | Link | Description |
+| :--- | :---: | :---: | :--- |
+| **Live Interactive Dashboard** | Web App | [Launch App](https://hiretrends-pakistan-job-market-zcyjuxxmt7gyyq3e6dfsl2.streamlit.app/skill_cooccurrence) | Deployed Streamlit Community Cloud analytics dashboard |
+| **YouTube Video Demo** | Video | [Watch Video](https://youtu.be/Gcz30Iix90Q) | Full project presentation and dashboard walkthrough |
+| **GitHub Repository** | Source Code | [View Repo](https://github.com/Awaisbacha55/hiretrends-pakistan-job-market) | Complete codebase, unit tests, and pipelines |
+| **Market Insights Report** | Report | [Read Report](reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md) | *"What the Pakistani Tech Job Market Wants in 2025/26"* |
+| **Statistical Validation Report** | Report | [Read Report](reports/STATISTICAL_VALIDATION_REPORT.md) | Census reconciliation, formulas, denominators & salary models |
+| **Final Project Audit** | Report | [Read Report](reports/FINAL_PROJECT_AUDIT.md) | 22-requirement compliance verification matrix |
+| **Deployment Guide** | Documentation | [View Guide](docs/DEPLOYMENT_GUIDE.md) | Streamlit Community Cloud step-by-step hosting guide |
+| **Video Presentation Script** | Documentation | [View Script](docs/DEMO_VIDEO_SCRIPT.md) | Presentation storyboard and timed demo voiceover |
 
 ---
 
 ## 2. Interactive Dashboard Preview
 
-The complete 8-page Streamlit dashboard runs locally or deployed on Streamlit Community Cloud:
+The complete 8-page Streamlit dashboard runs live on Streamlit Cloud or locally:
 
 | 📊 Market Overview | 🛠️ Skills Explorer |
 | :---: | :---: |
@@ -35,31 +69,62 @@ The complete 8-page Streamlit dashboard runs locally or deployed on Streamlit Co
 
 ---
 
-## 3. Key Market Findings & Intelligence Summary
+## 3. Project Objectives
 
-Empirical analysis of 4,491 postings reveals defining characteristics of Pakistan's 2025/2026 tech employment landscape (detailed in [`reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md`](reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md)):
+1. **Ethical & Compliant Data Ingestion:** Establish an automated collection pipeline respecting platform terms, avoiding unauthorized scraping, and utilizing official API licensing (ODbL 1.0).
+2. **Standardized Target Baseline:** Ingest and maintain a high-integrity census exceeding 2,000+ technology listings (curated 4,491 total records, 1,075 verified tech roles).
+3. **Data Cleaning & Normalization:** Standardize disparate job titles, parse seniority, canonicalize Pakistani cities, and normalize international compensation into Monthly PKR using official State Bank of Pakistan (SBP) exchange rates.
+4. **NLP Skill Extraction:** Systematically extract 69 programming languages, cloud platforms, and developer frameworks using word-boundary regular expressions without substring false positives.
+5. **Interactive Multipage Dashboard:** Deliver a modern SaaS analytics dashboard with global filtering, responsive Plotly visualizations, sample size transparency, and CSV data export.
+6. **Academic & Statistical Rigor:** Non-parametric salary modeling (quartiles, medians, IQR), census reconciliation, and refusal to fabricate growth percentages from single-snapshot baselines.
+
+---
+
+## 4. Key Findings & Market Intelligence Summary
+
+Empirical analysis of 4,491 job postings reveals defining characteristics of Pakistan's 2025/2026 tech employment landscape (detailed in [`reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md`](reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md)):
 
 1. **Top In-Demand Technical Skills:**
-   - **Python leads overall:** Demanded in **33.3%** of all confirmed tech roles (358 unique jobs), driven by backend web services and AI workloads.
-   - **SQL ranks #2:** Essential across 29.9% of tech jobs for relational data modeling.
+   - **Python leads overall:** Demanded in **33.3%** of all confirmed tech roles (358 unique jobs), driven by backend web services (FastAPI/Django) and AI/Data Science workloads.
+   - **SQL ranks #2:** Essential across **29.9%** of tech jobs (321 postings) for relational data modeling and database management.
    - **Modern Web Stack:** JavaScript (27.4%), React (20.8%), TypeScript (12.9%), and Node.js (13.8%).
-   - **Cloud & Infrastructure:** AWS (17.4%) and Docker (14.5%) are baseline requirements.
-2. **The "Big Three" Metropolises Command 93.3% of Tech Demand:**
+   - **Cloud & DevOps:** AWS (17.4%) and Docker (14.5%) constitute the baseline cloud expectation for modern developers.
+2. **The "Big Three" Metropolises Command 93.3% of Domestic Tech Demand:**
    - **Lahore (38.3% / 1,027 jobs):** Software export houses, agencies, and full-stack/mobile web.
    - **Karachi (32.3% / 868 jobs):** FinTech, corporate enterprise, banking, and data systems.
    - **Islamabad (22.7% / 609 jobs):** AI/ML consultancies, cloud architecture, and multinational R&D.
 3. **The USD-PKR Remote Divide:**
    - **Domestic PKR Postings ($N=42$):** Median wage of **PKR 75,000 / month** (IQR: 50k–150k PKR).
    - **Overseas USD Remote Contracts ($N=131$):** Median wage of **PKR 278,500 / month** (~$1,000 USD/mo).
-   - Remote developers capture an immediate **3.7x salary multiplier** compared to local peers.
+   - Remote developers capture an immediate **3.7x median salary multiplier** compared to local peers.
 4. **Remote Work Dominance:**
-   - **51.8%** of postings with explicit workplace policies are **fully remote**, driven by overseas contractors.
+   - **51.8%** of postings with explicit workplace policies are **fully remote**, demonstrating Pakistan's role as a major global software engineering talent exporter.
 
 ---
 
-## 4. Reconciled Census & Statistical Integrity
+## 5. Reconciled Census & Statistical Integrity
 
 Every statistic is mathematically balanced across the 4,491 primary records (see [`reports/STATISTICAL_VALIDATION_REPORT.md`](reports/STATISTICAL_VALIDATION_REPORT.md)):
+
+```mermaid
+flowchart TD
+    Total["Total Ingested Postings (N=4,491)"] --> Tech["Confirmed Tech Roles: 1,075 (23.94%)"]
+    Total --> NonTech["Non-Technology Postings: 2,342 (52.15%)"]
+    Total --> Review["Manual Review Required: 1,074 (23.91%)"]
+    
+    Total --> MappedLoc["Domestic Mapped Cities (N=2,684)"]
+    MappedLoc --> LHE["Lahore: 1,027 (38.26%)"]
+    MappedLoc --> KHI["Karachi: 868 (32.34%)"]
+    MappedLoc --> ISB["Islamabad: 609 (22.69%)"]
+    MappedLoc --> Other["Other Towns: 180 (6.71%)"]
+    
+    Total --> WP["Workplace Arrangements (N=4,491)"]
+    WP --> Known["Known Policies: 2,309 (51.41%)"]
+    Known --> Remote["Remote: 1,197 (51.84%)"]
+    Known --> Onsite["On-site: 943 (40.84%)"]
+    Known --> Hybrid["Hybrid: 169 (7.32%)"]
+    WP --> Unstated["Unstated Policies: 2,182 (48.59%)"]
+```
 
 $$\begin{aligned}
 \text{Total Dataset } (N=4,491) &= \text{Confirmed Tech } (1,075) + \text{Non-Tech } (2,342) + \text{Manual Review } (1,074) \\
@@ -69,34 +134,49 @@ $$\begin{aligned}
 
 ---
 
-## 5. Technology Stack
+## 6. Technology Stack
 
 * **Language:** Python 3.12+ (verified: Python 3.12.10)
 * **Data Processing & Analytics:** `pandas`, `numpy`
 * **Visualization & Reporting:** `plotly`, `matplotlib`, `seaborn`
-* **Interactive UI:** `streamlit` (multipage navigation via `st.Page` / `st.navigation`)
+* **Interactive UI:** `streamlit` (multipage architecture via `st.Page` / `st.navigation`)
 * **Automated Visual Testing:** `playwright` (Chromium headless engine)
 * **API Ingestion & Resilience:** `requests`, `tenacity`, `python-dotenv`
 * **Testing & Quality Assurance:** `pytest` (125 tests, 100% offline)
 * **CI/CD & Version Control:** GitHub Actions, Git
+* **Cloud Hosting:** Streamlit Community Cloud
 
 ---
 
-## 6. Repository Structure
+## 7. Dashboard Features Across 8 Interactive Pages
+
+1. **📊 Market Overview (`overview.py`):** Executive KPI cards, technology segmentation donut, regional density, and seniority breakdown.
+2. **🛠️ Skills Explorer (`skills_explorer.py`):** Deep-dive into 69 technical skills with search, domain filtering (Cloud, AI, Languages), progress bars, and CSV download.
+3. **💼 Role Explorer (`role_explorer.py`):** In-depth skill, experience, location, and salary profiles for 12 key tech occupations with CSV download.
+4. **💰 Salary Insights (`salary_insights.py`):** Non-parametric compensation benchmarking, currency distribution (USD vs. PKR), experience scaling, and quartile tables with CSV download.
+5. **📍 Location Analysis (`location_analysis.py`):** Geographic tech hub rankings (Lahore, Karachi, Islamabad), interactive city comparison, and foreign posting isolation.
+6. **🏢 Workplace Analysis (`workplace_analysis.py`):** Remote vs. On-site vs. Hybrid trends computed against verified known denominators ($N=2,309$) with transparent unstated disclosures.
+7. **🔗 Skill Co-occurrence (`skill_cooccurrence.py`):** 12x12 symmetric correlation heatmap, Jaccard affinity index, and companion technology stack explorer.
+8. **📜 Data & Methodology (`methodology.py`):** Complete data lineage, census balance equations, official SBP exchange rate benchmarks, and legal attribution notices.
+
+---
+
+## 8. Repository Structure
 
 ```text
 hiretrends-pakistan-job-market/
 │
 ├── data/
-│   ├── raw/                  # Raw ingestion records (excluded from Git; watermark locked)
+│   ├── raw/                  # Raw ingestion records (watermark locked; excluded from Git)
 │   ├── processed/            # Cleaned, standardized tabular dataset (jobs_cleaned.csv, 2.2MB)
 │   └── samples/              # Anonymized sample records for unit testing
 │
 ├── dashboard/                # Interactive Streamlit multi-page analytics platform
-│   ├── app.py                # Main application entry point (st.navigation)
+│   ├── __init__.py           # Dashboard package marker
+│   ├── app.py                # Main application entry point (st.navigation + sys.path bootstrap)
 │   ├── data_loader.py        # Cached data ingestion and multi-criteria filters
 │   ├── components.py         # Standardized KPI cards, sidebar filters, layout & footers
-│   └── pages/                # Modern multipage architecture
+│   └── pages/                # Modern multipage architecture (with pathlib root bootstrap)
 │       ├── overview.py       # Market overview & executive KPIs
 │       ├── skills_explorer.py # Deep-dive into 69 technical skills with CSV export
 │       ├── role_explorer.py  # 12-target occupation skill profiles with CSV export
@@ -115,14 +195,16 @@ hiretrends-pakistan-job-market/
 │   └── screenshots/          # Real 1440x950 Playwright PNG screenshots (8 files)
 │
 ├── reports/                  # Technical audit, empirical validation & intelligence reports
-│   ├── FINAL_PROJECT_AUDIT.md # Requirement-by-requirement verification table
+│   ├── FINAL_PROJECT_AUDIT.md # 22-requirement verification matrix
 │   ├── STATISTICAL_VALIDATION_REPORT.md # Formulas, denominators & census reconciliation
 │   ├── PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md # Comprehensive 2025/26 market intelligence
+│   ├── FINAL_COMPLETION_REPORT.md # Master 20-point quality audit sign-off
 │   ├── data_cleaning_report.md # Cleaning, normalization & skills extraction report
 │   ├── market_analysis_report.md # EDA & market intelligence findings
 │   └── figures/              # Rendered Plotly HTML and PNG charts (14 publication figures)
 │
 ├── src/                      # Production Python modules
+│   ├── __init__.py           # Top-level package marker
 │   ├── collection/           # Ingestion, source compliance, Headcount Labs API
 │   ├── cleaning/             # Data cleaning, normalization, and NLP skill extraction
 │   └── analysis/             # Statistical modeling, location, salary & trend engines
@@ -137,7 +219,7 @@ hiretrends-pakistan-job-market/
 
 ---
 
-## 7. Quickstart & Installation (Windows PowerShell)
+## 9. Quickstart & Installation (Windows PowerShell / Linux)
 
 ### Prerequisites
 * Windows 10/11 with PowerShell (or Linux/macOS bash)
@@ -164,7 +246,7 @@ hiretrends-pakistan-job-market/
    pip install -r requirements.txt
    ```
 
-4. **Launch the Dashboard:**
+4. **Launch the Dashboard Locally:**
    ```powershell
    streamlit run dashboard/app.py
    ```
@@ -172,19 +254,7 @@ hiretrends-pakistan-job-market/
 
 ---
 
-## 8. Streamlit Community Cloud Deployment
-
-HireTrends is ready for zero-configuration public hosting on [Streamlit Community Cloud](https://share.streamlit.io/).
-
-Detailed instructions are available in [`docs/DEPLOYMENT_GUIDE.md`](docs/DEPLOYMENT_GUIDE.md):
-1. Sign in to [share.streamlit.io](https://share.streamlit.io/) with GitHub.
-2. Select repository `Awaisbacha55/hiretrends-pakistan-job-market` (branch: `main`).
-3. Set **Main file path** to `dashboard/app.py`.
-4. Click **Deploy!** (takes ~1–2 minutes).
-
----
-
-## 9. Running Automated Tests
+## 10. Running Automated Tests
 
 HireTrends includes a comprehensive test suite covering source checking, API mapping, data cleaning, statistical modeling, trend analysis, and dashboard UI logic. All tests run **100% offline**:
 
@@ -202,12 +272,12 @@ tests/test_headcount_api.py ..........                                  [ 74%]
 tests/test_headcount_sample.py ........                                 [ 80%]
 tests/test_scraper.py ...........                                       [ 89%]
 tests/test_source_checker.py .............                              [100%]
-============================= 125 passed in 4.93s =============================
+============================= 125 passed in 4.14s =============================
 ```
 
 ---
 
-## 10. Data Ethics & Responsible Use Charter
+## 11. Data Ethics & Responsible Use Charter
 
 - **Terms of Service Supremacy:** Automated collection respects platform terms. Prohibited sources (e.g. Mustakbil) are blocked fail-closed; commercial job boards (e.g. Rozee.pk) requiring permission are never harvested without authorization.
 - **Official API Ingestion:** Live data is sourced under official Open Database License (ODbL 1.0) and Database Contents License (DbCL 1.0) courtesy of [Headcount Labs](https://headcountlabs.com).
@@ -216,8 +286,12 @@ tests/test_source_checker.py .............                              [100%]
 
 ---
 
-## 11. License & Attribution
+## 12. Author & Acknowledgements
 
-- **Source Code:** Distributed under the open-source [MIT License](LICENSE).
-- **Primary Dataset:** Courtesy of [Headcount Labs](https://headcountlabs.com) under ODbL 1.0 & DbCL 1.0.
-- **Geographic Data:** Location entities © OpenStreetMap contributors and Overture Maps.
+* **Author:** **Awais Bacha**  
+  *Data Engineering Intern — LogicBlaze Technologies*  
+  GitHub: [@Awaisbacha55](https://github.com/Awaisbacha55)
+* **Program:** LogicBlaze Technologies 8-Week Internship Learning Path (Week 3 Capstone)
+* **Dataset Provider:** [Headcount Labs](https://headcountlabs.com) (ODbL 1.0 / DbCL 1.0)
+* **Geographic Data:** © OpenStreetMap contributors and Overture Maps
+* **License:** Source code distributed under the open-source [MIT License](LICENSE).

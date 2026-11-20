@@ -5,6 +5,8 @@
 **Repository:** [https://github.com/Awaisbacha55/hiretrends-pakistan-job-market](https://github.com/Awaisbacha55/hiretrends-pakistan-job-market)  
 **Main Dashboard Path:** `dashboard/app.py`  
 **Target Platform:** [Streamlit Community Cloud](https://share.streamlit.io/)  
+**Live Deployed Application:** [https://hiretrends-pakistan-job-market-zcyjuxxmt7gyyq3e6dfsl2.streamlit.app/skill_cooccurrence](https://hiretrends-pakistan-job-market-zcyjuxxmt7gyyq3e6dfsl2.streamlit.app/skill_cooccurrence)  
+**Project Video Walkthrough:** [https://youtu.be/Gcz30Iix90Q](https://youtu.be/Gcz30Iix90Q)  
 
 ---
 

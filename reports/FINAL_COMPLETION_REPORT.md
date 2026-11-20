@@ -224,9 +224,11 @@ Captured using Playwright Chromium in headless mode at 1440x950 resolution into 
 
 ---
 
-## 16. Deployment Readiness
+## 16. Deployment Readiness & Production Verification
 
 - **Platform:** Streamlit Community Cloud ([share.streamlit.io](https://share.streamlit.io/)).
+- **Live Deployed Application:** [https://hiretrends-pakistan-job-market-zcyjuxxmt7gyyq3e6dfsl2.streamlit.app/skill_cooccurrence](https://hiretrends-pakistan-job-market-zcyjuxxmt7gyyq3e6dfsl2.streamlit.app/skill_cooccurrence)
+- **Project Demonstration Video:** [https://youtu.be/Gcz30Iix90Q](https://youtu.be/Gcz30Iix90Q)
 - **Zero API Secrets Needed:** Pre-processed data committed at `data/processed/jobs_cleaned.csv`.
 - **Configuration:** Fully documented in [`docs/DEPLOYMENT_GUIDE.md`](../docs/DEPLOYMENT_GUIDE.md).
 - **Presentation Script:** Comprehensive 2–3 minute video script in [`docs/DEMO_VIDEO_SCRIPT.md`](../docs/DEMO_VIDEO_SCRIPT.md).

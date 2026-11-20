@@ -3,6 +3,8 @@
 
 **Project:** HireTrends — Pakistan Tech Job Market Intelligence  
 **Author:** Awais Bacha  
+**YouTube Demonstration Video:** [https://youtu.be/Gcz30Iix90Q](https://youtu.be/Gcz30Iix90Q)  
+**Live Interactive Dashboard:** [https://hiretrends-pakistan-job-market-zcyjuxxmt7gyyq3e6dfsl2.streamlit.app/skill_cooccurrence](https://hiretrends-pakistan-job-market-zcyjuxxmt7gyyq3e6dfsl2.streamlit.app/skill_cooccurrence)  
 **Target Video Duration:** 2 minutes 30 seconds to 3 minutes  
 **Target Audience:** Technical Mentors, Hiring Managers, Internship Evaluators  
 **Recommended Screen Setup:** 1920x1080 or 1440x900 browser window, Streamlit sidebar expanded, light SaaS theme active.
