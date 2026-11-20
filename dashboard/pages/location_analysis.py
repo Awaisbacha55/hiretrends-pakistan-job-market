@@ -4,6 +4,14 @@ Geographic clustering of technology employment across Pakistani metropolitan hub
 cross-city comparisons, and segregation of foreign hiring entities.
 """
 
+from pathlib import Path
+import sys
+
+# Ensure repository root is on sys.path
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 from collections import Counter
 import pandas as pd
 import plotly.express as px

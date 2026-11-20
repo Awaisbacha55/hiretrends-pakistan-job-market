@@ -4,6 +4,14 @@ Analyzes remote vs. on-site vs. hybrid arrangements, ensuring accurate denominat
 and transparency regarding unspecified workplace listings.
 """
 
+from pathlib import Path
+import sys
+
+# Ensure repository root is on sys.path
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 import pandas as pd
 import plotly.express as px
 import streamlit as st

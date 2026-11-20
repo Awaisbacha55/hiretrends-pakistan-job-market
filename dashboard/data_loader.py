@@ -6,6 +6,7 @@ safe parsing of skill arrays, and global multi-criteria filtering.
 
 import json
 import os
+from pathlib import Path
 import re
 from typing import Any, Dict, List, Optional, Set, Union
 import numpy as np
@@ -44,7 +45,7 @@ EXPECTED_COLUMNS = [
 
 
 @st.cache_data(show_spinner=False)
-def load_clean_data(csv_path: str = "data/processed/jobs_cleaned.csv") -> pd.DataFrame:
+def load_clean_data(csv_path: Optional[str] = None) -> pd.DataFrame:
     """Load, validate, and enrich cleaned HireTrends dataset.
 
     Guarantees:
@@ -52,6 +53,14 @@ def load_clean_data(csv_path: str = "data/processed/jobs_cleaned.csv") -> pd.Dat
     - Missing values are strictly retained as NaN/None.
     - Skills are parsed into list objects for fast downstream evaluation.
     """
+    if csv_path is None or csv_path == "data/processed/jobs_cleaned.csv":
+        repo_root = Path(__file__).resolve().parent.parent
+        resolved = repo_root / "data" / "processed" / "jobs_cleaned.csv"
+        if resolved.exists():
+            csv_path = str(resolved)
+        else:
+            csv_path = "data/processed/jobs_cleaned.csv"
+
     if not os.path.exists(csv_path):
         # Fallback empty DataFrame with schema
         return pd.DataFrame(columns=EXPECTED_COLUMNS)

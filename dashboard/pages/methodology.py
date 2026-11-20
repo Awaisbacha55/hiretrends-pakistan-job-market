@@ -4,6 +4,14 @@ Documents pipeline lineage, data sources, ethical scraping charters,
 licensing, and technical normalization methodologies.
 """
 
+from pathlib import Path
+import sys
+
+# Ensure repository root is on sys.path
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 import streamlit as st
 
 from dashboard.components import render_attribution_footer, render_header

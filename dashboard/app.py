@@ -5,6 +5,15 @@ Run with:
     streamlit run dashboard/app.py
 """
 
+from pathlib import Path
+import sys
+
+# Bootstrap repository root into sys.path to guarantee 'dashboard.*' and 'src.*' imports work
+# regardless of execution environment (local terminal vs. Streamlit Community Cloud)
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 import streamlit as st
 
 # Configure page metadata
