@@ -1,64 +1,85 @@
-# HireTrends: Job Market Dataset Schema & Data Dictionary
+# Data Dictionary
 
-**Project:** HireTrends — Pakistan Tech Job Market Intelligence  
-**Document:** Dataset Schema Specification and Field Definitions  
-**Version:** 1.0.0  
-**Effective Date:** 2026-11-20  
+## Processed Dataset Scopes
 
----
+The cleaning pipeline (`src/cleaning/clean_jobs.py`) produces four CSV files in `data/processed/` sharing the same 35-column schema:
 
-## 1. Schema Overview
-
-The HireTrends dataset schema is engineered to convert semi-structured, noisy recruitment postings into standardized, analytical-ready records. The schema balances raw text preservation (for auditability and re-parsing) with clean normalized numeric/categorical attributes (for statistical and machine learning applications).
-
----
-
-## 2. Field Specifications
-
-| Column Name | Data Type | Nullable | Description & Constraints | Example Value |
-| :--- | :--- | :--- | :--- | :--- |
-| `job_id` | `VARCHAR(64)` | No | SHA-256 hash or natural identifier combining source and listing ID. Primary Key. | `"mb_849201"` / `"hash_e3b0c442"` |
-| `job_title` | `VARCHAR(255)` | No | Raw job title as extracted directly from the listing. | `"Senior Full Stack Developer (React / Python)"` |
-| `normalized_title` | `VARCHAR(100)` | Yes | Standardized occupational title mapped to industry taxonomy. | `"Full Stack Developer"` |
-| `company` | `VARCHAR(255)` | Yes | Name of the hiring entity or recruitment agency. Null if confidential. | `"Systems Limited"` |
-| `city` | `VARCHAR(100)` | Yes | Raw city or geographical location string from the listing. | `"Lahore, Pakistan"` |
-| `normalized_city` | `VARCHAR(50)` | Yes | Standardized Pakistani tier-1/tier-2 tech hub or remote marker. | `"Lahore"` |
-| `salary_text` | `VARCHAR(100)` | Yes | Verbatim salary string as advertised. | `"PKR 150,000 - 250,000 per month"` |
-| `salary_min_pkr` | `FLOAT` | Yes | Minimum normalized monthly compensation in Pakistani Rupees (PKR). | `150000.0` |
-| `salary_max_pkr` | `FLOAT` | Yes | Maximum normalized monthly compensation in Pakistani Rupees (PKR). | `250000.0` |
-| `experience_text` | `VARCHAR(100)` | Yes | Verbatim required experience phrase. | `"3 to 5 years of relevant experience"` |
-| `experience_min_years`| `FLOAT` | Yes | Parsed minimum required experience in completed years. | `3.0` |
-| `experience_max_years`| `FLOAT` | Yes | Parsed maximum required experience in completed years. | `5.0` |
-| `employment_type` | `VARCHAR(50)` | Yes | Classification: `Full-time`, `Part-time`, `Contract`, `Internship`, `Freelance`. | `"Full-time"` |
-| `workplace_type` | `VARCHAR(50)` | Yes | Classification: `Remote`, `Hybrid`, `On-site`. | `"Hybrid"` |
-| `description` | `TEXT` | Yes | Full cleaned job description text stripped of HTML tags and navigation boilerplate. | `"We are seeking an experienced developer..."` |
-| `skills` | `JSON / ARRAY` | Yes | Array of matched technical skills derived from skills dictionary. | `["Python", "React", "PostgreSQL", "Docker"]` |
-| `posted_date` | `DATE` | Yes | Posting publication date in ISO 8601 (`YYYY-MM-DD`). | `"2026-11-15"` |
-| `source` | `VARCHAR(50)` | No | Source platform identifier matching `config/sources.json`. | `"opendata_pakistan"` |
-| `job_url` | `VARCHAR(500)` | Yes | Canonical source listing URL for audit and deduplication. | `"https://example.com/jobs/849201"` |
-| `collected_at` | `TIMESTAMP` | No | UTC timestamp when record was ingested (`YYYY-MM-DDTHH:MM:SSZ`). | `"2026-11-20T12:00:00Z"` |
+| File | Row Count | Scope Definition |
+| :--- | ---: | :--- |
+| `jobs_cleaned.csv` | `3,707` | All deduplicated records (`4,491` raw minus `784` URL duplicates), all countries, all domains, all dates. |
+| `jobs_pakistan.csv` | `3,362` | Deduplicated records with `country_classification == "Pakistan"` (`345` Foreign, `0` Unknown excluded), all domains, all dates. |
+| `jobs_pakistan_tech.csv` | `848` | Confirmed Pakistan Tech records (`country_classification == "Pakistan"` and `technology_category == "Tech"`), all dates. |
+| `jobs_pakistan_tech_recent.csv` | `685` | **Primary analysis scope:** Confirmed Pakistan Tech records within the 12-month window `2025-11-20` through `2026-11-20` (`is_recent_12m == True`; `163` older postings excluded). |
 
 ---
 
-## 3. Data Ingestion & Transformation Rules
+## Schema Reference (35 Columns)
 
-### 3.1 Numeric Null Handling
-* **Critical Rule:** Missing numeric values (`salary_min_pkr`, `salary_max_pkr`, `experience_min_years`, `experience_max_years`) **MUST be stored as NULL (`NaN` in pandas)**, never as `0`.
-* A salary of `0` falsely indicates unpaid or volunteer labor, which corrupts wage distributions and average metrics.
+### 1. Identifiers & Role Metadata
+| Column | Type | Nullable | Description |
+| :--- | :--- | :--- | :--- |
+| `job_id` | `str` | No | Unique job identifier assigned from source record or deterministic hash. |
+| `job_title` | `str` | No | Raw job title as collected from the source listing. |
+| `normalized_title` | `str` | No | Standardized role bucket (e.g., `Software Engineer`, `Full Stack Developer`, `AI Engineer`, `Other`). |
+| `seniority_level` | `str` | No | Inferred seniority tier (`Intern`, `Junior`, `Mid`, `Senior`, `Lead/Principal`, `Unspecified`). |
+| `company` | `str` | Yes | Hiring organization name; `"Unknown"` or empty if omitted by the listing. |
 
-### 3.2 Salary Normalization Protocol
-* **Standard Unit:** All salary figures are normalized to **Monthly PKR**.
-* **Annual Conversions:** If a compensation figure is specified annually (e.g., `"2.4M PKR per annum"`), it is divided by `12.0` to calculate monthly equivalents.
-* **Hourly / Daily Conversions:** Standard labor assumptions (8 hours/day, 22 working days/month = 176 monthly hours) apply only if explicit in text, and must be flagged in transformation logs.
-* **Foreign Currencies (USD / EUR / GBP):** When remote postings quote foreign currency, the raw currency code is retained in parsing metadata; conversion to PKR utilizes fixed date-stamped reference rates.
+### 2. Geography & Workplace
+| Column | Type | Nullable | Description |
+| :--- | :--- | :--- | :--- |
+| `city` | `str` | Yes | Raw city string from the source listing. |
+| `normalized_city` | `str` | Yes | Standardized city name (e.g., `Lahore`, `Islamabad`, `Karachi`); `"Unknown"` when unmapped or missing. |
+| `region` | `str` | Yes | Province or administrative region mapped from `normalized_city`. |
+| `country` | `str` | Yes | Raw or normalized country label associated with the posting. |
+| `is_pakistan_location` | `bool` | No | `True` when location signals confirm Pakistan; `False` otherwise. |
+| `country_classification` | `str` | No | Three-way location classification: `"Pakistan"`, `"Foreign"`, or `"Unknown"`. |
+| `workplace_type` | `str` | Yes | Work arrangement (`"On-site"`, `"Remote"`, `"Hybrid"`, or null/empty when unstated). |
 
-### 3.3 Experience Extraction Protocol
-* If an advertisement specifies `"Minimum 4 years"`, `experience_min_years = 4.0` and `experience_max_years = NULL`.
-* If specified as `"Fresh graduate"`, `experience_min_years = 0.0` and `experience_max_years = 1.0`.
+### 3. Experience
+| Column | Type | Nullable | Description |
+| :--- | :--- | :--- | :--- |
+| `experience_text` | `str` | Yes | Raw experience requirement snippet extracted from the posting. |
+| `experience_min_years` | `float64` | Yes | Parsed minimum years of experience (`NaN` when not stated). |
+| `experience_max_years` | `float64` | Yes | Parsed maximum years of experience (`NaN` when not stated or single-bound). |
 
-### 3.4 Date & Timezone Conventions
-* All ingestion timestamps (`collected_at`) are captured in standard **UTC (Coordinated Universal Time)** with ISO 8601 formatting.
-* Posting dates (`posted_date`) reflect Pakistan Standard Time (PKT, UTC+5) as published on local job portals.
+### 4. Compensation & Currency Normalization
+| Column | Type | Nullable | Description |
+| :--- | :--- | :--- | :--- |
+| `salary_text` | `str` | Yes | Raw salary string from the listing (`NaN` when undisclosed). |
+| `salary_currency` | `str` | Yes | Detected currency code (`"PKR"`, `"USD"`, etc.; `NaN` when undisclosed). |
+| `salary_interval` | `str` | Yes | Detected pay period (`"monthly"`, `"yearly"`, `"hourly"`, etc.; `NaN` when undisclosed). |
+| `salary_min_original` | `float64` | Yes | Parsed minimum salary in original currency and interval (`NaN` when undisclosed). |
+| `salary_max_original` | `float64` | Yes | Parsed maximum salary in original currency and interval (`NaN` when undisclosed). |
+| `salary_min_pkr` | `float64` | Yes | Minimum salary normalized to **monthly PKR** (`NaN` when undisclosed or unconvertible). |
+| `salary_max_pkr` | `float64` | Yes | Maximum salary normalized to **monthly PKR** (`NaN` when undisclosed or unconvertible). |
+| `salary_is_converted` | `bool` | No | `True` if currency or pay interval conversion was applied to derive PKR monthly values. |
 
-### 3.5 Privacy & PII Protection
-* Under no circumstances may recruitment applicant names, personal phone numbers, applicant resumes, personal email addresses, or hiring manager personal profiles be stored.
+**Normalization Rules:**
+- **Exchange Rate:** `1 USD = 276.5132 PKR` (reference snapshot date `2026-11-20`).
+- **Hourly-to-Monthly Factor:** `176 hours/month` (`22` working days × `8` hours/day).
+- **Yearly-to-Monthly Factor:** Divided by `12`.
+- **Null Handling:** Undisclosed salaries remain `NaN` (never imputed with `0`).
+
+### 5. Skills
+| Column | Type | Nullable | Description |
+| :--- | :--- | :--- | :--- |
+| `skills` | `str` | No | JSON-encoded array string of canonicalized technical skills extracted from the posting (e.g., `'["Python", "SQL", "AWS"]'`). |
+| `skills_count` | `int64` | No | Count of extracted canonical skills in `skills` (`0` when none matched). |
+
+### 6. Technology Domain Classification
+| Column | Type | Nullable | Description |
+| :--- | :--- | :--- | :--- |
+| `is_technology_job` | `bool` | No | `True` only when classified as `"Tech"`; `False` for `"Non-Technology"` and `"Uncertain"`. |
+| `technology_category` | `str` | No | Three-way domain classification: `"Tech"`, `"Non-Technology"`, or `"Uncertain"`. |
+| `classification_confidence` | `float64` | No | Heuristic confidence score in `[0.0, 1.0]` for the domain classification. |
+| `classification_reason` | `str` | No | Human-readable explanation of the rule/keyword match that produced `technology_category`. |
+| `needs_manual_review` | `bool` | No | `True` for borderline or `"Uncertain"` classifications flagged for review. |
+
+### 7. Dates & Provenance
+| Column | Type | Nullable | Description |
+| :--- | :--- | :--- | :--- |
+| `posted_date` | `str` | Yes | ISO date (`YYYY-MM-DD`) when the job was posted. |
+| `is_recent_12m` | `bool` | No | `True` when `posted_date` falls within `2025-11-20` through `2026-11-20` (inclusive); `False` otherwise. |
+| `source` | `str` | No | Source identifier (e.g., `"headcount_labs_api"`). |
+| `job_url` | `str` | No | Canonical URL of the job posting (used as the deduplication key). |
+| `collected_at` | `str` | No | UTC ISO-8601 timestamp recording when the raw record was fetched. |
