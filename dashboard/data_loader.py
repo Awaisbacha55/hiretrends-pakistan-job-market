@@ -24,6 +24,7 @@ EXPECTED_COLUMNS = [
     "region",
     "country",
     "is_pakistan_location",
+    "country_classification",
     "workplace_type",
     "experience_min_years",
     "experience_max_years",
@@ -110,11 +111,31 @@ def load_clean_data(csv_path: Optional[str] = None) -> pd.DataFrame:
     # Clean workplace arrangement representation
     df["workplace_display"] = df["workplace_type"].fillna("Unspecified").str.capitalize()
 
+    # Ensure country_classification is populated even for legacy/mock DataFrames
+    if "country_classification" not in df.columns or df["country_classification"].isna().all():
+        df["country_classification"] = np.where(
+            df["is_pakistan_location"] == True,
+            "Pakistan",
+            np.where(df["country"].notna() & (df["country"].astype(str).str.strip() != ""), "Foreign", "Unknown"),
+        )
+
     return df
+
+
+SCOPE_OPTIONS = [
+    "Confirmed Pakistan Tech",
+    "Pakistan-Only (All Roles)",
+    "All Deduplicated Records",
+    "Foreign Records Only",
+    "Non-Technology Records",
+    "Uncertain / Manual Review",
+    "Unknown Country Records",
+]
 
 
 def apply_global_filters(
     df: pd.DataFrame,
+    scope: str = "Confirmed Pakistan Tech",
     category: Optional[str] = None,
     city: Optional[str] = None,
     workplace: Optional[str] = None,
@@ -123,8 +144,36 @@ def apply_global_filters(
     tech_only: bool = False,
     role_keyword: Optional[str] = None,
 ) -> pd.DataFrame:
-    """Filter DataFrame according to interactive global criteria."""
+    """Filter DataFrame according to dataset scope and interactive global criteria."""
     filtered = df.copy()
+
+    # Ensure country_classification exists on test/mock DataFrames
+    if "country_classification" not in filtered.columns:
+        filtered["country_classification"] = np.where(
+            filtered["is_pakistan_location"] == True,
+            "Pakistan",
+            np.where(
+                filtered["country"].notna() & (filtered["country"].astype(str).str.strip() != ""),
+                "Foreign",
+                "Unknown",
+            ),
+        )
+
+    if scope == "Confirmed Pakistan Tech":
+        filtered = filtered[
+            (filtered["country_classification"] == "Pakistan") &
+            (filtered["is_technology_job"] == True)
+        ]
+    elif scope == "Pakistan-Only (All Roles)":
+        filtered = filtered[filtered["country_classification"] == "Pakistan"]
+    elif scope == "Foreign Records Only":
+        filtered = filtered[filtered["country_classification"] == "Foreign"]
+    elif scope == "Non-Technology Records":
+        filtered = filtered[filtered["technology_category"] == "Non-Technology"]
+    elif scope == "Uncertain / Manual Review":
+        filtered = filtered[filtered["needs_manual_review"] == True]
+    elif scope == "Unknown Country Records":
+        filtered = filtered[filtered["country_classification"] == "Unknown"]
 
     if tech_only:
         filtered = filtered[filtered["is_technology_job"] == True]

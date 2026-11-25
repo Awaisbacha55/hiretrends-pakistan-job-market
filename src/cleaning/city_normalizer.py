@@ -56,7 +56,7 @@ PAKISTAN_CITIES = {
     "skardu": ("Skardu", "Gilgit-Baltistan", "PK"),
 }
 
-# Explicitly foreign locations that may appear in global remote listings
+# Explicitly foreign locations that may appear in global remote or mis-tagged listings
 FOREIGN_LOCATIONS = {
     "cairo": ("Cairo", "Cairo Governorate", "EG"),
     "egypt": ("Cairo", "Cairo Governorate", "EG"),
@@ -69,25 +69,47 @@ FOREIGN_LOCATIONS = {
     "united kingdom": ("London", "Greater London", "GB"),
     "united states": ("United States", None, "US"),
     "usa": ("United States", None, "US"),
+    "mclean": ("McLean", "Virginia", "US"),
+    "new york": ("New York", "New York", "US"),
+    "san francisco": ("San Francisco", "California", "US"),
+    "sunnyvale": ("Sunnyvale", "California", "US"),
+    "toronto": ("Toronto", "Ontario", "CA"),
+    "riyadh": ("Riyadh", "Riyadh", "SA"),
+    "jeddah": ("Jeddah", "Makkah", "SA"),
+    "berlin": ("Berlin", "Berlin", "DE"),
+    "singapore": ("Singapore", None, "SG"),
 }
 
 
-def normalize_city_name(raw_city: Optional[str], raw_country: Optional[str] = "PK") -> Tuple[Optional[str], Optional[str], Optional[str], bool]:
-    """Normalize city string.
+def _is_pk_country(raw_country: Optional[str]) -> bool:
+    """Return True only if raw_country explicitly denotes Pakistan."""
+    if not raw_country or not isinstance(raw_country, str):
+        return False
+    return raw_country.strip().upper() in ("PK", "PAK", "PAKISTAN")
+
+
+def normalize_city_name(
+    raw_city: Optional[str],
+    raw_country: Optional[str] = None,
+) -> Tuple[Optional[str], Optional[str], Optional[str], bool]:
+    """Normalize city string without defaulting missing countries to Pakistan.
 
     Returns:
         (normalized_city, region, country, is_pakistan)
     """
-    if not raw_city or not isinstance(raw_city, str):
-        return None, None, raw_country or "PK", bool(raw_country == "PK")
+    norm_raw_country = raw_country.strip().upper() if isinstance(raw_country, str) and raw_country.strip() else None
+    is_explicit_pk = _is_pk_country(norm_raw_country)
+
+    if not raw_city or not isinstance(raw_city, str) or not raw_city.strip():
+        return None, None, norm_raw_country, is_explicit_pk
 
     clean = raw_city.strip().lower()
 
-    # Remote is not a city
+    # Remote is not a city, and Remote alone does NOT prove Pakistan
     if clean in ("remote", "telecommute", "work from home", "wfh", "anywhere"):
-        return None, None, raw_country or "PK", bool(raw_country == "PK")
+        return None, None, norm_raw_country, is_explicit_pk
 
-    # Check foreign locations
+    # Check foreign locations (overrides noisy PK country tags if city is clearly foreign)
     if clean in FOREIGN_LOCATIONS:
         f_city, f_reg, f_cnt = FOREIGN_LOCATIONS[clean]
         return None, f_reg, f_cnt, False
@@ -104,28 +126,34 @@ def normalize_city_name(raw_city: Optional[str], raw_country: Optional[str] = "P
         return norm_city, region, country, True
 
     # Check if country is explicitly foreign
-    if raw_country and raw_country.upper() not in ("PK", "PAK", "PAKISTAN"):
-        return None, None, raw_country.upper(), False
+    if norm_raw_country and not is_explicit_pk:
+        return None, None, norm_raw_country, False
 
-    # Unknown city: must remain unknown (None), not guessed
-    return None, None, raw_country or "PK", bool(raw_country == "PK")
+    # Unknown city: preserve explicit country if provided, otherwise None (Unknown)
+    return None, None, norm_raw_country, is_explicit_pk
 
 
 def normalize_location(
     city: Optional[str],
     region: Optional[str] = None,
-    country: Optional[str] = "PK",
+    country: Optional[str] = None,
     all_locations: Optional[List[Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     """Comprehensive location normalizer preserving multi-location arrays.
+
+    Multi-location rule:
+    - Uses primary city/country first.
+    - Classifies country as 'Pakistan', 'Foreign', or 'Unknown'.
+    - Missing country or Remote-only location without country evidence -> 'Unknown'.
 
     Returns:
         {
             "original_city": str | None,
             "normalized_city": str | None,
             "normalized_region": str | None,
-            "normalized_country": str,
+            "normalized_country": str | None,
             "is_pakistan": bool,
+            "country_classification": "Pakistan" | "Foreign" | "Unknown",
             "all_locations": list
         }
     """
@@ -134,11 +162,19 @@ def normalize_location(
     # Use provided region if unmapped by city table
     final_region = norm_reg or region
 
+    if is_pk:
+        country_classification = "Pakistan"
+    elif norm_country:
+        country_classification = "Foreign"
+    else:
+        country_classification = "Unknown"
+
     return {
         "original_city": city,
         "normalized_city": norm_city,
         "normalized_region": final_region,
-        "normalized_country": norm_country or "PK",
+        "normalized_country": norm_country,
         "is_pakistan": is_pk,
+        "country_classification": country_classification,
         "all_locations": all_locations or [],
     }

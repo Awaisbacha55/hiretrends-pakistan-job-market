@@ -144,32 +144,38 @@ class TestGlobalFilters:
     """Validate multi-criteria filtering logic."""
 
     def test_filter_tech_only(self, sample_dashboard_df):
-        res = apply_global_filters(sample_dashboard_df, tech_only=True)
+        res = apply_global_filters(sample_dashboard_df, scope="All Deduplicated Records", tech_only=True)
         assert len(res) == 2
         assert all(res["is_technology_job"] == True)
 
+    def test_default_scope_is_confirmed_pakistan_tech(self, sample_dashboard_df):
+        res = apply_global_filters(sample_dashboard_df)
+        assert len(res) == 2
+        assert all(res["is_pakistan_location"] == True)
+        assert all(res["is_technology_job"] == True)
+
     def test_filter_by_city(self, sample_dashboard_df):
-        res = apply_global_filters(sample_dashboard_df, city="Lahore")
+        res = apply_global_filters(sample_dashboard_df, scope="All Deduplicated Records", city="Lahore")
         assert len(res) == 1
         assert res.iloc[0]["normalized_city"] == "Lahore"
 
     def test_filter_by_workplace(self, sample_dashboard_df):
-        res = apply_global_filters(sample_dashboard_df, workplace="Remote")
+        res = apply_global_filters(sample_dashboard_df, scope="All Deduplicated Records", workplace="Remote")
         assert len(res) == 1
         assert res.iloc[0]["workplace_display"] == "Remote"
 
     def test_filter_salary_only(self, sample_dashboard_df):
-        res = apply_global_filters(sample_dashboard_df, salary_only=True)
+        res = apply_global_filters(sample_dashboard_df, scope="All Deduplicated Records", salary_only=True)
         assert len(res) == 2
         assert all(res["has_salary"] == True)
 
     def test_filter_by_experience(self, sample_dashboard_df):
-        res = apply_global_filters(sample_dashboard_df, experience_bracket="Senior (5+ yrs)")
+        res = apply_global_filters(sample_dashboard_df, scope="All Deduplicated Records", experience_bracket="Senior (5+ yrs)")
         assert len(res) == 1
         assert res.iloc[0]["job_id"] == "dash-001"
 
     def test_filter_role_keyword(self, sample_dashboard_df):
-        res = apply_global_filters(sample_dashboard_df, role_keyword="Python")
+        res = apply_global_filters(sample_dashboard_df, scope="All Deduplicated Records", role_keyword="Python")
         assert len(res) == 1
         assert "Python" in res.iloc[0]["job_title"]
 

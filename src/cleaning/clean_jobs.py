@@ -171,6 +171,7 @@ def clean_single_record(
         "region": loc_info["normalized_region"],
         "country": loc_info["normalized_country"],
         "is_pakistan_location": loc_info["is_pakistan"],
+        "country_classification": loc_info["country_classification"],
         "workplace_type": workplace,
         "experience_text": exp_info["experience_text"],
         "experience_min_years": exp_info["experience_min_years"],
@@ -331,13 +332,52 @@ def run_cleaning_pipeline(
     # Convert to DataFrame
     df = pd.DataFrame(final_records)
 
-    # Save to processed CSV
-    os.makedirs(os.path.dirname(output_csv), exist_ok=True)
+    # Save to processed CSVs (3 scoped datasets)
+    out_dir = os.path.dirname(output_csv) or "data/processed"
+    os.makedirs(out_dir, exist_ok=True)
     df.to_csv(output_csv, index=False, encoding="utf-8")
     logger.info("Saved cleaned dataset to %s (%d rows, %d columns)", output_csv, len(df), len(df.columns))
 
+    df_pakistan = df[df["country_classification"] == "Pakistan"].copy()
+    pk_csv = os.path.join(out_dir, "jobs_pakistan.csv")
+    df_pakistan.to_csv(pk_csv, index=False, encoding="utf-8")
+    logger.info("Saved Pakistan-only dataset to %s (%d rows)", pk_csv, len(df_pakistan))
+
+    df_pakistan_tech = df_pakistan[df_pakistan["is_technology_job"] == True].copy()
+    pk_tech_csv = os.path.join(out_dir, "jobs_pakistan_tech.csv")
+    df_pakistan_tech.to_csv(pk_tech_csv, index=False, encoding="utf-8")
+    logger.info("Saved Confirmed Pakistan Tech dataset to %s (%d rows)", pk_tech_csv, len(df_pakistan_tech))
+
     # Perform Quality Assurance Checks
     quality_metrics = perform_quality_checks(final_records)
+
+    # Scope & Intersection Reconciliation
+    country_counts = df["country_classification"].value_counts().to_dict()
+    pk_count = int(country_counts.get("Pakistan", 0))
+    foreign_count = int(country_counts.get("Foreign", 0))
+    unknown_country_count = int(country_counts.get("Unknown", 0))
+
+    tech_present = int((df["is_technology_job"] == True).sum())
+    non_tech_present = int((df["technology_category"] == "Non-Technology").sum())
+    uncertain_present = int((df["needs_manual_review"] == True).sum())
+
+    def _tech_tier_label(row: pd.Series) -> str:
+        if row["is_technology_job"] == True:
+            return "Tech"
+        if row["needs_manual_review"] == True or row["technology_category"] == "Uncertain / Manual Review":
+            return "Uncertain"
+        return "Non-tech"
+
+    tech_tiers = df.apply(_tech_tier_label, axis=1)
+    intersection_matrix: Dict[str, Dict[str, int]] = {}
+    for c_tier in ("Pakistan", "Foreign", "Unknown"):
+        c_mask = df["country_classification"] == c_tier
+        intersection_matrix[c_tier] = {
+            "Tech": int((c_mask & (tech_tiers == "Tech")).sum()),
+            "Non-tech": int((c_mask & (tech_tiers == "Non-tech")).sum()),
+            "Uncertain": int((c_mask & (tech_tiers == "Uncertain")).sum()),
+            "Total": int(c_mask.sum()),
+        }
 
     # Aggregations for report
     all_skills_flat = []
@@ -356,7 +396,6 @@ def run_cleaning_pipeline(
 
     sal_present = int(df["salary_min_pkr"].notna().sum())
     exp_present = int(df["experience_min_years"].notna().sum())
-    tech_present = int(df["is_technology_job"].sum())
 
     # Unique URL count in final dataset
     final_unique_urls = df["job_url"].dropna().nunique()
@@ -364,11 +403,28 @@ def run_cleaning_pipeline(
     # Metadata
     metadata = {
         "pipeline_name": "HireTrends Data Cleaning & Normalization Engine",
-        "pipeline_version": "2.0.0",
+        "pipeline_version": "2.1.0",
         "processed_at": datetime.now(timezone.utc).isoformat(),
         "input_records": input_records_count,
         "unique_id_records": pre_dedup_count,
         "output_records": len(df),
+        "scope_breakdown": {
+            "raw_input_records": input_records_count,
+            "deduplicated_records": len(df),
+            "country_classification": {
+                "Pakistan": pk_count,
+                "Foreign": foreign_count,
+                "Unknown": unknown_country_count,
+            },
+            "technology_classification": {
+                "Tech": tech_present,
+                "Non-Technology": non_tech_present,
+                "Uncertain": uncertain_present,
+            },
+            "pakistan_only_records": len(df_pakistan),
+            "pakistan_tech_records": len(df_pakistan_tech),
+            "intersection_matrix": intersection_matrix,
+        },
         "deduplication": {
             "raw_id_duplicates_removed": duplicate_raw_id_count,
             "url_duplicates_removed": url_dupes_removed,
@@ -435,6 +491,8 @@ def _generate_cleaning_report(
     """Generate reports/data_cleaning_report.md."""
     qm = meta.get("quality_metrics", {})
     dedup = meta.get("deduplication", {})
+    scope = meta.get("scope_breakdown", {})
+    c_brk = scope.get("country_classification", {})
     input_count = max(meta["input_records"], 1)
     removed_pct = meta["removed_duplicates"] / input_count * 100
     output_pct = meta["output_records"] / input_count * 100
@@ -443,23 +501,24 @@ def _generate_cleaning_report(
         "",
         f"**Pipeline Execution Timestamp:** {meta['processed_at']}  ",
         "**Input Source Dataset:** `data/raw/headcount/jobs_raw.jsonl`  ",
-        "**Processed Tabular Output:** `data/processed/jobs_cleaned.csv`  ",
+        "**Processed Outputs:** `jobs_cleaned.csv` (All Deduplicated) | `jobs_pakistan.csv` (Pakistan-Only) | `jobs_pakistan_tech.csv` (Confirmed Pakistan Tech)  ",
         "**Attribution & License:** Open Database License (ODbL 1.0 & DbCL 1.0 (Headcount Labs)  ",
         "",
         "---",
         "",
-        "## 1. Pipeline Execution Summary",
+        "## 1. Pipeline Execution & Scope Funnel Summary",
         "",
-        "| Metric | Count | % of Input | Notes |",
+        "| Stage / Metric | Count | % of Raw Input | Notes |",
         "| :--- | :--- | :--- | :--- |",
-        f"| **Raw Input Records** | **{meta['input_records']:,}** | 100.0% | Ingested from Headcount Labs Pakistan feed |",
+        f"| **1. Raw Input Records** | **{meta['input_records']:,}** | 100.0% | Ingested from Headcount Labs Pakistan feed |",
         f"| **Duplicates Removed (URL)** | **{dedup.get('url_duplicates_removed', 0):,}** | {dedup.get('url_duplicates_removed', 0)/input_count*100:.1f}% | Normalized `job_url` primary deduplication |",
         f"| **Duplicates Removed (Fallback)** | **{dedup.get('fallback_duplicates_removed', 0):,}** | {dedup.get('fallback_duplicates_removed', 0)/input_count*100:.1f}% | Normalized `(title, company, city, posted_date)` for URL-less records |",
-        f"| **Total Duplicates Removed** | **{meta['removed_duplicates']:,}** | {removed_pct:.1f}% | Two-tier deterministic deduplication |",
-        f"| **Cleaned Output Records** | **{meta['output_records']:,}** | {output_pct:.1f}% | Unique job postings in standardized schema |",
-        f"| **Technology Roles** | **{meta.get('tech_roles_count', 0):,} Tech** | {meta.get('tech_roles_count', 0)/max(total_records, 1)*100:.1f}% Tech | Segmented via high-confidence taxonomy |",
-        f"| **Non-Technology Roles** | **{tech_counts.get('Non-Technology', 0):,} Non-Tech** | {tech_counts.get('Non-Technology', 0)/max(total_records, 1)*100:.1f}% Non-Tech | Operations, sales, medical, customer service |",
-        f"| **Manual Review Flagged** | **{qm.get('manual_review_count', 0):,}** | {qm.get('manual_review_pct', 0.0)}% | Ambiguous titles flagged transparently |",
+        f"| **2. Deduplicated Output (`jobs_cleaned.csv`)** | **{meta['output_records']:,}** | {output_pct:.1f}% | Unique job postings (all countries & roles) |",
+        f"| **3. Confirmed Pakistan (`jobs_pakistan.csv`)** | **{scope.get('pakistan_only_records', 0):,}** | {scope.get('pakistan_only_records', 0)/input_count*100:.1f}% | Foreign: {c_brk.get('Foreign', 0):,} | Unknown: {c_brk.get('Unknown', 0):,} |",
+        f"| **4. Confirmed Pakistan Tech (`jobs_pakistan_tech.csv`)** | **{scope.get('pakistan_tech_records', 0):,}** | {scope.get('pakistan_tech_records', 0)/input_count*100:.1f}% | Primary dataset for Pakistan tech-market analysis |",
+        f"| **Technology Roles (All Countries)** | **{meta.get('tech_roles_count', 0):,} Tech** | {meta.get('tech_roles_count', 0)/max(total_records, 1)*100:.1f}% of Deduplicated | Segmented via high-confidence taxonomy |",
+        f"| **Non-Technology Roles (All Countries)** | **{tech_counts.get('Non-Technology', 0):,} Non-Tech** | {tech_counts.get('Non-Technology', 0)/max(total_records, 1)*100:.1f}% of Deduplicated | Operations, sales, medical, customer service |",
+        f"| **Manual Review Flagged (All Countries)** | **{qm.get('manual_review_count', 0):,}** | {qm.get('manual_review_pct', 0.0)}% of Deduplicated | Ambiguous titles flagged transparently |",
         "",
         "---",
         "",

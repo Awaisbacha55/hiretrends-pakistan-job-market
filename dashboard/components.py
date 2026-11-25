@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 import streamlit as st
 
-from .data_loader import apply_global_filters, format_number, format_pct, format_pkr
+from .data_loader import SCOPE_OPTIONS, apply_global_filters, format_number, format_pct, format_pkr
 
 
 def render_header(title: str, subtitle: str = "Pakistan Tech Job Market Intelligence") -> None:
@@ -63,13 +63,22 @@ def render_sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         unsafe_allow_html=True,
     )
 
+    # Dataset Scope Selector (defaults to Confirmed Pakistan Tech)
+    scope_select = st.sidebar.selectbox(
+        "Dataset Scope",
+        options=SCOPE_OPTIONS,
+        index=0,
+        key="filter_dataset_scope",
+        help="Default: Confirmed Pakistan Tech jobs. Switch scope to inspect Pakistan-only, Foreign, Non-Tech, or Manual Review subsets.",
+    )
+
     with st.sidebar.expander("⚙️ Refine Filters", expanded=True):
-        # 1. Tech jobs only toggle
+        # 1. Tech jobs only toggle (only meaningful when scope is broader than Confirmed Pakistan Tech)
         tech_only = st.checkbox(
             "💻 Confirmed Tech Roles Only",
             value=st.session_state.get("tech_only", False),
             key="filter_tech_only",
-            help="Filter for the 1,075 high-confidence technology listings",
+            help="Restrict current scope to high-confidence technology listings",
         )
 
         # 2. Technology Category filter
@@ -128,6 +137,7 @@ def render_sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
     # Apply filters
     filtered_df = apply_global_filters(
         df,
+        scope=scope_select,
         category=cat_select,
         city=city_select,
         workplace=workplace_select,
@@ -140,7 +150,8 @@ def render_sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
     st.sidebar.markdown(
         f"""
         <div style="background-color: #f1f5f9; padding: 10px 14px; border-radius: 6px; margin-top: 14px; font-size: 0.85rem; color: #334155;">
-            <b>Active Selection:</b> <span style="color: #2563eb; font-weight: 700;">{len(filtered_df):,}</span> of {len(df):,} listings ({len(filtered_df)/max(len(df),1)*100:.1f}%)
+            <b>Scope:</b> {scope_select}<br/>
+            <b>Active Selection:</b> <span style="color: #2563eb; font-weight: 700;">{len(filtered_df):,}</span> of {len(df):,} deduplicated ({len(filtered_df)/max(len(df),1)*100:.1f}%)
         </div>
         """,
         unsafe_allow_html=True,

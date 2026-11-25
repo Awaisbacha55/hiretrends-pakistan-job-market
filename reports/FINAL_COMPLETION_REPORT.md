@@ -53,10 +53,11 @@ All 22 core project requirements have been verified and assigned a status of **P
 
 $$\begin{aligned}
 \mathbf{Raw\ Postings\ Ingested\ (4,491)} &\xrightarrow{-784\text{ URL duplicates}} \mathbf{Deduplicated\ Postings\ (N=3,707)} \\
-\mathbf{Deduplicated\ Postings\ (N=3,707)} &= \mathbf{Confirmed\ Tech\ (924)} + \mathbf{Non\text{-}Tech\ (1,883)} + \mathbf{Manual\ Review\ (900)} \\
-\mathbf{Domestic\ Mapped\ Postings\ (N=2,409)} &= \mathbf{Lahore\ (957)} + \mathbf{Karachi\ (753)} + \mathbf{Islamabad\ (528)} + \mathbf{Other\ Cities\ (171)} \\
-\mathbf{Workplace\ Arrangements\ (N=3,707)} &= \mathbf{Known\ (1,856)} + \mathbf{Unspecified\ (1,851)} \\
-\text{where: } \mathbf{Known\ (1,856)} &= \mathbf{Remote\ (860)} + \mathbf{On\text{-}site\ (865)} + \mathbf{Hybrid\ (131)}
+\mathbf{Deduplicated\ Postings\ (N=3,707)} &= \mathbf{Confirmed\ Pakistan\ (3,362)} + \mathbf{Foreign\ (345)} + \mathbf{Unknown\ (0)} \\
+\mathbf{Pakistan\text{-}Only\ (N=3,362)} &= \mathbf{Confirmed\ PK\ Tech\ (848)} + \mathbf{PK\ Non\text{-}Tech\ (1,737)} + \mathbf{PK\ Uncertain\ (777)} \\
+\mathbf{PK\ Tech\ Mapped\ Cities\ (N=658)} &= \mathbf{Lahore\ (291)} + \mathbf{Karachi\ (171)} + \mathbf{Islamabad\ (166)} + \mathbf{Other\ Cities\ (30)} \\
+\mathbf{PK\ Tech\ Workplace\ (N=848)} &= \mathbf{Known\ (455)} + \mathbf{Unspecified\ (393)} \\
+\text{where: } \mathbf{Known\ (455)} &= \mathbf{On\text{-}site\ (229)} + \mathbf{Remote\ (188)} + \mathbf{Hybrid\ (38)}
 \end{aligned}$$
 
 ---

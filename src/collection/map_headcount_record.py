@@ -72,7 +72,7 @@ def extract_locations(locations_list: Any) -> Dict[str, Any]:
     return {
         "primary_city": primary_city,
         "primary_region": primary_region,
-        "primary_country": primary_country or "PK",
+        "primary_country": primary_country,  # Never default missing country to "PK"
         "all_locations": known_locations,
     }
 

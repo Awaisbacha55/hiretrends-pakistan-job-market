@@ -415,3 +415,100 @@ class TestTwoTierDeduplication:
         assert len(df1) == 1
         assert df1["job_id"].iloc[0] == "id-a"  # Most complete record kept
         assert df1["job_id"].tolist() == df2["job_id"].tolist()
+
+
+class TestIssue2CountryAndTechScope:
+    """Tests for Review Issue #2: Country classification, tech classifier rules, and dataset reconciliation."""
+
+    def test_missing_country_is_unknown_not_pakistan(self):
+        loc = normalize_location(city=None, country=None)
+        assert loc["is_pakistan"] is False
+        assert loc["country_classification"] == "Unknown"
+        assert loc["normalized_country"] is None
+
+    def test_remote_only_without_country_is_unknown(self):
+        loc = normalize_location(city="Remote", country=None)
+        assert loc["is_pakistan"] is False
+        assert loc["country_classification"] == "Unknown"
+
+    def test_explicit_pakistan_country_or_city(self):
+        loc1 = normalize_location(city="Remote", country="PK")
+        assert loc1["is_pakistan"] is True
+        assert loc1["country_classification"] == "Pakistan"
+
+        loc2 = normalize_location(city="Lahore", country=None)
+        assert loc2["is_pakistan"] is True
+        assert loc2["country_classification"] == "Pakistan"
+        assert loc2["normalized_city"] == "Lahore"
+
+    def test_explicit_foreign_and_mclean(self):
+        loc1 = normalize_location(city="McLean", country="PK")
+        assert loc1["is_pakistan"] is False
+        assert loc1["country_classification"] == "Foreign"
+        assert loc1["normalized_country"] == "US"
+
+        loc2 = normalize_location(city=None, country="IN")
+        assert loc2["is_pakistan"] is False
+        assert loc2["country_classification"] == "Foreign"
+
+    def test_multilocation_extraction_does_not_default_pk(self):
+        from src.collection.map_headcount_record import extract_locations
+
+        res = extract_locations([{"state": "known", "value": {"city": None, "country": None}}])
+        assert res["primary_country"] is None
+
+        res_multi = extract_locations([
+            {"state": "known", "value": {"city": "Sunnyvale", "country": "US"}},
+            {"state": "known", "value": {"city": "Lahore", "country": "PK"}},
+        ])
+        assert res_multi["primary_country"] == "US"
+        assert len(res_multi["all_locations"]) == 2
+
+    def test_commercial_sales_bd_presales_safeguards(self):
+        for title in [
+            "Sales Development Representative (SDR) - Cyber Security | Remote",
+            "Business Development Representative - Cybersecurity",
+            "Presales Consultant",
+            "Account Executive",
+            "Business Development Executive – Cloud Services",
+        ]:
+            cls = classify_job(title, "Requires knowledge of AWS, Python, Java, GCP, Docker.")
+            assert cls["is_technology_job"] is False
+            assert cls["technology_category"] == "Non-Technology"
+
+    def test_targeted_tech_role_patterns(self):
+        for title in [
+            "AI Architect",
+            "AI Systems Engineer (LLM & AI Agent Development)",
+            "Senior WordPress Developer",
+            "Magento 2 Developer",
+        ]:
+            cls = classify_job(title)
+            assert cls["is_technology_job"] is True
+            assert cls["needs_manual_review"] is False
+
+    def test_processed_datasets_reconcile(self):
+        import os
+        import pandas as pd
+
+        if not os.path.exists("data/processed/jobs_cleaned.csv"):
+            pytest.skip("Processed CSVs not present")
+
+        df_all = pd.read_csv("data/processed/jobs_cleaned.csv")
+        df_pk = pd.read_csv("data/processed/jobs_pakistan.csv")
+        df_pk_tech = pd.read_csv("data/processed/jobs_pakistan_tech.csv")
+
+        with open("data/processed/cleaning_metadata.json", "r", encoding="utf-8") as f:
+            meta = json.load(f)
+
+        assert len(df_all) == meta["output_records"] == 3707
+        assert len(df_pk) == meta["scope_breakdown"]["pakistan_only_records"]
+        assert len(df_pk_tech) == meta["scope_breakdown"]["pakistan_tech_records"]
+        assert (df_pk["country_classification"] == "Pakistan").all()
+        assert (df_pk_tech["country_classification"] == "Pakistan").all()
+        assert (df_pk_tech["is_technology_job"] == True).all()
+
+        c_brk = meta["scope_breakdown"]["country_classification"]
+        assert c_brk["Pakistan"] + c_brk["Foreign"] + c_brk["Unknown"] == len(df_all)
+        t_brk = meta["scope_breakdown"]["technology_classification"]
+        assert t_brk["Tech"] + t_brk["Non-Technology"] + t_brk["Uncertain"] == len(df_all)

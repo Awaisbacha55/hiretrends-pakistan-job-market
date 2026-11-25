@@ -39,10 +39,10 @@ plt.rcParams.update({
 
 
 def generate_all_visualizations(
-    csv_path: str = "data/processed/jobs_cleaned.csv",
+    csv_path: str = "data/processed/jobs_pakistan_tech.csv",
     output_dir: str = "reports/figures",
 ) -> List[str]:
-    """Generate the complete suite of 7 interactive Plotly & static PNG charts."""
+    """Generate the complete suite of 7 interactive Plotly & static PNG charts on Confirmed Pakistan Tech jobs."""
     if not os.path.exists(csv_path):
         raise FileNotFoundError(f"Cleaned dataset not found at: {csv_path}")
 
@@ -65,8 +65,8 @@ def generate_all_visualizations(
         text="job_count",
         color="percentage_of_jobs",
         color_continuous_scale="Viridis",
-        title=f"Top 20 Technical Skills Demanded in Pakistan Job Market (N={len(df):,})",
-        labels={"job_count": "Unique Job Postings Count", "skill": "Technical Skill", "percentage_of_jobs": "% of All Postings"},
+        title=f"Top 20 Technical Skills — Confirmed Pakistan Tech Jobs (N={len(df):,})",
+        labels={"job_count": "Unique Job Postings Count", "skill": "Technical Skill", "percentage_of_jobs": "% of Pakistan Tech Postings"},
     )
     fig1.update_layout(yaxis={"categoryorder": "total ascending"}, height=700, margin={"l": 150, "r": 30, "t": 60, "b": 50})
     p1_html = os.path.join(output_dir, "top_20_skills.html")
@@ -76,7 +76,7 @@ def generate_all_visualizations(
     # Matplotlib PNG
     fig_m1, ax_m1 = plt.subplots(figsize=(10, 8))
     sns.barplot(data=skills_df, x="job_count", y="skill", ax=ax_m1, palette="mako")
-    ax_m1.set_title(f"Top 20 Technical Skills Demanded in Pakistan (N={len(df):,})", weight="bold")
+    ax_m1.set_title(f"Top 20 Technical Skills — Confirmed Pakistan Tech (N={len(df):,})", weight="bold")
     ax_m1.set_xlabel("Unique Job Postings Count")
     ax_m1.set_ylabel("Technical Skill")
     for p in ax_m1.patches:
@@ -229,7 +229,7 @@ def generate_all_visualizations(
         text="count",
         color="percentage_of_mapped_cities",
         color_continuous_scale="Teal",
-        title=f"Top Hiring Technology Cities in Pakistan (N={loc_analysis['total_mapped_pk_cities']:,} Mapped Local Listings)",
+        title=f"Top Hiring Hubs — Confirmed Pakistan Tech Jobs (N={loc_analysis['total_mapped_pk_cities']:,} Mapped Cities)",
         labels={"count": "Job Postings Count", "city": "City", "percentage_of_mapped_cities": "% of Mapped Cities"},
     )
     fig5.update_layout(height=550)

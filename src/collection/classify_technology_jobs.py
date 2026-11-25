@@ -27,6 +27,15 @@ CATEGORIES = [
     "Uncertain / Manual Review",
 ]
 
+# Commercial / Sales / BD / Presales roles that must NOT be classified as Technology
+# even if their title or description mentions cybersecurity, AI, cloud, or software.
+COMMERCIAL_NON_TECH_PATTERN = re.compile(
+    r"\b(sales\s+development(?:\s+representative)?|business\s+development(?:\s+(?:representative|manager|executive|lead|specialist))?|"
+    r"account\s+executive|presales|pre[\s\-]sales|sales\s+(?:manager|representative|director|executive|lead)|"
+    r"sdr|bdr)\b",
+    re.IGNORECASE,
+)
+
 # Title regex patterns in priority order
 TITLE_RULES = [
     # Full Stack
@@ -36,10 +45,10 @@ TITLE_RULES = [
         "Job title specifies full-stack / multi-tier engineering",
         0.95,
     ),
-    # Frontend
+    # Frontend & Web CMS/E-commerce Dev
     (
         "Frontend Development",
-        re.compile(r"\b(frontend|front[\s\-]?end|react|vue|angular|ui[\s\/]ux developer|flutter|ios developer|android developer|mobile developer)\b", re.IGNORECASE),
+        re.compile(r"\b(frontend|front[\s\-]?end|react|vue|angular|ui[\s\/]ux developer|flutter|ios developer|android developer|mobile developer|wordpress\s+developer|magento(?:\s+\d+)?\s+developer|shopify\s+developer)\b", re.IGNORECASE),
         "Job title indicates client-side, mobile, or front-end engineering",
         0.95,
     ),
@@ -53,7 +62,7 @@ TITLE_RULES = [
     # AI / Machine Learning
     (
         "Artificial Intelligence / Machine Learning",
-        re.compile(r"\b(machine learning|ai developer|ai engineer|ml engineer|deep learning|nlp engineer|computer vision|genai|llm engineer|data science & ai)\b", re.IGNORECASE),
+        re.compile(r"\b(machine learning|ai developer|ai engineer|ai systems?\s+engineer|ai architect|ai lead|ml engineer|deep learning|nlp engineer|computer vision|genai|llm engineer|data science & ai)\b", re.IGNORECASE),
         "Job title specifies artificial intelligence or machine learning specialty",
         0.95,
     ),
@@ -171,6 +180,16 @@ def classify_job(
             "classification_reason": "Listing lacks both title and description text",
             "classification_confidence": 0.0,
             "needs_manual_review": True,
+        }
+
+    # Step 0: Guard commercial/sales/BD/presales titles before tech keyword matching
+    if clean_title and COMMERCIAL_NON_TECH_PATTERN.search(clean_title):
+        return {
+            "is_technology_job": False,
+            "technology_category": "Non-Technology",
+            "classification_reason": f"Commercial/sales/presales title excluded from technology roles (matched title: '{clean_title}')",
+            "classification_confidence": 0.90,
+            "needs_manual_review": False,
         }
 
     # Step 1: Evaluate Title against High-Confidence Rules

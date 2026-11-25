@@ -1,24 +1,25 @@
 # HireTrends — Day 3 Data Cleaning, Normalization & Skill Extraction Report
 
-**Pipeline Execution Timestamp:** 2026-11-25T18:23:15.125599+00:00  
+**Pipeline Execution Timestamp:** 2026-11-25T18:37:26.437097+00:00  
 **Input Source Dataset:** `data/raw/headcount/jobs_raw.jsonl`  
-**Processed Tabular Output:** `data/processed/jobs_cleaned.csv`  
+**Processed Outputs:** `jobs_cleaned.csv` (All Deduplicated) | `jobs_pakistan.csv` (Pakistan-Only) | `jobs_pakistan_tech.csv` (Confirmed Pakistan Tech)  
 **Attribution & License:** Open Database License (ODbL 1.0 & DbCL 1.0 (Headcount Labs)  
 
 ---
 
-## 1. Pipeline Execution Summary
+## 1. Pipeline Execution & Scope Funnel Summary
 
-| Metric | Count | % of Input | Notes |
+| Stage / Metric | Count | % of Raw Input | Notes |
 | :--- | :--- | :--- | :--- |
-| **Raw Input Records** | **4,491** | 100.0% | Ingested from Headcount Labs Pakistan feed |
+| **1. Raw Input Records** | **4,491** | 100.0% | Ingested from Headcount Labs Pakistan feed |
 | **Duplicates Removed (URL)** | **784** | 17.5% | Normalized `job_url` primary deduplication |
 | **Duplicates Removed (Fallback)** | **0** | 0.0% | Normalized `(title, company, city, posted_date)` for URL-less records |
-| **Total Duplicates Removed** | **784** | 17.5% | Two-tier deterministic deduplication |
-| **Cleaned Output Records** | **3,707** | 82.5% | Unique job postings in standardized schema |
-| **Technology Roles** | **924 Tech** | 24.9% Tech | Segmented via high-confidence taxonomy |
-| **Non-Technology Roles** | **1,883 Non-Tech** | 50.8% Non-Tech | Operations, sales, medical, customer service |
-| **Manual Review Flagged** | **900** | 24.28% | Ambiguous titles flagged transparently |
+| **2. Deduplicated Output (`jobs_cleaned.csv`)** | **3,707** | 82.5% | Unique job postings (all countries & roles) |
+| **3. Confirmed Pakistan (`jobs_pakistan.csv`)** | **3,362** | 74.9% | Foreign: 345 | Unknown: 0 |
+| **4. Confirmed Pakistan Tech (`jobs_pakistan_tech.csv`)** | **848** | 18.9% | Primary dataset for Pakistan tech-market analysis |
+| **Technology Roles (All Countries)** | **921 Tech** | 24.8% of Deduplicated | Segmented via high-confidence taxonomy |
+| **Non-Technology Roles (All Countries)** | **1,950 Non-Tech** | 52.6% of Deduplicated | Operations, sales, medical, customer service |
+| **Manual Review Flagged (All Countries)** | **836** | 22.55% of Deduplicated | Ambiguous titles flagged transparently |
 
 ---
 
@@ -126,7 +127,7 @@ Pakistani cities were normalized to standard canonical spellings. Foreign cities
 - **Invalid Salary Ranges (min > max):** 0
 - **Invalid Experience Ranges (min > max):** 0
 - **Unmapped / Foreign Cities:** 1298 (predominantly remote or foreign roles)
-- **Manual Review Flagged Records:** 900
+- **Manual Review Flagged Records:** 836
 
 ---
 

@@ -1,10 +1,46 @@
 {
   "pipeline_name": "HireTrends Data Cleaning & Normalization Engine",
-  "pipeline_version": "2.0.0",
-  "processed_at": "2026-11-25T18:23:15.125599+00:00",
+  "pipeline_version": "2.1.0",
+  "processed_at": "2026-11-25T18:37:26.437097+00:00",
   "input_records": 4491,
   "unique_id_records": 4491,
   "output_records": 3707,
+  "scope_breakdown": {
+    "raw_input_records": 4491,
+    "deduplicated_records": 3707,
+    "country_classification": {
+      "Pakistan": 3362,
+      "Foreign": 345,
+      "Unknown": 0
+    },
+    "technology_classification": {
+      "Tech": 921,
+      "Non-Technology": 1950,
+      "Uncertain": 836
+    },
+    "pakistan_only_records": 3362,
+    "pakistan_tech_records": 848,
+    "intersection_matrix": {
+      "Pakistan": {
+        "Tech": 848,
+        "Non-tech": 1737,
+        "Uncertain": 777,
+        "Total": 3362
+      },
+      "Foreign": {
+        "Tech": 73,
+        "Non-tech": 213,
+        "Uncertain": 59,
+        "Total": 345
+      },
+      "Unknown": {
+        "Tech": 0,
+        "Non-tech": 0,
+        "Uncertain": 0,
+        "Total": 0
+      }
+    }
+  },
   "deduplication": {
     "raw_id_duplicates_removed": 0,
     "url_duplicates_removed": 784,
@@ -16,7 +52,7 @@
   },
   "unique_job_urls_remaining": 3707,
   "removed_duplicates": 784,
-  "tech_roles_count": 924,
+  "tech_roles_count": 921,
   "disclosed_salary_count": 152,
   "parsed_experience_count": 2502,
   "total_skills_extracted": 7297,
@@ -131,8 +167,8 @@
     "unknown_workplaces": 1851,
     "records_with_skills": 1758,
     "skill_coverage_pct": 47.42,
-    "manual_review_count": 900,
-    "manual_review_pct": 24.28
+    "manual_review_count": 836,
+    "manual_review_pct": 22.55
   },
   "source_license": "ODbL 1.0 & DbCL 1.0 (Headcount Labs)"
 }

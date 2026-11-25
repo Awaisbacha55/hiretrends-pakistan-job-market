@@ -13,19 +13,24 @@
 
 This report establishes the empirical veracity, mathematical rigor, and census reconciliation of the HireTrends Pakistan Tech Job Market Intelligence dataset. Every statistic, percentage, quartile, and aggregate presented in the HireTrends analytics pipeline and Streamlit dashboard has been audited against raw source records to eliminate statistical bias, fabricated metrics, denominator drift, and non-reproducible calculations.
 
-### Core Dataset Constants (Post-Deduplication):
+### Core Dataset Constants (Post-Deduplication & Scope Separation):
 - **Total Raw Ingested Records:** **4,491** raw API records (784 normalized `job_url` duplicates removed).
-- **Deduplicated Records ($N_{\text{total}}$):** **3,707** unique job postings (0 duplicate URLs remaining).
-- **Unique Job IDs:** **3,707** (0 duplicate records).
-- **Technology Role Census:**
+- **Deduplicated Records ($N_{\text{dedup}}$):** **3,707** unique job postings (`jobs_cleaned.csv`, 0 duplicate URLs remaining).
+- **Country Classification ($N_{\text{dedup}} = 3,707$):**
+  - **Confirmed Pakistan (`jobs_pakistan.csv`):** **3,362** (90.69%)
+  - **Confirmed Foreign:** **345** (9.31%)
+  - **Unknown Country:** **0** (0.00%)
+- **Technology Role Census ($N_{\text{dedup}} = 3,707$):**
   $$\begin{aligned}
-  N_{\text{total}} &= N_{\text{tech\_confirmed}} + N_{\text{non\_tech}} + N_{\text{manual\_review}} \\
-  3,707 &= 924 + 1,883 + 900 \quad (\text{Exact balance: } 100.0\%)
+  N_{\text{dedup}} &= N_{\text{tech\_confirmed}} + N_{\text{non\_tech}} + N_{\text{manual\_review}} \\
+  3,707 &= 921 + 1,950 + 836 \quad (\text{Exact balance: } 100.0\%)
   \end{aligned}$$
-- **Disclosed Salary Records ($N_{\text{sal}}$):** **152** parsed compensation bounds (4.10% disclosure rate).
-- **Localized Pakistani Records ($N_{\text{PK\_loc}}$):** **2,409** postings mapped to canonical Pakistani cities.
-- **Foreign / Regional Postings ($N_{\text{foreign}}$):** **340** listings (9.17% of dataset) partitioned separately.
-- **Explicit Workplace Postings ($N_{\text{workplace\_known}}$):** **1,856** records (50.07% explicit; 1,851 unstated).
+- **Confirmed Pakistan Technology Dataset (`jobs_pakistan_tech.csv`):** **848** records (22.88% of deduplicated; primary dataset for Pakistan tech-market analysis).
+  - **Pakistan Non-Tech:** **1,737** | **Pakistan Uncertain:** **777** (`848 + 1,737 + 777 = 3,362`)
+- **Within Confirmed Pakistan Tech ($N=848$):**
+  - **Disclosed Salary Records:** **11** (1.30% disclosure rate)
+  - **Mapped Pakistani Cities:** **658** (Lahore 291, Karachi 171, Islamabad 166, Other 30)
+  - **Explicit Workplace Postings:** **455** (On-site 229, Remote 188, Hybrid 38; 393 unstated)
 
 ---
 
@@ -42,12 +47,12 @@ During project development, an initial Phase 2 filter reported 1,075 technology 
 
 | Classification Tier | Count ($N$) | Percentage of Total ($3,707$) | Confidence Score Range | Action in Analytics Pipeline |
 | :--- | :---: | :---: | :---: | :--- |
-| **Confirmed Technology Roles** | **924** | **24.93%** | $0.85 \le c \le 1.00$ | Primary focus for tech role benchmarking and skill penetration. |
-| **Non-Technology Postings** | **1,883** | **50.80%** | $0.90 \le c \le 1.00$ | Excluded from tech skill analysis; preserved in census. |
-| **Manual Review Required** | **900** | **24.28%** | $0.40 \le c \le 0.75$ | Separately flagged; selectable via sidebar filters. |
+| **Confirmed Technology Roles** | **921** | **24.84%** | $0.75 \le c \le 1.00$ | 848 Pakistan (`jobs_pakistan_tech.csv`) + 73 Foreign. |
+| **Non-Technology Postings** | **1,950** | **52.60%** | $0.65 \le c \le 1.00$ | 1,737 Pakistan + 213 Foreign; excluded from tech analysis. |
+| **Manual Review Required** | **836** | **22.55%** | $0.00 \le c \le 0.45$ | 777 Pakistan + 59 Foreign; selectable via sidebar scope. |
 | **Total Deduplicated Census** | **3,707** | **100.00%** | — | Fully accounted for in `cleaning_metadata.json`. |
 
-$$\text{Reconciliation Check: } 924 + 1,883 + 900 = 3,707 \equiv N_{\text{total}} \quad [\mathbf{VERIFIED}]$$
+$$\text{Reconciliation Check: } 921 + 1,950 + 836 = 3,707 \equiv N_{\text{dedup}} \quad [\mathbf{VERIFIED}]$$
 
 ---
 

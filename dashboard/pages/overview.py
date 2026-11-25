@@ -171,9 +171,11 @@ with col_sen:
         st.info("No seniority data available in current selection.")
 
 # 5. Dataset Attribution & Time-Period Clarification Callout
+active_scope = st.session_state.get("filter_dataset_scope", "Confirmed Pakistan Tech")
 st.info(
-    "💡 **Dataset Provenance & Cohort Notice:** "
-    f"Current dataset represents {len(df):,} unique, deduplicated postings harvested from the Headcount Labs Pakistan API feed on November 20, 2026. "
+    f"💡 **Dataset Scope & Provenance Notice:** "
+    f"Currently viewing **{active_scope}** (**{len(df):,}** postings out of **{len(raw_df):,}** deduplicated records from the November 20, 2026 Headcount Labs Pakistan feed). "
+    "Use the sidebar **Dataset Scope** selector to inspect Pakistan-only, Foreign, Non-Tech, or Manual Review subsets. "
     "This cohort is kept strictly separate from the historical Open Data Pakistan dataset (Dec 2019 – Mar 2021)."
 )
 
