@@ -306,6 +306,62 @@ class TestSalaryAnalysis:
         assert "Entry / Junior (0-1 yrs)" in exp_breakdown
         assert "Senior (5+ yrs)" in exp_breakdown
 
+    def test_currency_separation_and_period_normalization(self):
+        # Mix of monthly PKR, annual PKR, hourly USD, annual USD, and monthly EUR
+        df = pd.DataFrame([
+            {
+                "job_id": "s1", "job_title": "Dev", "company": "A", "normalized_city": "Lahore",
+                "workplace_type": "on-site", "experience_min_years": 2.0,
+                "salary_text": "PKR 100000", "salary_currency": "PKR", "salary_interval": "month",
+                "salary_min_original": 100000.0, "salary_max_original": 100000.0,
+                "salary_min_pkr": 100000.0, "salary_max_pkr": 100000.0, "salary_is_converted": False,
+            },
+            {
+                "job_id": "s2", "job_title": "Dev", "company": "B", "normalized_city": "Karachi",
+                "workplace_type": "on-site", "experience_min_years": 3.0,
+                "salary_text": "PKR 2400000/yr", "salary_currency": "PKR", "salary_interval": "year",
+                "salary_min_original": 2400000.0, "salary_max_original": 2400000.0,
+                "salary_min_pkr": 200000.0, "salary_max_pkr": 200000.0, "salary_is_converted": False,
+            },
+            {
+                "job_id": "s3", "job_title": "Dev", "company": "C", "normalized_city": None,
+                "workplace_type": "remote", "experience_min_years": 4.0,
+                "salary_text": "$10/hr", "salary_currency": "USD", "salary_interval": "hour",
+                "salary_min_original": 10.0, "salary_max_original": 10.0,
+                "salary_min_pkr": 10.0 * 176.0 * 276.5132, "salary_max_pkr": 10.0 * 176.0 * 276.5132, "salary_is_converted": True,
+            },
+            {
+                "job_id": "s4", "job_title": "Dev", "company": "D", "normalized_city": None,
+                "workplace_type": "remote", "experience_min_years": 5.0,
+                "salary_text": "$24000/yr", "salary_currency": "USD", "salary_interval": "year",
+                "salary_min_original": 24000.0, "salary_max_original": 24000.0,
+                "salary_min_pkr": 2000.0 * 276.5132, "salary_max_pkr": 2000.0 * 276.5132, "salary_is_converted": True,
+            },
+            {
+                "job_id": "s5", "job_title": "Dev", "company": "E", "normalized_city": None,
+                "workplace_type": "remote", "experience_min_years": 2.0,
+                "salary_text": "EUR 500/mo", "salary_currency": "EUR", "salary_interval": "month",
+                "salary_min_original": 500.0, "salary_max_original": 500.0,
+                "salary_min_pkr": 500.0 * 295.0, "salary_max_pkr": 500.0 * 295.0, "salary_is_converted": True,
+            },
+        ])
+        res = analyze_salary_data(df)
+        assert res["indicative_only"] is True
+        # Native PKR normalized monthly: (100000, 200000) -> median 150000
+        assert res["native_pkr_stats"]["min_salary"]["sample_size"] == 2
+        assert res["native_pkr_stats"]["min_salary"]["median"] == 150000.0
+        assert res["native_pkr_stats"]["min_salary"]["is_sufficient_sample"] is False
+        # Normalized USD monthly: ($10*176=$1760, $24000/12=$2000) -> median $1880
+        assert res["usd_monthly_stats"]["sample_size"] == 2
+        assert res["usd_monthly_stats"]["median"] == 1880.0
+        # EUR separate
+        assert res["eur_monthly_stats"]["sample_size"] == 1
+        assert res["eur_monthly_stats"]["median"] == 500.0
+        # Exchange rate metadata
+        assert res["methodological_notes"]["conversion_rates"]["USD"] == 276.5132
+        assert res["methodological_notes"]["exchange_rate_date"] == "2026-11-20"
+        assert "176" in res["methodological_notes"]["hourly_assumption"]
+
 
 class TestLocationAnalysis:
     """Verify geographic isolation, foreign handling, and role distribution."""

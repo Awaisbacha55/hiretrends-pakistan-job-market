@@ -1,6 +1,6 @@
 # HireTrends — Day 3 Data Cleaning, Normalization & Skill Extraction Report
 
-**Pipeline Execution Timestamp:** 2026-11-25T18:37:26.437097+00:00  
+**Pipeline Execution Timestamp:** 2026-11-25T18:50:09.359311+00:00  
 **Input Source Dataset:** `data/raw/headcount/jobs_raw.jsonl`  
 **Processed Outputs:** `jobs_cleaned.csv` (All Deduplicated) | `jobs_pakistan.csv` (Pakistan-Only) | `jobs_pakistan_tech.csv` (Confirmed Pakistan Tech)  
 **Attribution & License:** Open Database License (ODbL 1.0 & DbCL 1.0 (Headcount Labs)  
@@ -29,8 +29,8 @@
 | :--- | :--- | :--- | :--- |
 | **Disclosed Salaries Parsed** | **152** | **4.10%** | Explicit compensation ranges |
 | **Missing / Undisclosed Salaries** | **3,555** | **95.90%** | Preserved as null (`NaN`), never 0 |
-| **Currency Conversion Standard** | Monthly PKR | - | Official State Bank of Pakistan rates (USD 278.50) |
-| **Annual to Monthly Normalization** | Applied | - | Divided annual wages by 12.0 |
+| **Currency Conversion Standard** | Monthly PKR | - | SBP Mark-to-Market / Ready Reference, 20 Nov 2026 (USD = 276.5132 PKR) |
+| **Annual & Hourly Normalization** | Applied | - | Annual ÷ 12.0; Hourly × 176.0 (8 hrs/day × 22 days/mo, analytical estimate) |
 
 ---
 

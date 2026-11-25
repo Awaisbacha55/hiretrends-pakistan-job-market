@@ -1,7 +1,7 @@
 {
   "pipeline_name": "HireTrends Data Cleaning & Normalization Engine",
   "pipeline_version": "2.1.0",
-  "processed_at": "2026-11-25T18:37:26.437097+00:00",
+  "processed_at": "2026-11-25T18:50:09.359311+00:00",
   "input_records": 4491,
   "unique_id_records": 4491,
   "output_records": 3707,

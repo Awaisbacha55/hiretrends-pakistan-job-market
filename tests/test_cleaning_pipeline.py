@@ -150,13 +150,22 @@ class TestSalaryParsing:
         assert res["salary_interval"] == "year"
 
     def test_foreign_currency_conversion_usd(self):
-        # USD 1,000 per month * 278.50 = 278,500 PKR
+        # USD 1,000 per month * 276.5132 = 276,513.20 PKR (SBP Mark-to-Market / Ready Reference, 2026-11-20)
         res = parse_salary("$1,000 - $2,000 per month")
         assert res["salary_currency"] == "USD"
         assert res["salary_is_converted"] is True
-        assert res["salary_min_pkr"] == 278500.0
-        assert res["salary_max_pkr"] == 557000.0
+        assert res["exchange_rate_used"] == 276.5132
+        assert res["salary_min_pkr"] == 276513.2
+        assert res["salary_max_pkr"] == 553026.4
         assert "State Bank of Pakistan" in res["exchange_rate_source"]
+
+    def test_hourly_usd_conversion_uses_176_hours(self):
+        # $10/hr * 176 hrs/mo * 276.5132 = 486,663.23 PKR
+        res = parse_salary("$10 per hour")
+        assert res["salary_currency"] == "USD"
+        assert res["salary_interval"] == "hour"
+        assert res["salary_min_original"] == 10.0
+        assert res["salary_min_pkr"] == round(10.0 * 176.0 * 276.5132, 2)
 
     def test_missing_salary_strictly_null(self):
         res = parse_salary(None)

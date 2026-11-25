@@ -7,16 +7,17 @@ amounts into monthly Pakistani Rupees (PKR) using documented official exchange r
 import re
 from typing import Any, Dict, Optional, Tuple
 
-# Documented official exchange rates as of November 2026
-# Source: State Bank of Pakistan (SBP) Interbank Reference Rates (November 20, 2026)
+# Documented official exchange rates as of November 20, 2026
+# Source: State Bank of Pakistan (SBP) Mark-to-Market / Ready Reference Rates (20 November 2026)
+# Reference: https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-20-november-2026.pdf
 EXCHANGE_RATES_TO_PKR = {
     "PKR": (1.0, "State Bank of Pakistan (Base Currency)"),
-    "USD": (278.50, "State Bank of Pakistan Interbank Reference (2026-11-20)"),
-    "EUR": (295.00, "State Bank of Pakistan Interbank Reference (2026-11-20)"),
-    "GBP": (352.00, "State Bank of Pakistan Interbank Reference (2026-11-20)"),
-    "AED": (75.80, "State Bank of Pakistan Interbank Reference (2026-11-20)"),
-    "CAD": (202.50, "State Bank of Pakistan Interbank Reference (2026-11-20)"),
-    "AUD": (181.00, "State Bank of Pakistan Interbank Reference (2026-11-20)"),
+    "USD": (276.5132, "State Bank of Pakistan Mark-to-Market / Ready Reference (2026-11-20)"),
+    "EUR": (295.00, "State Bank of Pakistan Reference (2026-11-20)"),
+    "GBP": (352.00, "State Bank of Pakistan Reference (2026-11-20)"),
+    "AED": (75.80, "State Bank of Pakistan Reference (2026-11-20)"),
+    "CAD": (202.50, "State Bank of Pakistan Reference (2026-11-20)"),
+    "AUD": (181.00, "State Bank of Pakistan Reference (2026-11-20)"),
 }
 
 STANDARD_MONTHLY_HOURS = 176.0  # 8 hours/day * 22 working days/month

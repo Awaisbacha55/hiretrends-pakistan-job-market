@@ -92,10 +92,11 @@ Empirical analysis of the **848 Confirmed Pakistan Technology** postings (`jobs_
    - **Lahore (44.2% / 291 jobs):** Software export houses, agencies, and full-stack/mobile web.
    - **Karachi (26.0% / 171 jobs):** FinTech, corporate enterprise, banking, and data systems.
    - **Islamabad (25.2% / 166 jobs):** AI/ML consultancies, cloud architecture, and multinational R&D.
-3. **Disclosed Compensation Within Confirmed Pakistan Tech ($N=11$, 1.3% Disclosure Rate):**
-   - **Domestic PKR Postings ($N=7$):** Median wage of **PKR 200,000 / month**.
-   - **Overseas USD Remote Contracts ($N=4$):** Median wage of **PKR 362,050 / month**.
-   - **Overall Disclosed ($N=11$):** Median wage of **PKR 167,100 / month** (explicitly flagged as small-sample).
+3. **Disclosed Compensation Within Confirmed Pakistan Tech ($N=11$ of $848$, 1.30% Disclosure Rate — *Indicative Only*):**
+   - **Native PKR ($N=7$, monthly-normalized):** Median **PKR 150,000 / month** (IQR: 115k–275k PKR; range: 70k–450k PKR).
+   - **Normalized USD ($N=4$, monthly-equivalent, low sample):** Median **\$1,300 / month** (range: \$92–\$6,667/mo).
+   - **Broader Context (All Deduplicated, $N=3,707$; $N=152$ Disclosed / 4.10%, incl. 70 hourly):** Native PKR ($N=38$) median **PKR 70,000/mo**; Normalized USD ($N=113$, `hourly × 176` / `annual ÷ 12`) median **\$1,056/mo**; EUR ($N=1$) **€300/mo**.
+   - **Conversion Methodology & Caveats:** Hourly rates assume **8 hrs/day × 22 working days/month = 176 hours/month** (analytical estimate only); annual salaries are divided by **12**. Converted PKR-equivalent figures use the fixed **State Bank of Pakistan (SBP) Mark-to-Market / Ready Reference** rate for **20 November 2026** (**1 USD = 276.5132 PKR**; actual transaction/remittance rates may differ). Because salary disclosure is very low and subject to selection bias, all salary findings are **indicative only**.
 4. **Workplace Arrangements ($N=455$ Known; 393 Unstated):**
    - **50.3%** of known Pakistan tech postings are **on-site** (229), **41.3%** are **fully remote** (188), and **8.4%** are **hybrid** (38).
 
@@ -278,7 +279,7 @@ tests/test_source_checker.py .............                              [100%]
 - **Terms of Service Supremacy:** Automated collection respects platform terms. Prohibited sources (e.g. Mustakbil) are blocked fail-closed; commercial job boards (e.g. Rozee.pk) requiring permission are never harvested without authorization.
 - **Official API Ingestion:** Live data is sourced under official Open Database License (ODbL 1.0) and Database Contents License (DbCL 1.0) courtesy of [Headcount Labs](https://headcountlabs.com).
 - **Privacy & Copyright Protection:** Candidate PII is never harvested. Full-text employer job descriptions are strictly excluded from git version control to protect employer copyright.
-- **Exchange Rate Normalization:** Foreign salaries are standardized to monthly PKR using official State Bank of Pakistan reference rates (USD = 278.50 PKR, EUR = 295.00 PKR).
+- **Exchange Rate Normalization:** Foreign salaries are standardized to monthly PKR equivalents (indicative only) using the fixed State Bank of Pakistan (SBP) Mark-to-Market / Ready Reference snapshot for 20 November 2026 (`USD = 276.5132 PKR`, `EUR = 295.00 PKR`).
 
 ---
 

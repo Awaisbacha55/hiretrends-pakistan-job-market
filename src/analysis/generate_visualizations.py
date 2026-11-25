@@ -134,20 +134,25 @@ def generate_all_visualizations(
     generated_files.append(p2_png)
 
     # -------------------------------------------------------------
-    # 3. Salary Distribution Chart (Log scale & Inlier histogram)
+    # 3. Salary Distribution Chart (Currency-Separated, Indicative Only)
     # -------------------------------------------------------------
     sal_sub = df[df["salary_min_pkr"].notna()].copy()
     sal_inliers = sal_sub[(sal_sub["salary_min_pkr"] >= 20000) & (sal_sub["salary_min_pkr"] <= 2500000)].copy()
+    curr_counts = sal_sub["salary_currency"].value_counts().to_dict()
+    curr_summary = ", ".join(f"{k}: {v}" for k, v in curr_counts.items())
 
-    # Plotly Box & Histogram
+    # Plotly Box (Currency-Separated, Converted PKR Equivalent — Indicative Only)
     fig3 = px.box(
         sal_sub,
         x="salary_currency",
         y="salary_min_pkr",
         color="salary_currency",
         log_y=True,
-        title=f"Disclosed Monthly Salary Distribution by Currency (PKR Equivalent, Log Scale, N={len(sal_sub):,})",
-        labels={"salary_min_pkr": "Monthly Equivalent (PKR, Log Scale)", "salary_currency": "Native Quoted Currency"},
+        title=(
+            f"Converted PKR Equivalent by Currency — Indicative Only (Confirmed PK Tech, N={len(sal_sub)}/{len(df)}; {curr_summary})<br>"
+            "<sup>Annual ÷ 12; Hourly × 176 hrs/mo (8h×22d); 1 USD = 276.5132 PKR (SBP Ready, 20 Nov 2026)</sup>"
+        ),
+        labels={"salary_min_pkr": "Normalized Monthly PKR Equivalent (Log Scale)", "salary_currency": "Native Quoted Currency"},
     )
     fig3.update_layout(height=550)
     p3_html = os.path.join(output_dir, "salary_distribution.html")
@@ -156,15 +161,15 @@ def generate_all_visualizations(
 
     # Matplotlib PNG
     fig_m3, (ax_m3_1, ax_m3_2) = plt.subplots(1, 2, figsize=(13, 5))
-    sns.histplot(data=sal_inliers, x="salary_min_pkr", bins=25, kde=True, ax=ax_m3_1, color="#2b5c8f")
-    ax_m3_1.set_title(f"Monthly PKR Compensation (20k - 2.5M PKR, N={len(sal_inliers):,})", weight="bold")
-    ax_m3_1.set_xlabel("Monthly Compensation (PKR)")
+    sns.histplot(data=sal_inliers, x="salary_min_pkr", hue="salary_currency", bins=15, multiple="stack", ax=ax_m3_1)
+    ax_m3_1.set_title(f"Converted PKR Equiv. (20k–2.5M, N={len(sal_inliers)}, Indicative Only)", weight="bold")
+    ax_m3_1.set_xlabel("Monthly PKR Equiv. (Annual÷12, Hourly×176, USD=276.5132)")
     ax_m3_1.set_ylabel("Job Postings Count")
 
     sns.boxplot(data=sal_sub, x="salary_currency", y="salary_min_pkr", ax=ax_m3_2, palette="Set2")
     ax_m3_2.set_yscale("log")
-    ax_m3_2.set_title(f"Quoted Currency Comparison (Log-10 Scale, N={len(sal_sub):,})", weight="bold")
-    ax_m3_2.set_ylabel("Monthly Equivalent (PKR)")
+    ax_m3_2.set_title(f"Native Currency Comparison (Log10, N={len(sal_sub)}, Indicative Only)", weight="bold")
+    ax_m3_2.set_ylabel("Monthly PKR Equiv. (SBP 20 Nov 2026)")
     fig_m3.tight_layout()
     p3_png = os.path.join(output_dir, "salary_distribution.png")
     fig_m3.savefig(p3_png, dpi=300)
@@ -172,7 +177,7 @@ def generate_all_visualizations(
     generated_files.append(p3_png)
 
     # -------------------------------------------------------------
-    # 4. Salary by Experience Chart
+    # 4. Salary by Experience Chart (Currency-Separated, Indicative Only)
     # -------------------------------------------------------------
     sal_sub["experience_bracket"] = "Unspecified"
     sal_sub.loc[sal_sub["experience_min_years"] <= 1.0, "experience_bracket"] = "0-1 yrs (Junior)"
@@ -184,10 +189,13 @@ def generate_all_visualizations(
         exp_filtered,
         x="experience_bracket",
         y="salary_min_pkr",
-        color="experience_bracket",
+        color="salary_currency",
         category_orders={"experience_bracket": ["0-1 yrs (Junior)", "2-4 yrs (Mid)", "5+ yrs (Senior)"]},
-        title=f"Monthly PKR Salary by Experience Bracket (N={len(exp_filtered):,} Disclosed with Experience)",
-        labels={"salary_min_pkr": "Monthly Salary (PKR)", "experience_bracket": "Experience Level"},
+        title=(
+            f"Converted PKR Equiv. by Experience & Currency — Indicative Only (N={len(exp_filtered)} of {len(df)})<br>"
+            "<sup>Low sample warning: Confirmed PK Tech salary disclosures are sparse; USD=276.5132 PKR (SBP Ready, 20 Nov 2026)</sup>"
+        ),
+        labels={"salary_min_pkr": "Monthly PKR Equivalent (Indicative)", "experience_bracket": "Experience Level", "salary_currency": "Currency"},
     )
     fig4.update_layout(height=550)
     p4_html = os.path.join(output_dir, "salary_by_experience.html")
@@ -200,14 +208,15 @@ def generate_all_visualizations(
         data=exp_filtered,
         x="experience_bracket",
         y="salary_min_pkr",
+        hue="salary_currency",
         order=["0-1 yrs (Junior)", "2-4 yrs (Mid)", "5+ yrs (Senior)"],
         ax=ax_m4,
         palette="Blues_d",
     )
     ax_m4.set_yscale("log")
-    ax_m4.set_title("Compensation Scaling Across Experience Tiers (Log Scale)", weight="bold")
-    ax_m4.set_xlabel("Experience Level")
-    ax_m4.set_ylabel("Monthly Salary (PKR Equivalent)")
+    ax_m4.set_title(f"Converted PKR Equiv. by Experience (N={len(exp_filtered)}, Indicative Only)", weight="bold")
+    ax_m4.set_xlabel("Experience Level (Low Sample — Do Not Generalize)")
+    ax_m4.set_ylabel("Monthly PKR Equiv. (SBP 20 Nov 2026, 176 hrs/mo)")
     fig_m4.tight_layout()
     p4_png = os.path.join(output_dir, "salary_by_experience.png")
     fig_m4.savefig(p4_png, dpi=300)

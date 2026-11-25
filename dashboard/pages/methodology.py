@@ -50,12 +50,10 @@ st.markdown(
       Extracts standardized minimum and maximum years using regular expression boundaries (e.g., `3-5 years` → min 3.0, max 5.0; `fresh graduate` → min 0.0). Missing requirements remain strictly `null`.
 
     - **Currency Normalization & SBP Exchange Benchmarks:**
-      All disclosed salaries are converted into **Monthly PKR Equivalent** using official State Bank of Pakistan reference rates (November 20, 2026):
-      - **USD:** 278.50 PKR
-      - **EUR:** 295.00 PKR
-      - **GBP:** 352.00 PKR
-      - **AED:** 75.80 PKR
-      *Interval Standard:* Annual salaries are divided by 12.0; hourly rates assume full-time engagement (176 working hours/month).
+      Native PKR and normalized monthly USD are reported separately. Where PKR-equivalent conversions are shown (indicative only), salaries are converted using the fixed **State Bank of Pakistan (SBP) Mark-to-Market / Ready Reference** snapshot for **20 November 2026**:
+      - **USD:** 276.5132 PKR ([SBP 20 Nov 2026 Reference PDF](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-20-november-2026.pdf))
+      - **EUR:** 295.00 PKR | **GBP:** 352.00 PKR | **AED:** 75.80 PKR
+      *Pay-Period Normalization:* Annual salaries are divided by `12.0`. Hourly rates are converted to monthly estimates assuming **8 hours/day × 22 working days/month = 176 hours/month** (analytical estimate only, not guaranteed earnings). Actual transaction/remittance rates may differ.
 
     ---
 

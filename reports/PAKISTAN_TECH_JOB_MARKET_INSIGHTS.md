@@ -16,7 +16,7 @@ Empirical analysis of the **848 Confirmed Pakistan Technology** job postings (`j
 
 1. **The Modern Web & Cloud Stack Dominance:** Python (36.2% of confirmed Pakistan tech roles), Microsoft Azure (35.6%), SQL (35.4%), CI/CD (35.1%), AWS (34.2%), Git (32.2%), JavaScript (28.4%), Docker (19.0%), and React (18.8%) constitute the indispensable foundational layer of modern software development in Pakistan.
 2. **The "Big Three" Metropolises Anchor 95.4% of Mapped Pakistan Tech Demand ($N=658$ Mapped Cities):** Lahore (44.2%), Karachi (26.0%), and Islamabad (25.2%) command virtually all localized tech postings, with Tier-2 cities (Peshawar, Rawalpindi, Sialkot) serving as emerging hubs.
-3. **Disclosed Compensation ($N=11$, 1.3% Disclosure Rate):** Within confirmed Pakistan tech postings, disclosed salaries are sparse ($N=11$); native PKR postings ($N=7$) show a median of **PKR 200,000/month** while USD remote contracts ($N=4$) show a median of **PKR 362,050/month** (overall median: **PKR 167,100/month**).
+3. **Disclosed Compensation ($N=11$ of $848$, 1.30% Disclosure Rate — *Indicative Only*):** Within confirmed Pakistan tech postings, disclosed salaries are sparse ($N=11$; 0 hourly, 6 monthly, 5 annual): native PKR postings ($N=7$, monthly-normalized) show a median of **PKR 150,000/month** while normalized USD postings ($N=4$, monthly-equivalent) show a median of **\$1,300/month**. *(In the broader deduplicated dataset of $N=3,707$, $N=152$ disclose salary: $N=38$ PKR median PKR 70,000/mo; $N=113$ USD normalized median \$1,056/mo; $N=1$ EUR €300/mo; 70 hourly.)*
 
 This report breaks down these dynamics with actionable guidance for developers, university graduates, and engineering hiring managers.
 
@@ -120,38 +120,27 @@ Workplace arrangements in the dataset highlight Pakistan's integration into glob
 
 ---
 
-## 6. Compensation Landscape: The USD-PKR Divide
+## 6. Compensation Landscape (Indicative Only — Small Sample)
 
-Compensation data reveals a bifurcated market that reflects Pakistan's macroeconomic realities:
+> [!WARNING]
+> **Indicative Only & Selection Bias Notice:** Only **11 of 848 (1.30%)** Confirmed Pakistan Tech postings disclose salary (`7` native PKR, `4` USD; `0` hourly, `6` monthly, `5` annual). These figures are **indicative only** and do not represent market-wide Pakistan tech compensation.
 
-### 6.1 The Two Compensation Tiers
+### 6.1 Currency-Separated Findings
 
-```mermaid
-graph LR
-    subgraph Domestic Market
-        A["Local Software Firms"] --> B["PKR Quoted: 20k - 500k"]
-        B --> C["Median: PKR 75,000/mo"]
-    end
-    subgraph Global Export Market
-        D["Overseas Remote Contracts"] --> E["USD Quoted: $500 - $4,000+"]
-        E --> F["Median: PKR 278,500/mo (~$1,000 USD)"]
-    end
-```
+1. **Confirmed Pakistan Tech — Native PKR ($N=7$, monthly-normalized):**
+   - **Median:** **PKR 150,000 / month** (IQR: PKR 115,000 – 275,000; range: PKR 70,000 – 450,000).
+2. **Confirmed Pakistan Tech — Normalized USD ($N=4$, monthly-equivalent, low sample):**
+   - **Median:** **\$1,300 / month** (range: \$92 – \$6,667/mo).
+3. **Broader Deduplicated Context ($N=3,707$ all roles & countries; $N=152$ disclosed / 4.10%):**
+   - **Native PKR ($N=38$):** Median **PKR 70,000 / month** (IQR: PKR 50,000 – 150,000).
+   - **Normalized USD ($N=113$, incl. 70 hourly):** Median **\$1,056 / month** (IQR: \$880 – \$1,760).
+   - **EUR ($N=1$, separate):** **€300 / month** (≈ PKR 88,500 at EUR = 295.00 PKR).
 
-1. **Domestic Market (PKR Quoted, $N=42$):**
-   - **Median:** **PKR 75,000 / month** (Mean: PKR 108,333)
-   - **Interquartile Range (IQR):** PKR 50,000 – PKR 150,000
-   - Primarily reflects entry-level and mid-level roles at local companies serving the domestic market.
-2. **Overseas & Export Market (USD Quoted, $N=131$):**
-   - **Median:** **PKR 278,500 / month** (~$1,000 USD/month)
-   - **Interquartile Range (IQR):** PKR 222,800 – PKR 417,750 ($800 – $1,500 USD/month)
-   - Senior and staff-level roles extend up to **PKR 1,114,000 / month** ($4,000 USD/month) and above.
-
-### 6.2 Experience-Based Compensation Trajectory
-Analysis of compensation by parsed experience bracket indicates strong upward mobility:
-- **Junior / Entry-Level (0–1 yrs):** Median PKR 111,400 (Local firms: PKR 40,000 – 70,000; Remote/Export: PKR 111,400 – 167,000).
-- **Mid-Level (2–4 yrs):** Median PKR 278,500 (Local firms: PKR 100,000 – 180,000; Remote/Export: PKR 250,000 – 400,000).
-- **Senior (5+ yrs):** Median PKR 450,000+ (Local firms: PKR 250,000 – 450,000; Remote/Export: PKR 500,000 – 1,200,000+).
+### 6.2 Conversion Methodology
+- **Hourly-to-Monthly:** Assumes **8 hours/day × 22 working days/month = 176 hours/month** (`Hourly rate × 176`, analytical estimate only, not guaranteed earnings).
+- **Annual-to-Monthly:** `Annual salary ÷ 12`.
+- **Exchange Rate:** Fixed **State Bank of Pakistan (SBP) Mark-to-Market / Ready Reference** snapshot for **20 November 2026**: **1 USD = 276.5132 PKR** (actual transaction/remittance rates may differ).
+- **Subgroup Breakdowns:** Experience and city salary breakdowns within Confirmed Pakistan Tech ($N=11$) are omitted/flagged due to insufficient cell sample sizes ($N < 5$).
 
 ---
 

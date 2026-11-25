@@ -1,13 +1,17 @@
 """HireTrends Salary and Compensation Analysis Engine.
 
-Analyzes disclosed remuneration data, segregating native PKR and foreign currencies,
-computing robust non-parametric summary statistics (median, IQR, quartiles),
-investigating outliers, and slicing by experience and geography.
+Analyzes disclosed remuneration data, strictly separating native PKR, normalized
+monthly USD, and EUR compensation, computing robust non-parametric summary
+statistics (median, IQR, quartiles), and enforcing small-sample disclosures.
 """
 
 from typing import Any, Dict, List, Optional
 import numpy as np
 import pandas as pd
+
+MIN_RELIABLE_SAMPLE_SIZE = 5  # Threshold below which subgroup medians are flagged as low-sample
+STANDARD_MONTHLY_HOURS = 176.0  # 8 hours/day * 22 working days/month
+USD_TO_PKR_RATE = 276.5132  # SBP Mark-to-Market / Ready Reference (20 Nov 2026)
 
 
 def compute_series_stats(series: pd.Series) -> Dict[str, Any]:
@@ -34,6 +38,7 @@ def compute_series_stats(series: pd.Series) -> Dict[str, Any]:
 
     return {
         "sample_size": n,
+        "is_sufficient_sample": n >= MIN_RELIABLE_SAMPLE_SIZE,
         "min": round(float(clean.min()), 2),
         "q1": round(q1, 2),
         "median": round(median, 2),
@@ -45,11 +50,32 @@ def compute_series_stats(series: pd.Series) -> Dict[str, Any]:
     }
 
 
-def analyze_salary_data(df: pd.DataFrame) -> Dict[str, Any]:
-    """Perform comprehensive compensation benchmarking across disclosed salary records.
+def _normalize_original_to_monthly(df: pd.DataFrame, col: str = "salary_min_original") -> pd.Series:
+    """Normalize original-currency salary amounts into monthly equivalents.
 
-    Note: Less than 4% of job postings disclose compensation. All results must be
-    interpreted within their explicit sample size boundaries.
+    - hour -> amount * 176.0 (8 hrs/day * 22 working days/month)
+    - year -> amount / 12.0
+    - month -> amount * 1.0
+    """
+    if len(df) == 0 or col not in df.columns:
+        return pd.Series(dtype=float)
+
+    vals = df[col].astype(float)
+    intervals = df["salary_interval"].fillna("month").astype(str).str.lower()
+    factors = np.where(
+        intervals == "hour",
+        STANDARD_MONTHLY_HOURS,
+        np.where(intervals == "year", 1.0 / 12.0, 1.0),
+    )
+    return vals * factors
+
+
+def analyze_salary_data(df: pd.DataFrame) -> Dict[str, Any]:
+    """Perform compensation benchmarking with strict currency and period separation.
+
+    Note: Disclosed salaries represent a small, self-selected subset (indicative only).
+    Native PKR and normalized monthly USD are reported separately; any combined
+    PKR-equivalent view is explicitly labeled as converted and indicative only.
     """
     total_listings = len(df)
     salary_df = df[df["salary_min_pkr"].notna()].copy()
@@ -63,77 +89,107 @@ def analyze_salary_data(df: pd.DataFrame) -> Dict[str, Any]:
             "status": "NO_DISCLOSED_SALARIES",
         }
 
-    # 1. Currency Breakdown
+    # 1. Currency & Interval Breakdown
     currency_counts = salary_df["salary_currency"].value_counts().to_dict()
+    interval_counts = salary_df["salary_interval"].fillna("unspecified").value_counts().to_dict()
 
-    # 2. Native PKR Postings Only
-    pkr_df = salary_df[salary_df["salary_currency"] == "PKR"]
-    pkr_min_stats = compute_series_stats(pkr_df["salary_min_original"])
-    pkr_max_stats = compute_series_stats(pkr_df["salary_max_original"])
+    # 2. Native PKR Postings Only (normalized to monthly PKR: annual / 12)
+    pkr_df = salary_df[salary_df["salary_currency"] == "PKR"].copy()
+    pkr_min_monthly = _normalize_original_to_monthly(pkr_df, "salary_min_original")
+    pkr_max_monthly = _normalize_original_to_monthly(pkr_df, "salary_max_original")
+    pkr_min_stats = compute_series_stats(pkr_min_monthly)
+    pkr_max_stats = compute_series_stats(pkr_max_monthly)
 
-    # 3. Foreign Currency Postings (predominantly USD)
-    foreign_df = salary_df[salary_df["salary_is_converted"] == True]
-    usd_df = salary_df[salary_df["salary_currency"] == "USD"]
-    usd_original_stats = compute_series_stats(usd_df["salary_min_original"])
+    # 3. USD Postings Only (normalized to monthly-equivalent USD: hourly * 176, annual / 12)
+    usd_df = salary_df[salary_df["salary_currency"] == "USD"].copy()
+    usd_min_monthly = _normalize_original_to_monthly(usd_df, "salary_min_original")
+    usd_monthly_stats = compute_series_stats(usd_min_monthly)
 
-    # 4. Overall Standardized Monthly PKR Postings (Combined)
+    # 4. EUR Postings Only (reported separately)
+    eur_df = salary_df[salary_df["salary_currency"] == "EUR"].copy()
+    eur_min_monthly = _normalize_original_to_monthly(eur_df, "salary_min_original")
+    eur_monthly_stats = compute_series_stats(eur_min_monthly)
+    eur_converted_pkr_stats = compute_series_stats(eur_df["salary_min_pkr"])
+
+    # 5. Converted PKR Equivalent (Combined — Indicative Only)
     overall_min_pkr_stats = compute_series_stats(salary_df["salary_min_pkr"])
     overall_max_pkr_stats = compute_series_stats(salary_df["salary_max_pkr"])
 
-    # 5. Outlier Detection (Suspiciously low or extreme high)
-    # Low outliers: < 10,000 PKR / month (likely hourly / micro-tasks / test data)
+    # 6. Outlier Detection (Suspiciously low < 10k or extreme > 5M PKR/mo equivalent)
     low_outliers = salary_df[salary_df["salary_min_pkr"] < 10000][
         ["job_title", "company", "salary_text", "salary_currency", "salary_interval", "salary_min_pkr"]
     ].to_dict(orient="records")
 
-    # High outliers: > 5,000,000 PKR / month (executive / international remote contracts)
     high_outliers = salary_df[salary_df["salary_min_pkr"] > 5000000][
         ["job_title", "company", "salary_text", "salary_currency", "salary_interval", "salary_min_pkr"]
     ].to_dict(orient="records")
 
-    # Trimmed / Inlier statistics (excluding low < 10k and extreme > 5M)
     inliers_df = salary_df[(salary_df["salary_min_pkr"] >= 10000) & (salary_df["salary_min_pkr"] <= 5000000)]
     inlier_pkr_stats = compute_series_stats(inliers_df["salary_min_pkr"])
 
-    # 6. Salary by Experience Band
-    exp_brackets = {
-        "Entry / Junior (0-1 yrs)": salary_df[salary_df["experience_min_years"] <= 1.0]["salary_min_pkr"],
-        "Mid-Level (2-4 yrs)": salary_df[(salary_df["experience_min_years"] >= 2.0) & (salary_df["experience_min_years"] <= 4.0)]["salary_min_pkr"],
-        "Senior (5+ yrs)": salary_df[salary_df["experience_min_years"] >= 5.0]["salary_min_pkr"],
-        "Unspecified Experience": salary_df[salary_df["experience_min_years"].isna()]["salary_min_pkr"],
-    }
-    salary_by_exp = {
-        bracket: compute_series_stats(series) for bracket, series in exp_brackets.items()
-    }
+    # 7. Currency-Separated Breakdowns by Experience & Location
+    def _exp_masks(sub: pd.DataFrame) -> Dict[str, pd.Series]:
+        return {
+            "Entry / Junior (0-1 yrs)": sub["experience_min_years"] <= 1.0,
+            "Mid-Level (2-4 yrs)": (sub["experience_min_years"] >= 2.0) & (sub["experience_min_years"] <= 4.0),
+            "Senior (5+ yrs)": sub["experience_min_years"] >= 5.0,
+            "Unspecified Experience": sub["experience_min_years"].isna(),
+        }
 
-    # 7. Salary by Top Cities / Remote
-    city_brackets = {
-        "Remote": salary_df[salary_df["workplace_type"] == "remote"]["salary_min_pkr"],
-        "Lahore": salary_df[salary_df["normalized_city"] == "Lahore"]["salary_min_pkr"],
-        "Karachi": salary_df[salary_df["normalized_city"] == "Karachi"]["salary_min_pkr"],
-        "Islamabad": salary_df[salary_df["normalized_city"] == "Islamabad"]["salary_min_pkr"],
-        "On-site (All Cities)": salary_df[salary_df["workplace_type"] == "on-site"]["salary_min_pkr"],
-        "Hybrid": salary_df[salary_df["workplace_type"] == "hybrid"]["salary_min_pkr"],
-    }
-    salary_by_city = {
-        loc: compute_series_stats(series) for loc, series in city_brackets.items()
-    }
+    salary_by_exp: Dict[str, Dict[str, Any]] = {}
+    pkr_masks = _exp_masks(pkr_df)
+    usd_masks = _exp_masks(usd_df)
+    for bracket in pkr_masks:
+        pkr_b = _normalize_original_to_monthly(pkr_df[pkr_masks[bracket]], "salary_min_original")
+        usd_b = _normalize_original_to_monthly(usd_df[usd_masks[bracket]], "salary_min_original")
+        comb_b = salary_df[_exp_masks(salary_df)[bracket]]["salary_min_pkr"]
+        stats_comb = compute_series_stats(comb_b)
+        stats_comb["native_pkr"] = compute_series_stats(pkr_b)
+        stats_comb["usd_monthly"] = compute_series_stats(usd_b)
+        salary_by_exp[bracket] = stats_comb
 
-    # 8. Interval Breakdown (Monthly vs Annual vs Hourly assumptions)
-    interval_counts = salary_df["salary_interval"].fillna("unspecified").value_counts().to_dict()
+    def _loc_masks(sub: pd.DataFrame) -> Dict[str, pd.Series]:
+        return {
+            "Remote": sub["workplace_type"] == "remote",
+            "Lahore": sub["normalized_city"] == "Lahore",
+            "Karachi": sub["normalized_city"] == "Karachi",
+            "Islamabad": sub["normalized_city"] == "Islamabad",
+            "On-site (All Cities)": sub["workplace_type"] == "on-site",
+            "Hybrid": sub["workplace_type"] == "hybrid",
+        }
+
+    salary_by_city: Dict[str, Dict[str, Any]] = {}
+    pkr_lmasks = _loc_masks(pkr_df)
+    usd_lmasks = _loc_masks(usd_df)
+    for loc_name in pkr_lmasks:
+        pkr_l = _normalize_original_to_monthly(pkr_df[pkr_lmasks[loc_name]], "salary_min_original")
+        usd_l = _normalize_original_to_monthly(usd_df[usd_lmasks[loc_name]], "salary_min_original")
+        comb_l = salary_df[_loc_masks(salary_df)[loc_name]]["salary_min_pkr"]
+        stats_comb = compute_series_stats(comb_l)
+        stats_comb["native_pkr"] = compute_series_stats(pkr_l)
+        stats_comb["usd_monthly"] = compute_series_stats(usd_l)
+        salary_by_city[loc_name] = stats_comb
+
+    disclosure_rate = round(disclosed_count / max(total_listings, 1) * 100, 2)
 
     return {
         "total_listings": total_listings,
         "disclosed_count": disclosed_count,
-        "disclosure_rate_pct": round(disclosed_count / total_listings * 100, 2),
+        "disclosure_rate_pct": disclosure_rate,
+        "indicative_only": True,
+        "min_reliable_sample_size": MIN_RELIABLE_SAMPLE_SIZE,
         "currency_distribution": currency_counts,
         "interval_distribution": interval_counts,
         "native_pkr_stats": {
             "min_salary": pkr_min_stats,
             "max_salary": pkr_max_stats,
         },
-        "usd_original_stats": usd_original_stats,
+        "usd_original_stats": usd_monthly_stats,
+        "usd_monthly_stats": usd_monthly_stats,
+        "eur_monthly_stats": eur_monthly_stats,
+        "eur_converted_pkr_stats": eur_converted_pkr_stats,
         "overall_monthly_pkr": {
+            "label": "Converted PKR Equivalent — Indicative Only",
             "min_salary": overall_min_pkr_stats,
             "max_salary": overall_max_pkr_stats,
         },
@@ -147,10 +203,14 @@ def analyze_salary_data(df: pd.DataFrame) -> Dict[str, Any]:
         "salary_by_experience": salary_by_exp,
         "salary_by_location": salary_by_city,
         "methodological_notes": {
-            "exchange_rate_source": "State Bank of Pakistan official reference rates (Nov 20, 2026)",
-            "conversion_rates": {"USD": 278.50, "EUR": 295.00, "GBP": 352.00, "AED": 75.80},
+            "exchange_rate_source": "State Bank of Pakistan (SBP) Mark-to-Market / Ready Reference (20 November 2026)",
+            "exchange_rate_date": "2026-11-20",
+            "conversion_rates": {"USD": USD_TO_PKR_RATE, "EUR": 295.00, "GBP": 352.00, "AED": 75.80},
             "annual_normalization": "Annual salaries divided by 12.0",
-            "hourly_assumption": "Full-time hourly rates converted using 176 monthly hours (40 hrs/wk * 4.4 wks)",
-            "representativeness_warning": "Salary disclosures represent 3.87% of all postings, skewed heavily towards remote US-dollar contracts.",
+            "hourly_assumption": "Hourly rates converted to monthly equivalents assuming 8 hours/day × 22 working days/month = 176 hours/month (analytical estimate, not guaranteed earnings)",
+            "indicative_only_notice": (
+                f"Salary findings are indicative only ({disclosure_rate}% disclosure rate; N={disclosed_count}/{total_listings}) "
+                "and are subject to selection bias."
+            ),
         },
     }

@@ -102,34 +102,32 @@ A persistent flaw in amateur job market scraping is "denominator drift"—comput
 
 ## 4. Compensation Modeling & Currency Standardization
 
-### 4.1 Sample Size Disclosure & Normalization Protocol
-Compensation disclosure in the Pakistani tech market is highly selective. Across 4,491 records, exactly **174 records** contained parseable, structured compensation (3.87% disclosure rate). 
+### 4.1 Sample Size Disclosure & Normalization Protocol (Indicative Only)
+Compensation disclosure in the Confirmed Pakistan Tech cohort (`N=848`) is **1.30% (`N=11`: 7 native PKR, 4 USD; 0 hourly, 6 monthly, 5 annual)**. Across the broader deduplicated dataset (`N=3,707`), **152 records (4.10%)** contain parseable compensation (`38` PKR, `113` USD, `1` EUR; `70` hourly, `49` monthly, `33` annual; `3` unparseable). All salary findings are **indicative only** and subject to selection bias.
 
-To standardize compensation across international and domestic employers, all salaries are converted to a unified **Monthly PKR Equivalent** using official State Bank of Pakistan (SBP) reference rates as of November 20, 2026:
-- $\text{USD} \to \text{PKR} = 278.50$
-- $\text{EUR} \to \text{PKR} = 295.00$
-- $\text{GBP} \to \text{PKR} = 352.00$
+Native PKR and normalized monthly USD are reported separately. Where PKR-equivalent conversions are shown (indicative only), salaries use the fixed **State Bank of Pakistan (SBP) Mark-to-Market / Ready Reference** snapshot for **20 November 2026**:
+- $\text{USD} \to \text{PKR} = 276.5132$ ([SBP 20 Nov 2026 Reference](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-20-november-2026.pdf))
+- $\text{EUR} \to \text{PKR} = 295.00$, $\text{GBP} \to \text{PKR} = 352.00$, $\text{AED} \to \text{PKR} = 75.80$
 - Annual compensation is divided by $12.0$.
-- Hourly compensation assumes a standard Pakistani 44-hour work week ($176 \text{ hours/month}$).
+- Hourly compensation assumes **8 hours/day × 22 working days/month = 176 hours/month** ($\text{Hourly} \times 176$, analytical estimate only).
 
-### 4.2 Non-Parametric Modeling: Why the Median Governs
-Salary data in emerging markets is heavily right-skewed due to overseas contracts denominated in USD ($1,000–$5,000/month). Parametric metrics (Mean, Standard Deviation) are distorted by high-earning foreign contract outliers. Therefore, non-parametric metrics (Median, Quartiles, Interquartile Range) are adopted as the primary measures of central tendency.
+### 4.2 Non-Parametric Modeling & Currency Separation
+Salary data is heavily right-skewed and sparse; medians and IQRs are used instead of means, and native PKR is never mixed with converted USD in primary medians.
 
-$$\text{IQR} = Q_3 - Q_1$$
+### 4.3 Compensation Benchmarks (Currency-Separated, Indicative Only)
 
-### 4.3 Compensation Quartile Benchmarks
-
-| Cohort | Sample Size ($N$) | Min (PKR) | Q1 (25th) | Median (50th) | Mean (PKR) | Q3 (75th) | Max (PKR) | IQR (PKR) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **All Disclosed Salaries** | **174** | 2,785 | 111,400 | **278,500** | 518,004 | 349,253 | 11,140,000 | 237,853 |
-| **Domestic Quoted (PKR)** | **42** | 20,000 | 50,000 | **75,000** | 108,333 | 150,000 | 500,000 | 100,000 |
-| **Overseas / Remote (USD)** | **131** | 2,785 | 222,800 | **278,500** | 651,202 | 417,750 | 11,140,000 | 194,950 |
-| **Inlier Bracket (20k–5M PKR)** | **165** | 20,000 | 111,400 | **278,500** | 358,412 | 348,125 | 4,177,500 | 236,725 |
+| Cohort | Sample Size ($N$) | Min | Q1 (25th) | Median (50th) | Q3 (75th) | Max | IQR |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **PK Tech: Native PKR (Monthly)** | **7** | PKR 70,000 | PKR 115,000 | **PKR 150,000** | PKR 275,000 | PKR 450,000 | PKR 160,000 |
+| **PK Tech: Normalized USD (Monthly)** | **4** *(low N)* | \$92 | \$473 | **\$1,300** | \$3,167 | \$6,667 | \$2,694 |
+| **All Dedup: Native PKR (Monthly)** | **38** | PKR 50 | PKR 50,000 | **PKR 70,000** | PKR 150,000 | PKR 2,922,000 | PKR 100,000 |
+| **All Dedup: Normalized USD (Monthly)** | **113** *(70 hr)* | \$58 | \$880 | **\$1,056** | \$1,760 | \$50,000 | \$880 |
+| **All Dedup: EUR (Separate)** | **1** | €300 | €300 | **€300** | €300 | €300 | €0 |
 
 ### 4.4 Outlier Isolation
 - **Low Outliers ($< 20,000 \text{ PKR}$):** 6 records. These represent part-time student internships, hourly micro-tasks, or data-entry roles.
 - **High Outliers ($> 5,000,000 \text{ PKR}$):** 3 records. These reflect executive foreign enterprise compensation (e.g., \$40,000/month US Staff Architect roles advertised globally).
-- **Inlier Cohort:** When filtering out extremes ($20,000 \le \text{Salary} \le 5,000,000$), the median remains robustly anchored at **PKR 278,500**, confirming that the typical disclosed salary in Pakistan's export-oriented tech market is pegged to an entry/mid-level remote contract of \$1,000 USD/month.
+- **Inlier Cohort (All Deduplicated, $N=145$, Indicative Only):** When filtering out extremes ($10,000 \le \text{Salary} \le 5,000,000 \text{ PKR/mo}$), the converted PKR-equivalent median across all currencies (`38` PKR, `113` USD incl. `70` hourly, `1` EUR) is **PKR 270,983/month** (using `USD = 276.5132 PKR`, SBP Ready Reference 20 Nov 2026). Within Confirmed Pakistan Tech (`N=11` disclosed), native PKR (`N=7`) median is **PKR 150,000/month** and normalized USD (`N=4`, low sample) median is **\$1,300/month**.
 
 ---
 

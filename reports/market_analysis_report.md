@@ -13,7 +13,7 @@
 
 This report delivers empirical market intelligence on Pakistan's technology recruitment landscape based on **4,491 total job postings** collected via the Headcount Labs API on November 20, 2026. Through rigorous normalization, entity resolution, and NLP taxonomy matching across 69 technical skills, the analysis reveals a dual-tier market dynamic:
 
-1. **The Remote US-Dollar Economy:** Over 51.8% of known workplace openings are fully remote, and 75.3% of all disclosed compensation is denominated in US Dollars. These international contracts drive compensation levels into the median PKR 278,500/month tier (\$1,000 USD), far surpassing traditional domestic wage brackets.
+1. **Disclosed Compensation (Indicative Only — Low Disclosure):** Within Confirmed Pakistan Tech (`N=848`), only **11 postings (1.30%)** disclose salary (`7` native PKR, median **PKR 150,000/mo**; `4` USD, median **\$1,300/mo**, low sample). Across all deduplicated postings (`N=3,707`), **152 (4.10%)** disclose salary (`38` PKR, `113` USD incl. `70` hourly, `1` EUR).
 2. **The "Big Three" Geographic Concentration:** 93.3% of all mapped local Pakistani tech vacancies are concentrated in just three cities: **Lahore** (38.3%), **Karachi** (32.3%), and **Islamabad** (22.7%).
 3. **Core Foundational Stack Dominance:** Despite intense marketing around niche frameworks, market demand remains anchored by foundational pillars: **Excel** (13.7%), **SQL** (10.5%), **Python** (9.9%), **Cloud/DevOps (Azure, AWS, CI/CD, Git)** (8.4%–8.7%), and **JavaScript** (7.9%).
 4. **The Generative AI Transition:** While traditional Machine Learning appears in 5.0% of postings, **Large Language Models (LLMs)** already appear in 5.4% (243 listings), demonstrating unprecedented adoption velocity in Pakistani software export houses.
@@ -29,7 +29,7 @@ This report delivers empirical market intelligence on Pakistan's technology recr
 | **Classified Technology Roles** | **1,075** (23.94% high-confidence tech cohort) | Segmented via transparent 16-tier taxonomy matching. |
 | **Manual Review Flagged** | **1,074** (23.91% ambiguous or generic titles) | Tagged transparently; not forced into assumptions. |
 | **Non-Technology Postings** | **2,342** (52.15% operations, medical, sales, retail) | Filtered out during role-specific technical evaluations. |
-| **Salary Disclosure Rate** | **174** postings (3.87% of all jobs) | Reported strictly with explicit sample sizes; no whole-market extrapolation. |
+| **Salary Disclosure Rate** | **11** PK Tech (1.30%) / **152** Dedup (4.10%) | Indicative only; reported separately by currency with explicit sample sizes. |
 | **Workplace Arrangement Known** | **2,309** postings (51.4% completeness) | Percentages calculated strictly using known records as denominator. |
 
 ---
@@ -246,28 +246,22 @@ The pipeline extracted **8,622 skill mentions** representing **69 unique technic
 ![Salary Distribution](figures/salary_distribution.png)
 ![Salary by Experience](figures/salary_by_experience.png)
 
-### Summary Statistics of Disclosed Compensation ($N=174$)
+### Summary Statistics of Disclosed Compensation (Indicative Only — Currency-Separated)
 
-All wages were standardized to **Monthly PKR** using official State Bank of Pakistan reference rates (USD 278.50, EUR 295.00):
+Pay periods are normalized to monthly equivalents (`hourly × 176` assuming `8 hrs/day × 22 working days/month`; `annual ÷ 12`). Where PKR-equivalent conversions are shown, the fixed **State Bank of Pakistan (SBP) Mark-to-Market / Ready Reference** snapshot for **20 November 2026** is used (`1 USD = 276.5132 PKR`, `1 EUR = 295.00 PKR`). All salary findings are **indicative only** due to low disclosure and selection bias.
 
-| Compensation Metric | All Disclosed Salaries ($N=174$) | Inlier Bracket (20k–5M PKR, $N=165$) | Native PKR Quoted Only ($N=42$) |
-| :--- | :--- | :--- | :--- |
-| **Minimum** | PKR 50.0 | PKR 16,245.83 | PKR 50.0 |
-| **25th Percentile (Q1)** | PKR 154,275.00 | PKR 200,000.00 | PKR 50,000.00 |
-| **50th Percentile (Median)** | **PKR 272,930.00** | **PKR 278,500.00** | **PKR 75,000.00** |
-| **Arithmetic Mean** | PKR 518,004.48 | PKR 461,780.99 | PKR 319,486.90 |
-| **75th Percentile (Q3)** | PKR 392,128.00 | PKR 392,128.00 | PKR 150,000.00 |
-| **Maximum** | PKR 13,925,000.00 | PKR 4,456,000.00 | PKR 5,400,000.00 |
-| **Interquartile Range (IQR)**| PKR 237,853.00 | PKR 192,128.00 | PKR 100,000.00 |
+| Compensation Cohort | Sample Size ($N$) | Min | Q1 (25th) | Median (50th) | Q3 (75th) | Max | IQR |
+| :--- | :---: | :--- | :--- | :--- | :--- | :--- | :--- |
+| **PK Tech: Native PKR (Monthly)** | **7** | PKR 70,000 | PKR 115,000 | **PKR 150,000** | PKR 275,000 | PKR 450,000 | PKR 160,000 |
+| **PK Tech: Normalized USD (Monthly)** | **4** *(low N)* | \$92 | \$473 | **\$1,300** | \$3,167 | \$6,667 | \$2,694 |
+| **All Dedup: Native PKR (Monthly)** | **38** | PKR 50 | PKR 50,000 | **PKR 70,000** | PKR 150,000 | PKR 2,922,000 | PKR 100,000 |
+| **All Dedup: Normalized USD (Monthly)** | **113** *(70 hr)* | \$58 | \$880 | **\$1,056** | \$1,760 | \$50,000 | \$880 |
+| **All Dedup: EUR (Separate)** | **1** | €300 | €300 | **€300** | €300 | €300 | €0 |
 
-### Key Compensation Findings & Outliers:
-* **The Currency Bifurcation:** Native PKR postings have a modest median of **PKR 75,000/month** (interquartile range PKR 50,000 – 150,000), whereas US-dollar remote contracts have a median equivalent of **PKR 278,500/month** (\$1,000 USD).
-* **Low Outliers:** Suspiciously low entries (PKR 50.0, PKR 400.0, PKR 700.0) represent micro-task content creation gigs, test postings, or unadjusted hourly wage entries.
-* **High Outliers:** The top observation (PKR 13,925,000/month) represents a remote Amazon Brand Management leadership role quoted at \$50,000 USD/month.
-* **Compensation Progression Across Experience Tiers:**
-  * **Entry / Junior (0–1 years):** Median PKR 245,080 ($N=23$, reflecting remote junior USD contractor openings)
-  * **Mid-Level (2–4 years):** Median PKR 294,096 ($N=54$)
-  * **Senior (5+ years):** Median PKR 349,062 ($N=40$)
+### Key Compensation Findings & Caveats:
+* **Currency Separation:** In Confirmed Pakistan Tech (`N=848`), `7` native PKR roles have a median of **PKR 150,000/month**, while `4` normalized USD roles have a median of **\$1,300/month** (low sample). Across all deduplicated postings (`N=3,707`), `38` native PKR roles have a median of **PKR 70,000/month** and `113` normalized USD roles (70 hourly) have a median of **\$1,056/month**; `1` EUR role is **€300/month**.
+* **Low & High Outliers:** In the full deduplicated cohort, extreme entries (e.g., PKR 50.0 micro-tasks up to \$50,000 USD/month executive roles) reflect non-standard postings.
+* **Small-Sample Subgroup Caution:** Experience and city salary breakdowns within Confirmed Pakistan Tech (`N=11`) are omitted due to insufficient cell sample sizes (`N < 5`).
 
 ---
 
@@ -349,7 +343,7 @@ Analyzing pairs of skills required within the same job posting reveals critical 
 * **Containerization is Essential:** 53.8% of ML roles require Docker to deploy and serve inference endpoints.
 
 ### 4. For Remote Job Seekers
-* **Target US-Dollar Contracts:** With remote roles offering a median compensation of **PKR 278,500** compared to domestic medians of **PKR 75,000**, international contract positioning offers a 3.7x multiplier on real take-home pay.
+* **Target US-Dollar & Export-Oriented Roles:** Remote international contracts (normalized USD median **\$1,056/month** across `N=113` deduplicated postings, indicative only) often pay substantially above local PKR-quoted roles (`N=38` median **PKR 70,000/month**, or `N=7` PK Tech median **PKR 150,000/month**), though sample sizes are small and subject to selection bias.
 
 ---
 

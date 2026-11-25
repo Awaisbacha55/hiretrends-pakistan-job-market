@@ -91,21 +91,11 @@ Analyzed across 4,491 postings ($N_{\text{tech}}=1,075$, $N_{\text{desc}}=4,340$
 
 ---
 
-## 5. Salary Analysis Summary ($N=174$)
+## 5. Salary Analysis Summary (Indicative Only — Currency-Separated)
 
-Standardized to Monthly PKR using SBP reference rates (USD = 278.50 PKR, EUR = 295.00 PKR):
-
-| Metric | All Disclosed ($N=174$) | Domestic Quoted PKR ($N=42$) | Overseas USD Remote ($N=131$) | Inlier Bracket ($N=165$) |
-| :--- | :---: | :---: | :---: | :---: |
-| **Median (50th)** | **PKR 278,500** | **PKR 75,000** | **PKR 278,500** | **PKR 278,500** |
-| **Mean** | PKR 518,004 | PKR 108,333 | PKR 651,202 | PKR 358,412 |
-| **Q1 (25th percentile)**| PKR 111,400 | PKR 50,000 | PKR 222,800 | PKR 111,400 |
-| **Q3 (75th percentile)**| PKR 349,253 | PKR 150,000 | PKR 417,750 | PKR 348,125 |
-| **IQR** | PKR 237,853 | PKR 100,000 | PKR 194,950 | PKR 236,725 |
-| **Min** | PKR 2,785 | PKR 20,000 | PKR 2,785 | PKR 20,000 |
-| **Max** | PKR 11,140,000 | PKR 500,000 | PKR 11,140,000 | PKR 4,177,500 |
-
-*Insight:* International remote employers pay a **3.7x median salary premium** over domestic local software firms.
+- **Confirmed Pakistan Tech ($N=848$):** `11` disclosed (`1.30%`): **Native PKR ($N=7$)** median **PKR 150,000/mo**; **Normalized USD ($N=4$, low sample)** median **\$1,300/mo**.
+- **All Deduplicated Context ($N=3,707$):** `152` disclosed (`4.10%`; `70` hourly, `49` monthly, `33` annual): **Native PKR ($N=38$)** median **PKR 70,000/mo**; **Normalized USD ($N=113$)** median **\$1,056/mo**; **EUR ($N=1$)** **€300/mo**.
+- **Methodology:** Hourly `× 176` (`8 hrs/day × 22 working days/month`), Annual `÷ 12`, fixed **SBP Mark-to-Market / Ready Reference (20 Nov 2026): 1 USD = 276.5132 PKR**. Indicative only due to low disclosure and selection bias.
 
 ---
 
@@ -268,7 +258,7 @@ Captured using Playwright Chromium in headless mode at 1440x950 resolution into 
 
 ## 19. Known Limitations & Future Work
 
-1. **Salary Sample Size ($N=174$):** While 174 records are sufficient for median quartile estimation, expanded compensation disclosure will enhance granular per-city salary modeling.
+1. **Salary Sample Size ($N=11$ in Confirmed Pakistan Tech / $N=152$ in All Deduplicated):** Compensation disclosure is very low (1.30% in Confirmed Pakistan Tech: `7` native PKR, `4` USD; 4.10% across all deduplicated records: `38` PKR, `113` USD, `1` EUR, incl. `70` hourly). All salary figures are indicative only and subject to selection bias.
 2. **Single Baseline Snapshot:** Longitudinal growth rates currently report `UNAVAILABLE_INSUFFICIENT_SNAPSHOTS`. Ingesting sequential monthly snapshots will activate dynamic velocity calculations.
 3. **LLM Job Description Semantic Parsing:** Future phases can leverage local embeddings for nuanced soft-skill extraction.
 
