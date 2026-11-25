@@ -30,7 +30,9 @@ from src.analysis.cooccurrence import compute_skill_cooccurrence
 raw_df = load_clean_data()
 df = render_sidebar_filters(raw_df)
 
-render_header("Skill Co-occurrence", "Synergistic technical stack combinations and pairwise affinity networks")
+active_scope = st.session_state.get("filter_dataset_scope", "Confirmed Pakistan Tech")
+active_date_scope = st.session_state.get("filter_date_scope", "Last 12 Months (2025-11-20 to 2026-11-20)")
+render_header("Skill Co-occurrence", f"Technical stack combinations & Jaccard affinity — Scope: {active_scope} | {active_date_scope} (N={len(df):,})")
 
 if len(df) == 0:
     render_empty_state()

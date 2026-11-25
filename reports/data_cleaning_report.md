@@ -1,6 +1,6 @@
 # HireTrends — Day 3 Data Cleaning, Normalization & Skill Extraction Report
 
-**Pipeline Execution Timestamp:** 2026-11-25T19:03:18.640041+00:00  
+**Pipeline Execution Timestamp:** 2026-11-25T19:14:25.464228+00:00  
 **Input Source Dataset:** `data/raw/headcount/jobs_raw.jsonl`  
 **Processed Outputs:** `jobs_cleaned.csv` (All Deduplicated) | `jobs_pakistan.csv` (Pakistan-Only) | `jobs_pakistan_tech.csv` (Confirmed Pakistan Tech)  
 **Attribution & License:** Open Database License (ODbL 1.0 & DbCL 1.0 (Headcount Labs)  
@@ -44,36 +44,36 @@
 
 ---
 
-## 4. Technical Skill Extraction & Top 20 Demanded Skills
+## 4. Technical Skill Extraction & Top 20 Demanded Skills (Confirmed Pakistan Tech, Recent 12M)
 
-- **Total Skill Mentions Extracted:** 7,297
-- **Unique Skills Identified:** 69
-- **Listings with Technical Skills:** 1,758 (47.42%)
+- **Primary Ranking Scope:** Confirmed Pakistan Tech, Last 12 Months (`2025-11-20` to `2026-11-20`, $N=685$)
+- **Skill Mentions in Primary Scope:** 4,384 (68 unique skills)
+- **Pipeline-Wide Extraction Diagnostic (All 3,707 Deduplicated Records, incl. Non-Tech/Foreign/Stale):** 7,297 mentions across 1,758 listings (47.42%)
 
-### Top 20 Most Demanded Skills in Pakistan Tech Jobs:
+### Top 20 Most In-Demand Skills in Recent Pakistan Tech Jobs ($N=685$):
 
-| Rank | Technical Skill | Category | Mentions Count | % of All Postings |
+| Rank | Technical Skill | Category | Mentions Count | % of Recent PK Tech |
 | :--- | :--- | :--- | :--- | :--- |
-| 1 | **Excel** | Technical Taxonomy | 507 | 13.7% |
-| 2 | **SQL** | Technical Taxonomy | 406 | 11.0% |
-| 3 | **Python** | Technical Taxonomy | 381 | 10.3% |
-| 4 | **Microsoft Azure** | Technical Taxonomy | 349 | 9.4% |
-| 5 | **AWS** | Technical Taxonomy | 333 | 9.0% |
-| 6 | **CI/CD** | Technical Taxonomy | 332 | 9.0% |
-| 7 | **Git** | Technical Taxonomy | 318 | 8.6% |
-| 8 | **JavaScript** | Technical Taxonomy | 301 | 8.1% |
-| 9 | **Large Language Models** | Technical Taxonomy | 211 | 5.7% |
-| 10 | **Machine Learning** | Technical Taxonomy | 201 | 5.4% |
-| 11 | **Google Cloud Platform** | Technical Taxonomy | 187 | 5.0% |
-| 12 | **React** | Technical Taxonomy | 186 | 5.0% |
-| 13 | **Apache Spark** | Technical Taxonomy | 181 | 4.9% |
-| 14 | **Docker** | Technical Taxonomy | 177 | 4.8% |
-| 15 | **Java** | Technical Taxonomy | 164 | 4.4% |
-| 16 | **CSS** | Technical Taxonomy | 161 | 4.3% |
-| 17 | **HTML** | Technical Taxonomy | 160 | 4.3% |
-| 18 | **PostgreSQL** | Technical Taxonomy | 159 | 4.3% |
-| 19 | **TypeScript** | Technical Taxonomy | 148 | 4.0% |
-| 20 | **Kubernetes** | Technical Taxonomy | 145 | 3.9% |
+| 1 | **Python** | Technical Taxonomy | 268 | 39.12% |
+| 2 | **Microsoft Azure** | Technical Taxonomy | 263 | 38.39% |
+| 3 | **CI/CD** | Technical Taxonomy | 253 | 36.93% |
+| 4 | **SQL** | Technical Taxonomy | 252 | 36.79% |
+| 5 | **AWS** | Technical Taxonomy | 230 | 33.58% |
+| 6 | **Git** | Technical Taxonomy | 211 | 30.80% |
+| 7 | **JavaScript** | Technical Taxonomy | 174 | 25.40% |
+| 8 | **Large Language Models** | Technical Taxonomy | 134 | 19.56% |
+| 9 | **Google Cloud Platform** | Technical Taxonomy | 132 | 19.27% |
+| 10 | **Docker** | Technical Taxonomy | 131 | 19.12% |
+| 11 | **Kubernetes** | Technical Taxonomy | 117 | 17.08% |
+| 12 | **React** | Technical Taxonomy | 114 | 16.64% |
+| 13 | **Java** | Technical Taxonomy | 114 | 16.64% |
+| 14 | **Machine Learning** | Technical Taxonomy | 113 | 16.50% |
+| 15 | **PostgreSQL** | Technical Taxonomy | 110 | 16.06% |
+| 16 | **TypeScript** | Technical Taxonomy | 102 | 14.89% |
+| 17 | **Linux** | Technical Taxonomy | 94 | 13.72% |
+| 18 | **Terraform** | Technical Taxonomy | 70 | 10.22% |
+| 19 | **HTML** | Technical Taxonomy | 67 | 9.78% |
+| 20 | **Node.js** | Technical Taxonomy | 64 | 9.34% |
 
 ---
 

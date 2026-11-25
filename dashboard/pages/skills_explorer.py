@@ -36,7 +36,9 @@ from src.analysis.skills_analysis import (
 raw_df = load_clean_data()
 df = render_sidebar_filters(raw_df)
 
-render_header("Skills Explorer", "Deep-dive into 69 technical frameworks, programming languages, and tools")
+active_scope = st.session_state.get("filter_dataset_scope", "Confirmed Pakistan Tech")
+active_date_scope = st.session_state.get("filter_date_scope", "Last 12 Months (2025-11-20 to 2026-11-20)")
+render_header("Skills Explorer", f"Skill demand & frequency across 69 technical tools — Scope: {active_scope} | {active_date_scope} (N={len(df):,})")
 
 if len(df) == 0:
     render_empty_state()
@@ -99,7 +101,7 @@ if len(skills_df) > 0:
         text="job_count",
         color="percentage_of_jobs",
         color_continuous_scale="Blues",
-        labels={"job_count": "Unique Job Postings Count", "skill": "Skill", "percentage_of_jobs": "% of All Postings"},
+        labels={"job_count": "Unique Job Postings Count", "skill": "Skill", "percentage_of_jobs": "% of Sample Postings"},
     )
     fig.update_layout(height=max(450, len(chart_df) * 26), margin=dict(l=10, r=20, t=20, b=20))
     st.plotly_chart(fig, use_container_width=True)

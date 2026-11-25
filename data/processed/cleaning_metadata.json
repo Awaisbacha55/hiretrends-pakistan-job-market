@@ -1,7 +1,7 @@
 {
   "pipeline_name": "HireTrends Data Cleaning & Normalization Engine",
   "pipeline_version": "2.1.0",
-  "processed_at": "2026-11-25T19:03:18.640041+00:00",
+  "processed_at": "2026-11-25T19:14:25.464228+00:00",
   "input_records": 4491,
   "unique_id_records": 4491,
   "output_records": 3707,
@@ -82,90 +82,178 @@
   "tech_roles_count": 921,
   "disclosed_salary_count": 152,
   "parsed_experience_count": 2502,
-  "total_skills_extracted": 7297,
-  "unique_skills_found": 69,
+  "total_skills_extracted": 4384,
+  "unique_skills_found": 68,
+  "top_skills_scope": "Confirmed Pakistan Tech (Recent 12M: 2025-11-20 to 2026-11-20, N=685)",
   "top_skills": [
     [
-      "Excel",
-      507
-    ],
-    [
-      "SQL",
-      406
-    ],
-    [
       "Python",
-      381
+      268
     ],
     [
       "Microsoft Azure",
-      349
-    ],
-    [
-      "AWS",
-      333
+      263
     ],
     [
       "CI/CD",
-      332
+      253
+    ],
+    [
+      "SQL",
+      252
+    ],
+    [
+      "AWS",
+      230
     ],
     [
       "Git",
-      318
-    ],
-    [
-      "JavaScript",
-      301
-    ],
-    [
-      "Large Language Models",
       211
     ],
     [
-      "Machine Learning",
-      201
+      "JavaScript",
+      174
+    ],
+    [
+      "Large Language Models",
+      134
     ],
     [
       "Google Cloud Platform",
-      187
-    ],
-    [
-      "React",
-      186
-    ],
-    [
-      "Apache Spark",
-      181
+      132
     ],
     [
       "Docker",
-      177
-    ],
-    [
-      "Java",
-      164
-    ],
-    [
-      "CSS",
-      161
-    ],
-    [
-      "HTML",
-      160
-    ],
-    [
-      "PostgreSQL",
-      159
-    ],
-    [
-      "TypeScript",
-      148
+      131
     ],
     [
       "Kubernetes",
-      145
+      117
+    ],
+    [
+      "React",
+      114
+    ],
+    [
+      "Java",
+      114
+    ],
+    [
+      "Machine Learning",
+      113
+    ],
+    [
+      "PostgreSQL",
+      110
+    ],
+    [
+      "TypeScript",
+      102
+    ],
+    [
+      "Linux",
+      94
+    ],
+    [
+      "Terraform",
+      70
+    ],
+    [
+      "HTML",
+      67
+    ],
+    [
+      "Node.js",
+      64
     ]
   ],
+  "all_records_skills_diagnostics": {
+    "scope": "All Deduplicated Records (incl. Non-Tech, Foreign & Stale, N=3707)",
+    "total_skills_extracted": 7297,
+    "unique_skills_found": 69,
+    "top_skills": [
+      [
+        "Excel",
+        507
+      ],
+      [
+        "SQL",
+        406
+      ],
+      [
+        "Python",
+        381
+      ],
+      [
+        "Microsoft Azure",
+        349
+      ],
+      [
+        "AWS",
+        333
+      ],
+      [
+        "CI/CD",
+        332
+      ],
+      [
+        "Git",
+        318
+      ],
+      [
+        "JavaScript",
+        301
+      ],
+      [
+        "Large Language Models",
+        211
+      ],
+      [
+        "Machine Learning",
+        201
+      ],
+      [
+        "Google Cloud Platform",
+        187
+      ],
+      [
+        "React",
+        186
+      ],
+      [
+        "Apache Spark",
+        181
+      ],
+      [
+        "Docker",
+        177
+      ],
+      [
+        "Java",
+        164
+      ],
+      [
+        "CSS",
+        161
+      ],
+      [
+        "HTML",
+        160
+      ],
+      [
+        "PostgreSQL",
+        159
+      ],
+      [
+        "TypeScript",
+        148
+      ],
+      [
+        "Kubernetes",
+        145
+      ]
+    ]
+  },
   "quality_metrics": {
     "total_records": 3707,
     "unique_job_ids": 3707,

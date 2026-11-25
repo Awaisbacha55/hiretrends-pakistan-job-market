@@ -32,7 +32,9 @@ from src.analysis.skills_analysis import TARGET_ROLES, parse_job_skills
 raw_df = load_clean_data()
 df = render_sidebar_filters(raw_df)
 
-render_header("Role Explorer", "Occupational skill profiles, career paths, and requirements across 12 tech roles")
+active_scope = st.session_state.get("filter_dataset_scope", "Confirmed Pakistan Tech")
+active_date_scope = st.session_state.get("filter_date_scope", "Last 12 Months (2025-11-20 to 2026-11-20)")
+render_header("Role Explorer", f"Occupational skill profiles across 12 tech roles — Scope: {active_scope} | {active_date_scope} (N={len(df):,})")
 
 if len(df) == 0:
     render_empty_state()

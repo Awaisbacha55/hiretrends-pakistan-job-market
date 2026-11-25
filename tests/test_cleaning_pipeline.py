@@ -560,3 +560,43 @@ class TestIssue4DateWindowFiltering:
         assert (df_recent["is_recent_12m"] == True).all()
         assert df_recent["posted_date"].min() >= "2025-11-20"
         assert df_recent["posted_date"].max() <= "2026-11-20"
+
+
+class TestIssue5SkillsRankingScope:
+    """Tests for Review Issue #5: Primary top skills scoped to Recent 12M Confirmed Pakistan Tech."""
+
+    def test_metadata_top_skills_scoped_to_recent_pk_tech(self):
+        import os
+
+        if not os.path.exists("data/processed/cleaning_metadata.json"):
+            pytest.skip("cleaning_metadata.json not present")
+
+        with open("data/processed/cleaning_metadata.json", "r", encoding="utf-8") as f:
+            meta = json.load(f)
+
+        assert "Confirmed Pakistan Tech (Recent 12M" in meta["top_skills_scope"]
+        top_names = [s[0] for s in meta["top_skills"]]
+        assert top_names[0] == "Python"
+        assert "Excel" not in top_names[:10]
+        # Pipeline-wide extraction diagnostics must be explicitly separated
+        diag = meta["all_records_skills_diagnostics"]
+        assert "All Deduplicated Records" in diag["scope"]
+        assert diag["total_skills_extracted"] > meta["total_skills_extracted"]
+
+    def test_skills_by_role_and_cooccurrence_on_recent_pk_tech(self):
+        import os
+        import pandas as pd
+        from src.analysis.skills_analysis import get_skills_by_role
+        from src.analysis.cooccurrence import compute_skill_cooccurrence
+
+        if not os.path.exists("data/processed/jobs_pakistan_tech_recent.csv"):
+            pytest.skip("jobs_pakistan_tech_recent.csv not present")
+
+        df_recent = pd.read_csv("data/processed/jobs_pakistan_tech_recent.csv")
+        roles = get_skills_by_role(df_recent, top_n=5)
+        assert roles["Software Engineer"]["sample_size"] == 70
+        assert all(v["has_sufficient_records"] for v in roles.values())
+
+        co = compute_skill_cooccurrence(df_recent, top_n_pairs=5)
+        assert co["total_jobs_evaluated"] == 685
+        assert co["top_cooccurring_pairs"][0]["pair_name"] == "AWS + Microsoft Azure"

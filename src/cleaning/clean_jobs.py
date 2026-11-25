@@ -430,14 +430,24 @@ def run_cleaning_pipeline(
             "Total": int(c_mask.sum()),
         }
 
-    # Aggregations for report
-    all_skills_flat = []
+    # Aggregations for report & metadata
+    # Primary market skills ranking: Confirmed Pakistan Tech, Recent 12M
+    pk_tech_recent_skills_flat: List[str] = []
+    for s_val in df_pakistan_tech_recent["skills"]:
+        s_list = json.loads(s_val) if isinstance(s_val, str) else []
+        pk_tech_recent_skills_flat.extend(s_list)
+
+    pk_tech_skill_counts = Counter(pk_tech_recent_skills_flat)
+    top_20_skills = pk_tech_skill_counts.most_common(20)
+
+    # Pipeline-wide extraction diagnostics (all deduplicated records, incl. non-tech/foreign/stale)
+    all_skills_flat: List[str] = []
     for r in final_records:
         s_list = json.loads(r["skills"]) if isinstance(r["skills"], str) else []
         all_skills_flat.extend(s_list)
 
-    skill_counts = Counter(all_skills_flat)
-    top_20_skills = skill_counts.most_common(20)
+    all_skill_counts = Counter(all_skills_flat)
+    top_20_all_records = all_skill_counts.most_common(20)
 
     # City distributions
     city_counts = Counter(df["normalized_city"].dropna())
@@ -492,9 +502,16 @@ def run_cleaning_pipeline(
         "tech_roles_count": tech_present,
         "disclosed_salary_count": sal_present,
         "parsed_experience_count": exp_present,
-        "total_skills_extracted": len(all_skills_flat),
-        "unique_skills_found": len(skill_counts),
+        "total_skills_extracted": len(pk_tech_recent_skills_flat),
+        "unique_skills_found": len(pk_tech_skill_counts),
+        "top_skills_scope": f"Confirmed Pakistan Tech (Recent 12M: {RECENT_WINDOW_CUTOFF_DATE} to {RECENT_WINDOW_REFERENCE_DATE}, N={len(df_pakistan_tech_recent)})",
         "top_skills": top_20_skills,
+        "all_records_skills_diagnostics": {
+            "scope": f"All Deduplicated Records (incl. Non-Tech, Foreign & Stale, N={len(df)})",
+            "total_skills_extracted": len(all_skills_flat),
+            "unique_skills_found": len(all_skill_counts),
+            "top_skills": top_20_all_records,
+        },
         "quality_metrics": quality_metrics,
         "source_license": "ODbL 1.0 & DbCL 1.0 (Headcount Labs)",
     }
@@ -524,6 +541,7 @@ def run_cleaning_pipeline(
         sal_present,
         exp_present,
         len(df),
+        len(df_pakistan_tech_recent),
     )
 
     return metadata
@@ -540,6 +558,7 @@ def _generate_cleaning_report(
     sal_count: int,
     exp_count: int,
     total_records: int,
+    pk_tech_recent_count: int = 0,
 ) -> None:
     """Generate reports/data_cleaning_report.md."""
     qm = meta.get("quality_metrics", {})
@@ -596,20 +615,21 @@ def _generate_cleaning_report(
         "",
         "---",
         "",
-        "## 4. Technical Skill Extraction & Top 20 Demanded Skills",
+        "## 4. Technical Skill Extraction & Top 20 Demanded Skills (Confirmed Pakistan Tech, Recent 12M)",
         "",
-        f"- **Total Skill Mentions Extracted:** {meta['total_skills_extracted']:,}",
-        f"- **Unique Skills Identified:** {meta['unique_skills_found']:,}",
-        f"- **Listings with Technical Skills:** {qm.get('records_with_skills', 0):,} ({qm.get('skill_coverage_pct', 0.0)}%)",
+        f"- **Primary Ranking Scope:** Confirmed Pakistan Tech, Last 12 Months (`{RECENT_WINDOW_CUTOFF_DATE}` to `{RECENT_WINDOW_REFERENCE_DATE}`, $N={pk_tech_recent_count:,}$)",
+        f"- **Skill Mentions in Primary Scope:** {meta['total_skills_extracted']:,} ({meta['unique_skills_found']:,} unique skills)",
+        f"- **Pipeline-Wide Extraction Diagnostic (All {total_records:,} Deduplicated Records, incl. Non-Tech/Foreign/Stale):** {meta.get('all_records_skills_diagnostics', {}).get('total_skills_extracted', 0):,} mentions across {qm.get('records_with_skills', 0):,} listings ({qm.get('skill_coverage_pct', 0.0)}%)",
         "",
-        "### Top 20 Most Demanded Skills in Pakistan Tech Jobs:",
+        f"### Top 20 Most In-Demand Skills in Recent Pakistan Tech Jobs ($N={pk_tech_recent_count:,}$):",
         "",
-        "| Rank | Technical Skill | Category | Mentions Count | % of All Postings |",
+        "| Rank | Technical Skill | Category | Mentions Count | % of Recent PK Tech |",
         "| :--- | :--- | :--- | :--- | :--- |",
     ]
 
+    denom_skills = max(pk_tech_recent_count, 1)
     for rank, (skill_name, count) in enumerate(top_20_skills, start=1):
-        lines.append(f"| {rank} | **{skill_name}** | Technical Taxonomy | {count:,} | {count/max(total_records, 1)*100:.1f}% |")
+        lines.append(f"| {rank} | **{skill_name}** | Technical Taxonomy | {count:,} | {count/denom_skills*100:.2f}% |")
 
     lines.extend([
         "",
