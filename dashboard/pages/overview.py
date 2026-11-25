@@ -147,7 +147,12 @@ with col_city:
         )
         fig_city.update_layout(height=380, margin=dict(l=10, r=10, t=20, b=20), coloraxis_showscale=False)
         st.plotly_chart(fig_city, use_container_width=True)
-        st.caption(f"Mapped Pakistani vacancies: {loc_data['total_mapped_pk_cities']:,} | Foreign origin postings: {loc_data['foreign_listings']['total_foreign_jobs']:,}")
+        st.caption(
+            f"Mapped Pakistani cities: {loc_data['total_mapped_pk_cities']:,} | "
+            f"Missing/unmapped PK cities: {loc_data['unmapped_pk_city_count']:,} "
+            f"({loc_data['missing_city_percentage_of_pk']:.2f}%) | "
+            f"Foreign origin: {loc_data['foreign_listings']['total_foreign_jobs']:,}"
+        )
     else:
         st.info("No mapped Pakistani cities in the current selection.")
 

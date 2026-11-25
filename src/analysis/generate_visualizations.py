@@ -238,7 +238,10 @@ def generate_all_visualizations(
         text="count",
         color="percentage_of_mapped_cities",
         color_continuous_scale="Teal",
-        title=f"Top Hiring Hubs — Pakistan Tech (Last 12M, N={loc_analysis['total_mapped_pk_cities']:,} Mapped Cities)",
+        title=(
+            f"Top Hiring Hubs — Pakistan Tech (Last 12M, N={loc_analysis['total_mapped_pk_cities']:,} Mapped Cities, "
+            f"{loc_analysis['unmapped_pk_city_count']:,} Missing/Unmapped [{loc_analysis['missing_city_percentage_of_pk']:.2f}%])"
+        ),
         labels={"count": "Job Postings Count", "city": "City", "percentage_of_mapped_cities": "% of Mapped Cities"},
     )
     fig5.update_layout(height=550)
@@ -249,7 +252,11 @@ def generate_all_visualizations(
     # Matplotlib PNG
     fig_m5, ax_m5 = plt.subplots(figsize=(10, 6))
     sns.barplot(data=cities_df, x="city", y="count", ax=ax_m5, palette="rocket")
-    ax_m5.set_title("Geographic Concentration of Employment in Pakistan", weight="bold")
+    ax_m5.set_title(
+        f"Pakistan Tech City Concentration (N={loc_analysis['total_mapped_pk_cities']:,} Mapped; "
+        f"{loc_analysis['unmapped_pk_city_count']:,} Missing [{loc_analysis['missing_city_percentage_of_pk']:.2f}%])",
+        weight="bold",
+    )
     ax_m5.set_xlabel("City")
     ax_m5.set_ylabel("Job Postings Count")
     plt.xticks(rotation=30, ha="right")

@@ -5,6 +5,7 @@ and strictly prevents foreign locations (Cairo, Turkey, etc.) from being classif
 """
 
 import re
+import unicodedata
 from typing import Any, Dict, List, Optional, Tuple
 
 PAKISTAN_CITIES = {
@@ -15,7 +16,8 @@ PAKISTAN_CITIES = {
     "hyderabad": ("Hyderabad", "Sindh", "PK"),
     "sukkur": ("Sukkur", "Sindh", "PK"),
     "larkana": ("Larkana", "Sindh", "PK"),
-    
+    "nawabshah": ("Nawabshah", "Sindh", "PK"),
+
     # Punjab
     "lahore": ("Lahore", "Punjab", "PK"),
     "lhr": ("Lahore", "Punjab", "PK"),
@@ -31,12 +33,18 @@ PAKISTAN_CITIES = {
     "gujrat": ("Gujrat", "Punjab", "PK"),
     "sheikhupura": ("Sheikhupura", "Punjab", "PK"),
     "sahiwal": ("Sahiwal", "Punjab", "PK"),
-    
+    "jhelum": ("Jhelum", "Punjab", "PK"),
+    "pakpattan": ("Pakpattan", "Punjab", "PK"),
+    "dina": ("Dina", "Punjab", "PK"),
+    "kharian": ("Kharian", "Punjab", "PK"),
+    "vehari": ("Vehari", "Punjab", "PK"),
+    "chishtian": ("Chishtian", "Punjab", "PK"),
+
     # Federal Capital
     "islamabad": ("Islamabad", "Islamabad Capital Territory", "PK"),
     "isb": ("Islamabad", "Islamabad Capital Territory", "PK"),
     "islamabad capital territory": ("Islamabad", "Islamabad Capital Territory", "PK"),
-    
+
     # Khyber Pakhtunkhwa
     "peshawar": ("Peshawar", "Khyber Pakhtunkhwa", "PK"),
     "pesh": ("Peshawar", "Khyber Pakhtunkhwa", "PK"),
@@ -44,17 +52,52 @@ PAKISTAN_CITIES = {
     "mardan": ("Mardan", "Khyber Pakhtunkhwa", "PK"),
     "swat": ("Swat", "Khyber Pakhtunkhwa", "PK"),
     "haripur": ("Haripur", "Khyber Pakhtunkhwa", "PK"),
-    
+    "akora khattak": ("Akora Khattak", "Khyber Pakhtunkhwa", "PK"),
+
     # Balochistan
     "quetta": ("Quetta", "Balochistan", "PK"),
     "gwadar": ("Gwadar", "Balochistan", "PK"),
-    
+    "hub": ("Hub", "Balochistan", "PK"),
+
     # Azad Jammu & Kashmir / Gilgit-Baltistan
     "muzaffarabad": ("Muzaffarabad", "Azad Jammu & Kashmir", "PK"),
     "mirpur": ("Mirpur", "Azad Jammu & Kashmir", "PK"),
     "gilgit": ("Gilgit", "Gilgit-Baltistan", "PK"),
     "skardu": ("Skardu", "Gilgit-Baltistan", "PK"),
 }
+
+PAKISTAN_PROVINCES = {
+    "sindh": "Sindh",
+    "punjab": "Punjab",
+    "khyber pakhtunkhwa": "Khyber Pakhtunkhwa",
+    "kpk": "Khyber Pakhtunkhwa",
+    "balochistan": "Balochistan",
+    "azad kashmir": "Azad Jammu & Kashmir",
+    "azad jammu & kashmir": "Azad Jammu & Kashmir",
+    "azad jammu and kashmir": "Azad Jammu & Kashmir",
+    "gilgit-baltistan": "Gilgit-Baltistan",
+    "gilgit baltistan": "Gilgit-Baltistan",
+}
+
+_NON_CITY_NOISE = {
+    "remote",
+    "telecommute",
+    "work from home",
+    "wfh",
+    "anywhere",
+    "any",
+    "world wide",
+    "worldwide",
+    "india",
+    "bahrain",
+}
+
+_NEIGHBORHOOD_PREFIX_RE = re.compile(
+    r"^(?:gulberg|clifton|dha|defence|model town|johar town|bahria town|satellite town|saddar|cantt)\s+",
+    flags=re.IGNORECASE,
+)
+_DIRECTION_PREFIX_RE = re.compile(r"^(?:north|south|east|west|central)\s+", flags=re.IGNORECASE)
+_SUFFIX_NOISE_RE = re.compile(r"[,]?\s*(?:pakistan|pk|city|g\.?p\.?o\.?)\b\.?", flags=re.IGNORECASE)
 
 # Explicitly foreign locations that may appear in global remote or mis-tagged listings
 FOREIGN_LOCATIONS = {
@@ -88,6 +131,35 @@ def _is_pk_country(raw_country: Optional[str]) -> bool:
     return raw_country.strip().upper() in ("PK", "PAK", "PAKISTAN")
 
 
+def _strip_diacritics(text: str) -> str:
+    """Fold Unicode diacritics to ASCII equivalents (e.g., Pākpattan -> Pakpattan)."""
+    decomposed = unicodedata.normalize("NFKD", text)
+    return "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+
+
+def _match_pakistan_city_variant(clean: str) -> Optional[Tuple[str, str, str]]:
+    """Deterministically match a normalized lowercase string or neighborhood/postal variant."""
+    if clean in PAKISTAN_CITIES:
+        return PAKISTAN_CITIES[clean]
+
+    stripped = re.sub(r"\s+", " ", _SUFFIX_NOISE_RE.sub("", clean)).strip(" ,.")
+    if stripped in PAKISTAN_CITIES:
+        return PAKISTAN_CITIES[stripped]
+
+    no_neighborhood = _NEIGHBORHOOD_PREFIX_RE.sub("", stripped).strip(" ,.")
+    if no_neighborhood in PAKISTAN_CITIES:
+        return PAKISTAN_CITIES[no_neighborhood]
+
+    if "," in stripped:
+        for part in reversed([p.strip() for p in stripped.split(",") if p.strip()]):
+            candidate = _DIRECTION_PREFIX_RE.sub("", part).strip()
+            candidate = _NEIGHBORHOOD_PREFIX_RE.sub("", candidate).strip()
+            if candidate in PAKISTAN_CITIES:
+                return PAKISTAN_CITIES[candidate]
+
+    return None
+
+
 def normalize_city_name(
     raw_city: Optional[str],
     raw_country: Optional[str] = None,
@@ -103,26 +175,35 @@ def normalize_city_name(
     if not raw_city or not isinstance(raw_city, str) or not raw_city.strip():
         return None, None, norm_raw_country, is_explicit_pk
 
-    clean = raw_city.strip().lower()
+    clean = _strip_diacritics(re.sub(r"\s+", " ", raw_city.strip())).lower()
 
-    # Remote is not a city, and Remote alone does NOT prove Pakistan
-    if clean in ("remote", "telecommute", "work from home", "wfh", "anywhere"):
+    # Non-city noise (Remote, Any, foreign noise within PK feed) -> keep city None, preserve explicit country
+    if clean in _NON_CITY_NOISE:
         return None, None, norm_raw_country, is_explicit_pk
+
+    # Province-only values are regions, not cities
+    if clean in PAKISTAN_PROVINCES:
+        return None, PAKISTAN_PROVINCES[clean], "PK", True
+
+    # Country-only values are not cities
+    if clean in ("pakistan", "pk", "pak"):
+        return None, None, "PK", True
+
+    # Multi-city strings separated by |, /, or & must not invent a single city
+    if any(sep in clean for sep in ("|", "/", "&")):
+        parts = [p.strip() for p in re.split(r"[|/&]+", clean) if p.strip()]
+        if len(parts) >= 2:
+            return None, None, norm_raw_country, is_explicit_pk
 
     # Check foreign locations (overrides noisy PK country tags if city is clearly foreign)
     if clean in FOREIGN_LOCATIONS:
         f_city, f_reg, f_cnt = FOREIGN_LOCATIONS[clean]
         return None, f_reg, f_cnt, False
 
-    # Check Pakistani city mapping
-    if clean in PAKISTAN_CITIES:
-        norm_city, region, country = PAKISTAN_CITIES[clean]
-        return norm_city, region, country, True
-
-    # Strip prefixes/suffixes like "City", ", Pakistan", etc.
-    clean_stripped = re.sub(r"[,]?\s*(pakistan|pk|city)\b", "", clean, flags=re.IGNORECASE).strip()
-    if clean_stripped in PAKISTAN_CITIES:
-        norm_city, region, country = PAKISTAN_CITIES[clean_stripped]
+    # Check Pakistani city mapping and deterministic neighborhood/postal variants
+    pk_match = _match_pakistan_city_variant(clean)
+    if pk_match is not None:
+        norm_city, region, country = pk_match
         return norm_city, region, country, True
 
     # Check if country is explicitly foreign

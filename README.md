@@ -48,7 +48,7 @@ To prevent non-tech jobs, foreign postings, and stale listings from distorting m
 - **Top 5 Skills:** `Python` (`268`, `39.12%`), `Microsoft Azure` (`263`, `38.39%`), `CI/CD` (`253`, `36.93%`), `SQL` (`252`, `36.79%`), `AWS` (`230`, `33.58%`).
 - **Top Skill Co-Occurrences:** `AWS + Microsoft Azure` (`148` jobs, `21.61%`, Jaccard `0.429`), `AWS + CI/CD` (`142`, `20.73%`, Jaccard `0.416`), `AWS + Python` (`142`, `20.73%`, Jaccard `0.399`).
 - **Leading Target Roles:** `Software Engineer` (`70`), `Full Stack Developer` (`32`), `AI Engineer` (`30`), `Cybersecurity Engineer` (`25`), `DevOps Engineer` (`20`), `Data Analyst` (`15`).
-- **City Concentration (`N = 551` mapped PK cities):** `Lahore` (`251`, `45.55%`), `Islamabad` (`147`, `26.68%`), `Karachi` (`133`, `24.14%`), `Other` (`20`, `3.63%`) — `96.37%` in the Big Three.
+- **City Concentration (`N = 560` mapped PK cities; `125` [`18.25%`] missing/unmapped):** `Lahore` (`253`, `45.18%`), `Islamabad` (`147`, `26.25%`), `Karachi` (`134`, `23.93%`), `Other` (`26`, `4.64%`) — `95.36%` of mapped cities in the Big Three.
 - **Workplace Model (`N = 356` known; `329` unstated):** `On-site` (`195`, `54.78%`), `Remote` (`128`, `35.96%`), `Hybrid` (`33`, `9.27%`).
 - **Salary Disclosure (`N = 8`, `1.17%` — indicative only):** `PKR` (`N = 6`) median `PKR 175,000/month` (range `70,000–450,000`); `USD` (`N = 2`) median `$1,300/month` (range `$600–$2,000`).
 

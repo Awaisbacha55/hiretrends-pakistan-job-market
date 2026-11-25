@@ -1,6 +1,6 @@
 # HireTrends — Day 3 Data Cleaning, Normalization & Skill Extraction Report
 
-**Pipeline Execution Timestamp:** 2026-11-25T19:14:25.464228+00:00  
+**Pipeline Execution Timestamp:** 2026-11-25T19:36:24.684171+00:00  
 **Input Source Dataset:** `data/raw/headcount/jobs_raw.jsonl`  
 **Processed Outputs:** `jobs_cleaned.csv` (All Deduplicated) | `jobs_pakistan.csv` (Pakistan-Only) | `jobs_pakistan_tech.csv` (Confirmed Pakistan Tech)  
 **Attribution & License:** Open Database License (ODbL 1.0 & DbCL 1.0 (Headcount Labs)  
@@ -83,18 +83,18 @@ Pakistani cities were normalized to standard canonical spellings. Foreign cities
 
 | Standardized Pakistani City | Province / Region | Listings Count | % of Mapped Cities |
 | :--- | :--- | :--- | :--- |
-| **Lahore** | Pakistan | 957 | 39.7% |
-| **Karachi** | Pakistan | 753 | 31.3% |
-| **Islamabad** | Pakistan | 528 | 21.9% |
-| **Rawalpindi** | Pakistan | 37 | 1.5% |
+| **Lahore** | Pakistan | 966 | 39.3% |
+| **Karachi** | Pakistan | 754 | 30.7% |
+| **Islamabad** | Pakistan | 528 | 21.5% |
+| **Rawalpindi** | Pakistan | 38 | 1.5% |
 | **Peshawar** | Pakistan | 25 | 1.0% |
 | **Multan** | Pakistan | 24 | 1.0% |
-| **Faisalabad** | Pakistan | 20 | 0.8% |
+| **Faisalabad** | Pakistan | 21 | 0.9% |
 | **Sukkur** | Pakistan | 13 | 0.5% |
-| **Hyderabad** | Pakistan | 11 | 0.5% |
+| **Hyderabad** | Pakistan | 11 | 0.4% |
 | **Larkana** | Pakistan | 9 | 0.4% |
 | **Sialkot** | Pakistan | 9 | 0.4% |
-| **Quetta** | Pakistan | 4 | 0.2% |
+| **Hub** | Pakistan | 8 | 0.3% |
 
 ---
 
@@ -127,7 +127,7 @@ Pakistani cities were normalized to standard canonical spellings. Foreign cities
 - **Invalid Date Formats:** 0
 - **Invalid Salary Ranges (min > max):** 0
 - **Invalid Experience Ranges (min > max):** 0
-- **Unmapped / Foreign Cities:** 1298 (predominantly remote or foreign roles)
+- **Unmapped / Foreign Cities:** 1247 (predominantly remote or foreign roles)
 - **Manual Review Flagged Records:** 836
 
 ---

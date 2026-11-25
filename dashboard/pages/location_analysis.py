@@ -50,7 +50,7 @@ with c1:
 with c2:
     render_kpi_card("Mapped City Vacancies", format_number(mapped_pk_cities), delta=f"{mapped_pk_cities/max(pakistan_jobs,1)*100:.1f}% localized", help_text="Specific city named in posting", color_accent="#059669")
 with c3:
-    render_kpi_card("Remote / Non-City PK", format_number(unmapped_pk), delta=f"{unmapped_pk/max(pakistan_jobs,1)*100:.1f}% unmapped", help_text="Predominantly nationwide remote", color_accent="#d97706")
+    render_kpi_card("Missing / Unmapped City PK", format_number(unmapped_pk), delta=f"{unmapped_pk/max(pakistan_jobs,1)*100:.1f}% unmapped", help_text="Missing, remote-only, multi-city, or unmapped city strings", color_accent="#d97706")
 with c4:
     render_kpi_card("Foreign Origin Listings", format_number(foreign_jobs), delta=f"{foreign_jobs/len(df)*100:.1f}% cross-border", help_text="US, UK, UAE, international firms", color_accent="#7c3aed")
 
@@ -74,6 +74,10 @@ if city_list:
     )
     fig_city.update_layout(height=420, margin=dict(l=10, r=20, t=20, b=20))
     st.plotly_chart(fig_city, use_container_width=True)
+    st.caption(
+        f"Mapped Pakistani cities: {mapped_pk_cities:,} ({mapped_pk_cities/max(pakistan_jobs,1)*100:.2f}%) | "
+        f"Missing / unmapped city: {unmapped_pk:,} ({unmapped_pk/max(pakistan_jobs,1)*100:.2f}%)"
+    )
 else:
     st.info("No localized Pakistani cities in current filter selection.")
 

@@ -92,6 +92,8 @@ def analyze_locations(df: pd.DataFrame) -> Dict[str, Any]:
         "pakistan_listings_count": len(pakistan_df),
         "total_mapped_pk_cities": total_mapped_cities,
         "unmapped_pk_city_count": unmapped_pk_city_count,
+        "mapped_city_percentage_of_pk": round(total_mapped_cities / max(len(pakistan_df), 1) * 100, 2),
+        "missing_city_percentage_of_pk": round(unmapped_pk_city_count / max(len(pakistan_df), 1) * 100, 2),
         "city_distribution": city_distribution,
         "foreign_listings": {
             "total_foreign_jobs": len(foreign_df),

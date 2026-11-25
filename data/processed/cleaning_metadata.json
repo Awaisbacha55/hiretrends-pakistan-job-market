@@ -1,7 +1,7 @@
 {
   "pipeline_name": "HireTrends Data Cleaning & Normalization Engine",
   "pipeline_version": "2.1.0",
-  "processed_at": "2026-11-25T19:14:25.464228+00:00",
+  "processed_at": "2026-11-25T19:36:24.684171+00:00",
   "input_records": 4491,
   "unique_id_records": 4491,
   "output_records": 3707,
@@ -264,7 +264,7 @@
       "salary_min_pkr": 3555,
       "experience_min_years": 1205,
       "description": 3707,
-      "normalized_city": 1298,
+      "normalized_city": 1247,
       "company": 25
     },
     "missing_percentages": {
@@ -272,13 +272,13 @@
       "salary_min_pkr": 95.9,
       "experience_min_years": 32.51,
       "description": 100.0,
-      "normalized_city": 35.01,
+      "normalized_city": 33.64,
       "company": 0.67
     },
     "invalid_dates": 0,
     "invalid_salary_ranges": 0,
     "invalid_experience_ranges": 0,
-    "unmapped_cities": 1298,
+    "unmapped_cities": 1247,
     "unknown_workplaces": 1851,
     "records_with_skills": 1758,
     "skill_coverage_pct": 47.42,

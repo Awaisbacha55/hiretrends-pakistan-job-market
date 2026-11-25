@@ -66,6 +66,8 @@ The cleaning pipeline (`src/cleaning/clean_jobs.py`) produces four CSV files in 
 | `skills` | `str` | No | JSON-encoded array string of canonicalized technical skills extracted from the posting (e.g., `'["Python", "SQL", "AWS"]'`). |
 | `skills_count` | `int64` | No | Count of extracted canonical skills in `skills` (`0` when none matched). |
 
+> **Note on Job Descriptions:** Full job descriptions are present in the raw Headcount Labs API records and are used internally by `src/cleaning/clean_jobs.py` (alongside `job_title`) for skill extraction, experience parsing, and technology classification. Full description text is intentionally omitted from processed/public CSV outputs and Git to respect employer copyright.
+
 ### 6. Technology Domain Classification
 | Column | Type | Nullable | Description |
 | :--- | :--- | :--- | :--- |

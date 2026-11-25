@@ -95,6 +95,58 @@ class TestCityNormalization:
         city, _, _, _ = normalize_city_name("Atlantis City")
         assert city is None
 
+    def test_diacritic_and_neighborhood_variants(self):
+        c1, r1, _, pk1 = normalize_city_name("Pākpattan")
+        assert (c1, r1, pk1) == ("Pakpattan", "Punjab", True)
+
+        c2, r2, _, pk2 = normalize_city_name("Gulberg Lahore")
+        assert (c2, r2, pk2) == ("Lahore", "Punjab", True)
+
+        c3, r3, _, pk3 = normalize_city_name("Lahore G.P.O.")
+        assert (c3, r3, pk3) == ("Lahore", "Punjab", True)
+
+        c4, r4, _, pk4 = normalize_city_name("Clifton, South Karachi")
+        assert (c4, r4, pk4) == ("Karachi", "Sindh", True)
+
+    def test_provinces_and_country_not_treated_as_cities(self):
+        c1, r1, cnt1, pk1 = normalize_city_name("Sindh", "PK")
+        assert (c1, r1, cnt1, pk1) == (None, "Sindh", "PK", True)
+
+        c2, r2, cnt2, pk2 = normalize_city_name("Punjab", "PK")
+        assert (c2, r2, cnt2, pk2) == (None, "Punjab", "PK", True)
+
+        c3, r3, cnt3, pk3 = normalize_city_name("Pakistan", "PK")
+        assert (c3, r3, cnt3, pk3) == (None, None, "PK", True)
+
+    def test_multicity_delimiters_do_not_invent_single_city(self):
+        for raw in (
+            "Multan|Islamabad|Karachi|Lahore|Faisalabad",
+            "Karachi/Lahore",
+            "Islamabad & Lahore",
+        ):
+            city, _, cnt, pk = normalize_city_name(raw, "PK")
+            assert city is None
+            assert cnt == "PK"
+            assert pk is True
+
+    def test_secondary_pakistan_cities_and_noise(self):
+        for raw, expected in (
+            ("Hub", "Hub"),
+            ("Nawabshah", "Nawabshah"),
+            ("Jhelum", "Jhelum"),
+            ("Akora Khattak", "Akora Khattak"),
+            ("Dina", "Dina"),
+            ("Kharian", "Kharian"),
+            ("Vehari", "Vehari"),
+            ("Chishtian", "Chishtian"),
+        ):
+            city, _, cnt, pk = normalize_city_name(raw, "PK")
+            assert (city, cnt, pk) == (expected, "PK", True)
+
+        for noise in ("India", "Bahrain", "Any"):
+            city, _, cnt, pk = normalize_city_name(noise, "PK")
+            assert (city, cnt, pk) == (None, "PK", True)
+
 
 class TestExperienceParsing:
     """Test experience requirement regex parsing."""
