@@ -39,6 +39,29 @@ _TRACKING_PARAMS = frozenset({
 })
 
 
+# Reference & cutoff dates for the 12-month recent market window (anchored to snapshot date for reproducibility)
+RECENT_WINDOW_REFERENCE_DATE = "2026-11-20"
+RECENT_WINDOW_CUTOFF_DATE = "2025-11-20"
+
+
+def is_within_recent_window(
+    posted_date: Optional[str],
+    cutoff_date: str = RECENT_WINDOW_CUTOFF_DATE,
+    reference_date: str = RECENT_WINDOW_REFERENCE_DATE,
+) -> bool:
+    """Return True if posted_date (YYYY-MM-DD) falls inclusively within [cutoff_date, reference_date]."""
+    if not posted_date or not isinstance(posted_date, str):
+        return False
+    date_str = posted_date.strip()[:10]
+    try:
+        dt = datetime.strptime(date_str, "%Y-%m-%d").date()
+        c_dt = datetime.strptime(cutoff_date, "%Y-%m-%d").date()
+        r_dt = datetime.strptime(reference_date, "%Y-%m-%d").date()
+        return c_dt <= dt <= r_dt
+    except ValueError:
+        return False
+
+
 def normalize_job_url(url: Optional[str]) -> Optional[str]:
     """Normalize a job URL for deterministic deduplication.
 
@@ -192,6 +215,7 @@ def clean_single_record(
         "classification_reason": cls_info["classification_reason"],
         "needs_manual_review": cls_info["needs_manual_review"],
         "posted_date": str(mapped.get("posted_date") or "")[:10] if mapped.get("posted_date") else None,
+        "is_recent_12m": is_within_recent_window(str(mapped.get("posted_date") or "")[:10] if mapped.get("posted_date") else None),
         "source": mapped["source"],
         "job_url": job_url_str,
         "collected_at": mapped["collected_at"],
@@ -348,6 +372,33 @@ def run_cleaning_pipeline(
     df_pakistan_tech.to_csv(pk_tech_csv, index=False, encoding="utf-8")
     logger.info("Saved Confirmed Pakistan Tech dataset to %s (%d rows)", pk_tech_csv, len(df_pakistan_tech))
 
+    df_pakistan_tech_recent = df_pakistan_tech[df_pakistan_tech["is_recent_12m"] == True].copy()
+    pk_tech_recent_csv = os.path.join(out_dir, "jobs_pakistan_tech_recent.csv")
+    df_pakistan_tech_recent.to_csv(pk_tech_recent_csv, index=False, encoding="utf-8")
+    logger.info("Saved Recent 12M Confirmed Pakistan Tech dataset to %s (%d rows)", pk_tech_recent_csv, len(df_pakistan_tech_recent))
+
+    # Date-window retention/exclusion statistics across scopes
+    def _window_stats(sub_df: pd.DataFrame) -> Dict[str, Any]:
+        tot = len(sub_df)
+        ret = int((sub_df["is_recent_12m"] == True).sum()) if tot > 0 else 0
+        exc = tot - ret
+        return {
+            "total": tot,
+            "retained": ret,
+            "excluded": exc,
+            "retained_pct": round(ret / max(tot, 1) * 100, 2),
+            "excluded_pct": round(exc / max(tot, 1) * 100, 2),
+        }
+
+    date_window_stats = {
+        "reference_date": RECENT_WINDOW_REFERENCE_DATE,
+        "cutoff_date": RECENT_WINDOW_CUTOFF_DATE,
+        "window_description": f"Last 12 months ({RECENT_WINDOW_CUTOFF_DATE} to {RECENT_WINDOW_REFERENCE_DATE}, inclusive)",
+        "all_deduplicated": _window_stats(df),
+        "confirmed_pakistan": _window_stats(df_pakistan),
+        "confirmed_pakistan_tech": _window_stats(df_pakistan_tech),
+    }
+
     # Perform Quality Assurance Checks
     quality_metrics = perform_quality_checks(final_records)
 
@@ -423,6 +474,8 @@ def run_cleaning_pipeline(
             },
             "pakistan_only_records": len(df_pakistan),
             "pakistan_tech_records": len(df_pakistan_tech),
+            "pakistan_tech_recent_12m_records": len(df_pakistan_tech_recent),
+            "date_window": date_window_stats,
             "intersection_matrix": intersection_matrix,
         },
         "deduplication": {
@@ -515,7 +568,8 @@ def _generate_cleaning_report(
         f"| **Duplicates Removed (Fallback)** | **{dedup.get('fallback_duplicates_removed', 0):,}** | {dedup.get('fallback_duplicates_removed', 0)/input_count*100:.1f}% | Normalized `(title, company, city, posted_date)` for URL-less records |",
         f"| **2. Deduplicated Output (`jobs_cleaned.csv`)** | **{meta['output_records']:,}** | {output_pct:.1f}% | Unique job postings (all countries & roles) |",
         f"| **3. Confirmed Pakistan (`jobs_pakistan.csv`)** | **{scope.get('pakistan_only_records', 0):,}** | {scope.get('pakistan_only_records', 0)/input_count*100:.1f}% | Foreign: {c_brk.get('Foreign', 0):,} | Unknown: {c_brk.get('Unknown', 0):,} |",
-        f"| **4. Confirmed Pakistan Tech (`jobs_pakistan_tech.csv`)** | **{scope.get('pakistan_tech_records', 0):,}** | {scope.get('pakistan_tech_records', 0)/input_count*100:.1f}% | Primary dataset for Pakistan tech-market analysis |",
+        f"| **4. Confirmed Pakistan Tech (`jobs_pakistan_tech.csv`)** | **{scope.get('pakistan_tech_records', 0):,}** | {scope.get('pakistan_tech_records', 0)/input_count*100:.1f}% | All dates (`2019-10-02` to `2026-11-19`) |",
+        f"| **5. Recent 12M Pakistan Tech (`jobs_pakistan_tech_recent.csv`)** | **{scope.get('pakistan_tech_recent_12m_records', 0):,}** | {scope.get('pakistan_tech_recent_12m_records', 0)/input_count*100:.1f}% | Primary 2025/26 window (`{RECENT_WINDOW_CUTOFF_DATE}` to `{RECENT_WINDOW_REFERENCE_DATE}`; {scope.get('date_window', {}).get('confirmed_pakistan_tech', {}).get('excluded', 0):,} stale excluded) |",
         f"| **Technology Roles (All Countries)** | **{meta.get('tech_roles_count', 0):,} Tech** | {meta.get('tech_roles_count', 0)/max(total_records, 1)*100:.1f}% of Deduplicated | Segmented via high-confidence taxonomy |",
         f"| **Non-Technology Roles (All Countries)** | **{tech_counts.get('Non-Technology', 0):,} Non-Tech** | {tech_counts.get('Non-Technology', 0)/max(total_records, 1)*100:.1f}% of Deduplicated | Operations, sales, medical, customer service |",
         f"| **Manual Review Flagged (All Countries)** | **{qm.get('manual_review_count', 0):,}** | {qm.get('manual_review_pct', 0.0)}% of Deduplicated | Ambiguous titles flagged transparently |",

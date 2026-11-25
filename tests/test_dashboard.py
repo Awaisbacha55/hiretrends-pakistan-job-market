@@ -149,10 +149,19 @@ class TestGlobalFilters:
         assert all(res["is_technology_job"] == True)
 
     def test_default_scope_is_confirmed_pakistan_tech(self, sample_dashboard_df):
-        res = apply_global_filters(sample_dashboard_df)
+        res = apply_global_filters(sample_dashboard_df, date_scope="All Dates (2019–2026 Historical)")
         assert len(res) == 2
         assert all(res["is_pakistan_location"] == True)
         assert all(res["is_technology_job"] == True)
+
+    def test_date_scope_filters_stale_records(self, sample_dashboard_df):
+        df_with_stale = sample_dashboard_df.copy()
+        df_with_stale["posted_date"] = ["2026-11-18", "2024-01-10", "2026-11-15"]
+        recent = apply_global_filters(df_with_stale)
+        assert len(recent) == 1
+        assert recent.iloc[0]["job_id"] == "dash-001"
+        all_dates = apply_global_filters(df_with_stale, date_scope="All Dates (2019–2026 Historical)")
+        assert len(all_dates) == 2
 
     def test_filter_by_city(self, sample_dashboard_df):
         res = apply_global_filters(sample_dashboard_df, scope="All Deduplicated Records", city="Lahore")

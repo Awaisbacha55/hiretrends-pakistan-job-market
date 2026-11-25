@@ -1,7 +1,7 @@
 {
   "pipeline_name": "HireTrends Data Cleaning & Normalization Engine",
   "pipeline_version": "2.1.0",
-  "processed_at": "2026-11-25T18:50:09.359311+00:00",
+  "processed_at": "2026-11-25T19:03:18.640041+00:00",
   "input_records": 4491,
   "unique_id_records": 4491,
   "output_records": 3707,
@@ -20,6 +20,33 @@
     },
     "pakistan_only_records": 3362,
     "pakistan_tech_records": 848,
+    "pakistan_tech_recent_12m_records": 685,
+    "date_window": {
+      "reference_date": "2026-11-20",
+      "cutoff_date": "2025-11-20",
+      "window_description": "Last 12 months (2025-11-20 to 2026-11-20, inclusive)",
+      "all_deduplicated": {
+        "total": 3707,
+        "retained": 3082,
+        "excluded": 625,
+        "retained_pct": 83.14,
+        "excluded_pct": 16.86
+      },
+      "confirmed_pakistan": {
+        "total": 3362,
+        "retained": 2769,
+        "excluded": 593,
+        "retained_pct": 82.36,
+        "excluded_pct": 17.64
+      },
+      "confirmed_pakistan_tech": {
+        "total": 848,
+        "retained": 685,
+        "excluded": 163,
+        "retained_pct": 80.78,
+        "excluded_pct": 19.22
+      }
+    },
     "intersection_matrix": {
       "Pakistan": {
         "Tech": 848,

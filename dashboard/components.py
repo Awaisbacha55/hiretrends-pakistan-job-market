@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional, Tuple
 import pandas as pd
 import streamlit as st
 
-from .data_loader import SCOPE_OPTIONS, apply_global_filters, format_number, format_pct, format_pkr
+from .data_loader import DATE_SCOPE_OPTIONS, SCOPE_OPTIONS, apply_global_filters, format_number, format_pct, format_pkr
 
 
 def render_header(title: str, subtitle: str = "Pakistan Tech Job Market Intelligence") -> None:
@@ -70,6 +70,15 @@ def render_sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         index=0,
         key="filter_dataset_scope",
         help="Default: Confirmed Pakistan Tech jobs. Switch scope to inspect Pakistan-only, Foreign, Non-Tech, or Manual Review subsets.",
+    )
+
+    # Date Window Selector (defaults to Last 12 Months: 2025-11-20 to 2026-11-20)
+    date_scope_select = st.sidebar.selectbox(
+        "Date Window",
+        options=DATE_SCOPE_OPTIONS,
+        index=0,
+        key="filter_date_scope",
+        help="Default: Last 12 Months (2025-11-20 to 2026-11-20, anchored to snapshot date). Switch to All Dates to inspect historical 2019–2026 records.",
     )
 
     with st.sidebar.expander("⚙️ Refine Filters", expanded=True):
@@ -134,10 +143,11 @@ def render_sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
             placeholder="e.g. Python, React, DevOps...",
         )
 
-    # Apply filters
-    filtered_df = apply_global_filters(
+    # Compute pre-date-filter count for transparent retained/excluded reporting
+    scope_all_dates_df = apply_global_filters(
         df,
         scope=scope_select,
+        date_scope="All Dates (2019–2026 Historical)",
         category=cat_select,
         city=city_select,
         workplace=workplace_select,
@@ -147,11 +157,37 @@ def render_sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         role_keyword=role_search,
     )
 
+    # Apply filters including selected date window
+    filtered_df = apply_global_filters(
+        df,
+        scope=scope_select,
+        date_scope=date_scope_select,
+        category=cat_select,
+        city=city_select,
+        workplace=workplace_select,
+        experience_bracket=exp_select,
+        salary_only=salary_only,
+        tech_only=tech_only,
+        role_keyword=role_search,
+    )
+
+    all_dates_n = len(scope_all_dates_df)
+    retained_n = len(filtered_df)
+    excluded_stale_n = max(all_dates_n - retained_n, 0)
+    excluded_pct = (excluded_stale_n / all_dates_n * 100) if all_dates_n > 0 else 0.0
+    date_note = (
+        f"Cutoff: 2025-11-20 to 2026-11-20 | Excluded stale: {excluded_stale_n:,} ({excluded_pct:.1f}%)"
+        if date_scope_select.startswith("Last 12 Months")
+        else "All Dates (2019–2026 Historical included)"
+    )
+
     st.sidebar.markdown(
         f"""
         <div style="background-color: #f1f5f9; padding: 10px 14px; border-radius: 6px; margin-top: 14px; font-size: 0.85rem; color: #334155;">
             <b>Scope:</b> {scope_select}<br/>
-            <b>Active Selection:</b> <span style="color: #2563eb; font-weight: 700;">{len(filtered_df):,}</span> of {len(df):,} deduplicated ({len(filtered_df)/max(len(df),1)*100:.1f}%)
+            <b>Date Window:</b> {date_scope_select}<br/>
+            <b>Active Selection:</b> <span style="color: #2563eb; font-weight: 700;">{retained_n:,}</span> of {all_dates_n:,} in scope ({retained_n/max(all_dates_n,1)*100:.1f}%)<br/>
+            <span style="font-size: 0.78rem; color: #64748b;">{date_note}</span>
         </div>
         """,
         unsafe_allow_html=True,

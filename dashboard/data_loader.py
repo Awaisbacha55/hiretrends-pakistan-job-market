@@ -41,6 +41,7 @@ EXPECTED_COLUMNS = [
     "classification_confidence",
     "needs_manual_review",
     "posted_date",
+    "is_recent_12m",
     "source",
 ]
 
@@ -119,7 +120,18 @@ def load_clean_data(csv_path: Optional[str] = None) -> pd.DataFrame:
             np.where(df["country"].notna() & (df["country"].astype(str).str.strip() != ""), "Foreign", "Unknown"),
         )
 
+    # Ensure is_recent_12m is populated even for legacy/mock DataFrames
+    if "is_recent_12m" not in df.columns or df["is_recent_12m"].isna().all():
+        dates = pd.to_datetime(df["posted_date"], errors="coerce")
+        df["is_recent_12m"] = (dates >= pd.Timestamp("2025-11-20")) & (dates <= pd.Timestamp("2026-11-20"))
+
     return df
+
+
+DATE_SCOPE_OPTIONS = [
+    "Last 12 Months (2025-11-20 to 2026-11-20)",
+    "All Dates (2019–2026 Historical)",
+]
 
 
 SCOPE_OPTIONS = [
@@ -136,6 +148,7 @@ SCOPE_OPTIONS = [
 def apply_global_filters(
     df: pd.DataFrame,
     scope: str = "Confirmed Pakistan Tech",
+    date_scope: str = "Last 12 Months (2025-11-20 to 2026-11-20)",
     category: Optional[str] = None,
     city: Optional[str] = None,
     workplace: Optional[str] = None,
@@ -174,6 +187,13 @@ def apply_global_filters(
         filtered = filtered[filtered["needs_manual_review"] == True]
     elif scope == "Unknown Country Records":
         filtered = filtered[filtered["country_classification"] == "Unknown"]
+
+    if date_scope == "Last 12 Months (2025-11-20 to 2026-11-20)":
+        if "is_recent_12m" in filtered.columns and not filtered["is_recent_12m"].isna().all():
+            filtered = filtered[filtered["is_recent_12m"] == True]
+        elif "posted_date" in filtered.columns:
+            dates = pd.to_datetime(filtered["posted_date"], errors="coerce")
+            filtered = filtered[(dates >= pd.Timestamp("2025-11-20")) & (dates <= pd.Timestamp("2026-11-20"))]
 
     if tech_only:
         filtered = filtered[filtered["is_technology_job"] == True]

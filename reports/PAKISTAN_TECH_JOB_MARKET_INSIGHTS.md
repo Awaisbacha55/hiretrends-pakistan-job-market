@@ -4,7 +4,7 @@
 **Project:** HireTrends — Pakistan Tech Job Market Intelligence  
 **Author:** Senior Data Analyst, Career Strategist & Technical Project Reviewer  
 **Date:** November 2026  
-**Source Dataset:** **848 Confirmed Pakistan Technology** postings (`jobs_pakistan_tech.csv`), filtered from 3,707 deduplicated records (4,491 raw API records; 3,362 Pakistan-only) via Headcount Labs API  
+**Source Dataset:** **685 Recent (Last 12 Months: `2025-11-20` to `2026-11-20`) Confirmed Pakistan Technology** postings (`jobs_pakistan_tech_recent.csv`), filtered from `848` all-dates PK Tech postings (`163` stale 2019–2025 postings excluded; `3,707` deduplicated; `4,491` raw API records)  
 
 ---
 
@@ -12,11 +12,11 @@
 
 The Pakistani technology ecosystem is currently undergoing a structural transformation. What was historically a domestic software services market dominated by local corporate IT departments has rapidly matured into an export-driven software engineering and remote labor hub.
 
-Empirical analysis of the **848 Confirmed Pakistan Technology** job postings (`jobs_pakistan_tech.csv`) reveals three defining characteristics of the 2025/2026 Pakistani tech employment landscape:
+Empirical analysis of the **685 Recent (Last 12 Months) Confirmed Pakistan Technology** job postings (`jobs_pakistan_tech_recent.csv`, `2025-11-20` to `2026-11-20`) reveals three defining characteristics of the 2025/2026 Pakistani tech employment landscape:
 
-1. **The Modern Web & Cloud Stack Dominance:** Python (36.2% of confirmed Pakistan tech roles), Microsoft Azure (35.6%), SQL (35.4%), CI/CD (35.1%), AWS (34.2%), Git (32.2%), JavaScript (28.4%), Docker (19.0%), and React (18.8%) constitute the indispensable foundational layer of modern software development in Pakistan.
-2. **The "Big Three" Metropolises Anchor 95.4% of Mapped Pakistan Tech Demand ($N=658$ Mapped Cities):** Lahore (44.2%), Karachi (26.0%), and Islamabad (25.2%) command virtually all localized tech postings, with Tier-2 cities (Peshawar, Rawalpindi, Sialkot) serving as emerging hubs.
-3. **Disclosed Compensation ($N=11$ of $848$, 1.30% Disclosure Rate — *Indicative Only*):** Within confirmed Pakistan tech postings, disclosed salaries are sparse ($N=11$; 0 hourly, 6 monthly, 5 annual): native PKR postings ($N=7$, monthly-normalized) show a median of **PKR 150,000/month** while normalized USD postings ($N=4$, monthly-equivalent) show a median of **\$1,300/month**. *(In the broader deduplicated dataset of $N=3,707$, $N=152$ disclose salary: $N=38$ PKR median PKR 70,000/mo; $N=113$ USD normalized median \$1,056/mo; $N=1$ EUR €300/mo; 70 hourly.)*
+1. **Most In-Demand Skills in Recent Postings ($N=685$):** Python (39.1%), Microsoft Azure (38.4%), CI/CD (36.9%), SQL (36.8%), AWS (33.6%), Git (30.8%), JavaScript (25.4%), Large Language Models (19.6%), Google Cloud Platform (19.3%), and Docker (19.1%) constitute the foundational technical stack. *(Note: True skill growth cannot be measured from a single snapshot; rankings reflect posting frequency/demand.)*
+2. **The "Big Three" Metropolises Anchor 96.4% of Mapped Recent Pakistan Tech Demand ($N=551$ Mapped Cities):** Lahore (45.6%), Islamabad (26.7%), and Karachi (24.1%) command virtually all localized tech postings, with Tier-2 cities (Peshawar, Rawalpindi) serving as emerging hubs.
+3. **Disclosed Compensation ($N=8$ of $685$, 1.17% Disclosure Rate — *Indicative Only*):** Within recent confirmed Pakistan tech postings, disclosed salaries are sparse ($N=8$; 0 hourly, 5 monthly, 3 annual): native PKR postings ($N=6$, monthly-normalized) show a median of **PKR 175,000/month** while normalized USD postings ($N=2$, low sample) show a median of **\$1,300/month**. *(In the all-dates PK Tech cohort of $N=848$, $N=11$ disclose salary; in the broader deduplicated dataset of $N=3,707$, $N=152$ disclose salary: $N=38$ PKR median PKR 70,000/mo; $N=113$ USD normalized median \$1,056/mo; $N=1$ EUR €300/mo; 70 hourly.)*
 
 This report breaks down these dynamics with actionable guidance for developers, university graduates, and engineering hiring managers.
 
@@ -62,7 +62,7 @@ Focuses on scalable microservice architecture, API design, and data processing p
 - **Key Trend:** Increasing integration of vector databases and LLM orchestration libraries (LangChain, LlamaIndex) into backend job descriptions.
 
 ### 3.3 Data Scientist & AI/Machine Learning Engineer (Median Exp: 2.5 yrs)
-A high-growth specialization concentrated in Islamabad and Lahore, heavily driven by international AI consultancies.
+A specialization concentrated in Islamabad and Lahore, driven by international AI consultancies.
 - **Primary Stack:** Python, Pandas, NumPy, Scikit-learn, PyTorch/TensorFlow, SQL, AWS/GCP, Docker.
 - **Key Trend:** Shift from academic research modeling to operationalized Machine Learning (MLOps) and Retrieval-Augmented Generation (RAG) pipelines.
 
@@ -80,61 +80,60 @@ The quality assurance landscape in Pakistan has largely shifted away from pure m
 
 ## 4. The Geographic Tech Landscape: Metropolises & Emerging Hubs
 
-The Pakistani tech market is characterized by extreme metropolitan concentration. Of the **658 Confirmed Pakistan Tech** postings with localized Pakistani municipal coordinates, **95.4%** are situated within three cities:
+The Pakistani tech market is characterized by extreme metropolitan concentration. Of the **551 Recent (Last 12M) Confirmed Pakistan Tech** postings with localized Pakistani municipal coordinates, **96.4%** are situated within three cities:
 
 ```mermaid
-pie title Confirmed Pakistan Tech Postings by Hub (N=658)
-    "Lahore" : 291
-    "Karachi" : 171
-    "Islamabad" : 166
-    "Other Cities" : 30
+pie title Recent 12M Confirmed Pakistan Tech Postings by Hub (N=551)
+    "Lahore" : 251
+    "Islamabad" : 147
+    "Karachi" : 133
+    "Other Cities" : 20
 ```
 
-### 4.1 Lahore (291 Postings — 44.2%)
+### 4.1 Lahore (251 Postings — 45.6%)
 - **Character:** The software development and IT export capital of Pakistan.
 - **Ecosystem:** Dominated by large-scale software export houses, service-based digital agencies (Netsol, Systems Limited, Arbisoft, Devsinc), and startup incubators.
 - **Skill Focus:** Enterprise web applications, full-stack JavaScript/Python, mobile app development (Flutter), and UI/UX design.
 
-### 4.2 Karachi (171 Postings — 26.0%)
+### 4.2 Karachi (133 Postings — 24.1%)
 - **Character:** The financial, commercial, and enterprise infrastructure hub.
 - **Ecosystem:** Strong demand from FinTech companies, digital banking units, retail logistics, telcos, and international enterprise subsidiaries.
 - **Skill Focus:** Java, enterprise SQL, financial transaction systems, cybersecurity, and cloud migration.
 
-### 4.3 Islamabad / Rawalpindi (176 Postings — 26.7% Combined)
+### 4.3 Islamabad / Rawalpindi (154 Postings — 28.0% Combined)
 - **Character:** The high-tech, government, defense, and international R&D center.
 - **Ecosystem:** High density of international product engineering centers, AI research labs, telecom operators, and multinational technology contractors.
 - **Skill Focus:** AI/ML, cloud architecture, deep learning, Python, DevOps, and systems engineering.
 
 ### 4.4 Tier-2 Cities (Faisalabad, Multan, Peshawar, Sialkot, Gujranwala)
-Tier-2 cities collectively account for approximately 6.7% of localized postings. While domestic on-site tech roles are limited, these regions possess rapidly growing freelance and remote worker populations supported by National Incubation Centers (NICs) and remote software agencies.
+Tier-2 cities collectively account for a small share of localized postings (`3.6%` in recent 12M PK Tech), with remote and freelance ecosystems supported by National Incubation Centers (NICs) and regional software agencies.
 
 ---
 
 ## 5. Remote Work Realities: The Globalized Workforce
 
-Workplace arrangements in the dataset highlight Pakistan's integration into global remote engineering teams:
+Workplace arrangements in the recent 12-month dataset (`N=356` known; `329` unstated) highlight Pakistan's hybrid/remote and on-site balance:
 
-- **On-site (50.3% of known arrangements):** 229 postings concentrated in domestic software houses, financial institutions, and corporate engineering teams in Lahore and Karachi.
-- **Remote (41.3% of known arrangements):** 188 postings out of 455 explicit-workplace Pakistan tech listings (393 unstated) offered by overseas and export-focused firms.
-- **Hybrid (8.4% of known arrangements):** 38 postings in major Lahore and Islamabad software development centers offering flexible office policies.
+- **On-site (54.8% of known arrangements):** 195 postings concentrated in domestic software houses, financial institutions, and corporate engineering teams in Lahore and Karachi.
+- **Remote (36.0% of known arrangements):** 128 postings out of 356 explicit-workplace recent Pakistan tech listings offered by overseas and export-focused firms.
+- **Hybrid (9.3% of known arrangements):** 33 postings in major Lahore and Islamabad software development centers offering flexible office policies.
 
 ---
 
 ## 6. Compensation Landscape (Indicative Only — Small Sample)
 
 > [!WARNING]
-> **Indicative Only & Selection Bias Notice:** Only **11 of 848 (1.30%)** Confirmed Pakistan Tech postings disclose salary (`7` native PKR, `4` USD; `0` hourly, `6` monthly, `5` annual). These figures are **indicative only** and do not represent market-wide Pakistan tech compensation.
+> **Indicative Only & Selection Bias Notice:** Only **8 of 685 (1.17%)** Recent (Last 12M) Confirmed Pakistan Tech postings disclose salary (`6` native PKR, `2` USD; `0` hourly, `5` monthly, `3` annual). These figures are **indicative only** and do not represent market-wide Pakistan tech compensation.
 
 ### 6.1 Currency-Separated Findings
 
-1. **Confirmed Pakistan Tech — Native PKR ($N=7$, monthly-normalized):**
-   - **Median:** **PKR 150,000 / month** (IQR: PKR 115,000 – 275,000; range: PKR 70,000 – 450,000).
-2. **Confirmed Pakistan Tech — Normalized USD ($N=4$, monthly-equivalent, low sample):**
-   - **Median:** **\$1,300 / month** (range: \$92 – \$6,667/mo).
-3. **Broader Deduplicated Context ($N=3,707$ all roles & countries; $N=152$ disclosed / 4.10%):**
-   - **Native PKR ($N=38$):** Median **PKR 70,000 / month** (IQR: PKR 50,000 – 150,000).
-   - **Normalized USD ($N=113$, incl. 70 hourly):** Median **\$1,056 / month** (IQR: \$880 – \$1,760).
-   - **EUR ($N=1$, separate):** **€300 / month** (≈ PKR 88,500 at EUR = 295.00 PKR).
+1. **Recent 12M Confirmed Pakistan Tech — Native PKR ($N=6$, monthly-normalized):**
+   - **Median:** **PKR 175,000 / month** (IQR: PKR 97,500 – 312,500; range: PKR 70,000 – 450,000).
+2. **Recent 12M Confirmed Pakistan Tech — Normalized USD ($N=2$, monthly-equivalent, low sample):**
+   - **Median:** **\$1,300 / month** (range: \$600 – \$2,000/mo).
+3. **Historical / All-Dates & Broader Context:**
+   - **All-Dates Confirmed PK Tech ($N=848$):** `11` disclosed (`7` PKR median PKR 150,000/mo; `4` USD median \$1,300/mo).
+   - **All Deduplicated ($N=3,707$, all roles & countries; $N=152$ disclosed / 4.10%):** Native PKR ($N=38$) median **PKR 70,000 / month**; Normalized USD ($N=113$, incl. 70 hourly) median **\$1,056 / month**; EUR ($N=1$, separate) **€300 / month**.
 
 ### 6.2 Conversion Methodology
 - **Hourly-to-Monthly:** Assumes **8 hours/day × 22 working days/month = 176 hours/month** (`Hourly rate × 176`, analytical estimate only, not guaranteed earnings).

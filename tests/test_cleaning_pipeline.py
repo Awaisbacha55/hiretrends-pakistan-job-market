@@ -521,3 +521,42 @@ class TestIssue2CountryAndTechScope:
         assert c_brk["Pakistan"] + c_brk["Foreign"] + c_brk["Unknown"] == len(df_all)
         t_brk = meta["scope_breakdown"]["technology_classification"]
         assert t_brk["Tech"] + t_brk["Non-Technology"] + t_brk["Uncertain"] == len(df_all)
+
+
+class TestIssue4DateWindowFiltering:
+    """Tests for Review Issue #4: 12-month date-window filtering and boundary handling."""
+
+    def test_recent_window_boundary_dates(self):
+        from src.cleaning.clean_jobs import is_within_recent_window
+
+        # Inclusive boundaries: 2025-11-20 and 2026-11-20
+        assert is_within_recent_window("2025-11-20") is True
+        assert is_within_recent_window("2026-11-20") is True
+        assert is_within_recent_window("2026-06-15") is True
+        # Stale & out-of-window dates
+        assert is_within_recent_window("2025-11-19") is False
+        assert is_within_recent_window("2019-10-02") is False
+        assert is_within_recent_window("2026-11-21") is False
+
+    def test_recent_window_invalid_and_missing_dates(self):
+        from src.cleaning.clean_jobs import is_within_recent_window
+
+        assert is_within_recent_window(None) is False
+        assert is_within_recent_window("") is False
+        assert is_within_recent_window("not-a-date") is False
+
+    def test_recent_dataset_generation_and_counts(self):
+        import os
+        import pandas as pd
+
+        if not os.path.exists("data/processed/jobs_pakistan_tech_recent.csv"):
+            pytest.skip("Processed CSVs not present")
+
+        df_pk_tech = pd.read_csv("data/processed/jobs_pakistan_tech.csv")
+        df_recent = pd.read_csv("data/processed/jobs_pakistan_tech_recent.csv")
+
+        assert len(df_pk_tech) == 848
+        assert len(df_recent) == 685
+        assert (df_recent["is_recent_12m"] == True).all()
+        assert df_recent["posted_date"].min() >= "2025-11-20"
+        assert df_recent["posted_date"].max() <= "2026-11-20"

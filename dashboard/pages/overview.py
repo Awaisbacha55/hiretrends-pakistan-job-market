@@ -172,11 +172,11 @@ with col_sen:
 
 # 5. Dataset Attribution & Time-Period Clarification Callout
 active_scope = st.session_state.get("filter_dataset_scope", "Confirmed Pakistan Tech")
+active_date_scope = st.session_state.get("filter_date_scope", "Last 12 Months (2025-11-20 to 2026-11-20)")
 st.info(
-    f"💡 **Dataset Scope & Provenance Notice:** "
-    f"Currently viewing **{active_scope}** (**{len(df):,}** postings out of **{len(raw_df):,}** deduplicated records from the November 20, 2026 Headcount Labs Pakistan feed). "
-    "Use the sidebar **Dataset Scope** selector to inspect Pakistan-only, Foreign, Non-Tech, or Manual Review subsets. "
-    "This cohort is kept strictly separate from the historical Open Data Pakistan dataset (Dec 2019 – Mar 2021)."
+    f"💡 **Dataset Scope & Date-Window Notice:** "
+    f"Currently viewing **{active_scope}** | **{active_date_scope}** (**{len(df):,}** postings out of **{len(raw_df):,}** deduplicated records from the November 20, 2026 Headcount Labs Pakistan feed). "
+    "The default 12-month window (`2025-11-20` to `2026-11-20`, anchored to the snapshot date) excludes stale 2019–2025 listings while keeping them accessible via the sidebar **Date Window** selector."
 )
 
 render_attribution_footer()

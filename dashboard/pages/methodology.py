@@ -26,7 +26,9 @@ st.markdown(
 
     1. **Primary Dataset — Headcount Labs Jobs API (Current Baseline):**
        - **Collection Date:** November 20, 2026 (Snapshot Watermark: `2026-11-20T16:16:45.703Z`)
-       - **Scope Funnel:** `4,491 raw records` → `3,707 deduplicated` (`jobs_cleaned.csv`) → `3,362 confirmed Pakistan` (`jobs_pakistan.csv`) → **`848 confirmed Pakistan technology jobs`** (`jobs_pakistan_tech.csv`, default dashboard scope).
+       - **Scope Funnel:** `4,491 raw records` → `3,707 deduplicated` (`jobs_cleaned.csv`) → `3,362 confirmed Pakistan` (`jobs_pakistan.csv`) → `848 confirmed Pakistan tech (All Dates)` (`jobs_pakistan_tech.csv`) → **`685 confirmed Pakistan tech — Last 12 Months`** (`jobs_pakistan_tech_recent.csv`, default dashboard scope; `163` stale 2019–2025 postings excluded).
+       - **Date-Window Rule:** Anchored to the snapshot date (`2026-11-20`) rather than system clock for reproducibility; **Last 12 Months** = `2025-11-20` through `2026-11-20` (inclusive). Historical records (`2019–2025`) remain preserved and accessible via the sidebar **Date Window** selector.
+       - **Skill-Growth Limitation:** Because this dataset is a single `currentness=current` snapshot, true longitudinal skill growth cannot be measured reliably; `analyze_skill_growth()` explicitly returns `UNAVAILABLE_INSUFFICIENT_SNAPSHOTS` until multiple chronological snapshots are collected.
        - **Deduplication:** Two-tier deterministic deduplication — Tier 1 normalizes `job_url` (scheme/host lowercasing, trailing slash removal, tracking parameter stripping, sorted query params); Tier 2 applies a normalized `(title, company, city, posted_date)` fallback for records without a usable URL.
        - **Country Classification:** Explicit `Pakistan`, `Foreign`, or `Unknown` classification — missing or `Remote`-only countries never default to Pakistan.
        - **Licensing:** Provided courtesy of [Headcount Labs](https://headcountlabs.com) under the **Open Database License (ODbL) 1.0**. Database contents are subject to the **Database Contents License (DbCL) 1.0**.

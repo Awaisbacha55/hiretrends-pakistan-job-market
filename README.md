@@ -16,7 +16,7 @@ An ethical, data-driven intelligence platform tracking technology job vacancies,
 **HireTrends** is an applied data engineering and market intelligence platform developed during the **LogicBlaze Technologies 8-Week Internship Learning Path**. It collects, cleans, standardizes, models, and visualizes tech recruitment listings across Pakistan. By transforming noisy, unstructured job descriptions into structured tabular schemas and interactive analytics, HireTrends empowers computer science students, software engineers, and hiring managers with empirical market data.
 
 > [!NOTE]
-> **Week 3 Production Deployment Complete:** All Day 1–5 implementations have undergone an exhaustive quality assurance audit. From **4,491 raw API records** collected via the **Headcount Labs Jobs API** (ODbL 1.0), two-tier deduplication yields **3,707 unique records**, country classification isolates **3,362 Pakistan postings** (345 foreign), and the primary **Confirmed Pakistan Technology** dataset contains **848 verified Pakistan tech roles**. The codebase features an extensible longitudinal trend engine (`src/analysis/trend_analysis.py`), a scope-aware 8-page interactive Streamlit dashboard (`dashboard/app.py`), CSV export capabilities, Playwright-automated visual regression tests, and a **100% passing offline unit test suite**.
+> **Week 3 Production Deployment Complete:** All Day 1–5 implementations have undergone an exhaustive quality assurance audit. From **4,491 raw API records** collected via the **Headcount Labs Jobs API** (ODbL 1.0), two-tier deduplication yields **3,707 unique records**, country classification isolates **3,362 Pakistan postings** (345 foreign), technology classification identifies **848 Confirmed Pakistan Tech** roles (all dates `2019–2026`), and filtering to the **Last 12 Months (`2025-11-20` to `2026-11-20`)** produces the primary **685 Confirmed Pakistan Tech** 2025/26 dataset (`163` stale 2019–2025 postings excluded; historical datasets preserved). The codebase features an extensible longitudinal trend engine (`src/analysis/trend_analysis.py`), a scope- and date-aware 8-page interactive Streamlit dashboard (`dashboard/app.py`), CSV export capabilities, Playwright-automated visual regression tests, and a **100% passing offline unit test suite**.
 
 ---
 
@@ -72,7 +72,7 @@ The complete 8-page Streamlit dashboard runs live on Streamlit Cloud or locally:
 ## 3. Project Objectives
 
 1. **Ethical & Compliant Data Ingestion:** Establish an automated collection pipeline respecting platform terms, avoiding unauthorized scraping, and utilizing official API licensing (ODbL 1.0).
-2. **Standardized Target Baseline:** Ingest and curate a verified census with explicit scope separation: `4,491 raw collected` → `3,707 deduplicated` → `3,362 confirmed Pakistan` → **`848 confirmed Pakistan technology roles`** (`jobs_pakistan_tech.csv`).
+2. **Standardized Target Baseline:** Ingest and curate a verified census with explicit scope and date separation: `4,491 raw collected` → `3,707 deduplicated` → `3,362 confirmed Pakistan` → `848 confirmed Pakistan tech (All Dates)` → **`685 confirmed Pakistan tech — Last 12 Months (2025-11-20 to 2026-11-20)`** (`jobs_pakistan_tech_recent.csv`).
 3. **Data Cleaning & Normalization:** Standardize disparate job titles, parse seniority, canonicalize Pakistani cities, and normalize international compensation into Monthly PKR using official State Bank of Pakistan (SBP) exchange rates.
 4. **NLP Skill Extraction:** Systematically extract 69 programming languages, cloud platforms, and developer frameworks using word-boundary regular expressions without substring false positives.
 5. **Interactive Multipage Dashboard:** Deliver a modern SaaS analytics dashboard with global filtering, responsive Plotly visualizations, sample size transparency, and CSV data export.
@@ -82,51 +82,55 @@ The complete 8-page Streamlit dashboard runs live on Streamlit Cloud or locally:
 
 ## 4. Key Findings & Market Intelligence Summary
 
-Empirical analysis of the **848 Confirmed Pakistan Technology** postings (`jobs_pakistan_tech.csv`, filtered from 3,707 deduplicated records) reveals defining characteristics of Pakistan's 2025/2026 tech employment landscape (detailed in [`reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md`](reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md)):
+Empirical analysis of the **685 Recent (Last 12 Months: `2025-11-20` to `2026-11-20`) Confirmed Pakistan Technology** postings (`jobs_pakistan_tech_recent.csv`, with `163` stale 2019–2025 postings excluded from the `848` all-dates PK Tech cohort) reveals defining characteristics of Pakistan's 2025/2026 tech employment landscape (detailed in [`reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md`](reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md)):
 
-1. **Top In-Demand Technical Skills (Confirmed Pakistan Tech, $N=848$):**
-   - **Python leads overall:** Demanded in **36.2%** of confirmed Pakistan tech roles (307 unique jobs), driven by backend web services (FastAPI/Django) and AI/Data Science workloads.
-   - **Cloud & Data Core:** Microsoft Azure (**35.6%**, 302 jobs), SQL (**35.4%**, 300 jobs), CI/CD (**35.1%**, 298 jobs), AWS (**34.2%**, 290 jobs), and Git (**32.2%**, 273 jobs).
-   - **Modern Web & Containers:** JavaScript (**28.4%**, 241 jobs), Docker (**19.0%**, 161 jobs), and React (**18.8%**, 159 jobs).
-2. **The "Big Three" Metropolises Command 95.4% of Mapped Pakistan Tech Demand ($N=658$ Mapped Cities):**
-   - **Lahore (44.2% / 291 jobs):** Software export houses, agencies, and full-stack/mobile web.
-   - **Karachi (26.0% / 171 jobs):** FinTech, corporate enterprise, banking, and data systems.
-   - **Islamabad (25.2% / 166 jobs):** AI/ML consultancies, cloud architecture, and multinational R&D.
-3. **Disclosed Compensation Within Confirmed Pakistan Tech ($N=11$ of $848$, 1.30% Disclosure Rate — *Indicative Only*):**
-   - **Native PKR ($N=7$, monthly-normalized):** Median **PKR 150,000 / month** (IQR: 115k–275k PKR; range: 70k–450k PKR).
-   - **Normalized USD ($N=4$, monthly-equivalent, low sample):** Median **\$1,300 / month** (range: \$92–\$6,667/mo).
-   - **Broader Context (All Deduplicated, $N=3,707$; $N=152$ Disclosed / 4.10%, incl. 70 hourly):** Native PKR ($N=38$) median **PKR 70,000/mo**; Normalized USD ($N=113$, `hourly × 176` / `annual ÷ 12`) median **\$1,056/mo**; EUR ($N=1$) **€300/mo**.
+1. **Most In-Demand Technical Skills (Recent 12M Confirmed Pakistan Tech, $N=685$):**
+   - **Python leads overall:** Demanded in **39.1%** of recent confirmed Pakistan tech roles (268 unique jobs), driven by backend web services (FastAPI/Django) and AI/Data Science workloads.
+   - **Cloud & Data Core:** Microsoft Azure (**38.4%**, 263 jobs), CI/CD (**36.9%**, 253 jobs), SQL (**36.8%**, 252 jobs), AWS (**33.6%**, 230 jobs), and Git (**30.8%**, 211 jobs).
+   - **Modern Web, AI & Containers:** JavaScript (**25.4%**, 174 jobs), Large Language Models (**19.6%**, 134 jobs), Google Cloud Platform (**19.3%**, 132 jobs), and Docker (**19.1%**, 131 jobs).
+   - *Skill-Growth Limitation:* Because this dataset is a single `currentness=current` snapshot, true longitudinal skill growth ("fastest-growing skills") cannot be measured reliably; `analyze_skill_growth()` explicitly returns `UNAVAILABLE_INSUFFICIENT_SNAPSHOTS` until multi-period snapshots are collected.
+2. **The "Big Three" Metropolises Command 96.4% of Mapped Recent Pakistan Tech Demand ($N=551$ Mapped Cities):**
+   - **Lahore (45.6% / 251 jobs):** Software export houses, agencies, and full-stack/mobile web.
+   - **Islamabad (26.7% / 147 jobs):** AI/ML consultancies, cloud architecture, and multinational R&D.
+   - **Karachi (24.1% / 133 jobs):** FinTech, corporate enterprise, banking, and data systems.
+3. **Disclosed Compensation Within Recent 12M Confirmed Pakistan Tech ($N=8$ of $685$, 1.17% Disclosure Rate — *Indicative Only*):**
+   - **Native PKR ($N=6$, monthly-normalized):** Median **PKR 175,000 / month** (IQR: 97.5k–312.5k PKR; range: 70k–450k PKR).
+   - **Normalized USD ($N=2$, monthly-equivalent, low sample):** Median **\$1,300 / month** (range: \$600–\$2,000/mo).
+   - **Broader Historical / All-Dates Context:** All-dates PK Tech ($N=848$): $N=11$ disclosed (`7` PKR median PKR 150,000/mo; `4` USD median \$1,300/mo). All deduplicated ($N=3,707$): $N=152$ disclosed (4.10%, incl. 70 hourly): Native PKR ($N=38$) median **PKR 70,000/mo**; Normalized USD ($N=113$, `hourly × 176` / `annual ÷ 12`) median **\$1,056/mo**; EUR ($N=1$) **€300/mo**.
    - **Conversion Methodology & Caveats:** Hourly rates assume **8 hrs/day × 22 working days/month = 176 hours/month** (analytical estimate only); annual salaries are divided by **12**. Converted PKR-equivalent figures use the fixed **State Bank of Pakistan (SBP) Mark-to-Market / Ready Reference** rate for **20 November 2026** (**1 USD = 276.5132 PKR**; actual transaction/remittance rates may differ). Because salary disclosure is very low and subject to selection bias, all salary findings are **indicative only**.
-4. **Workplace Arrangements ($N=455$ Known; 393 Unstated):**
-   - **50.3%** of known Pakistan tech postings are **on-site** (229), **41.3%** are **fully remote** (188), and **8.4%** are **hybrid** (38).
+4. **Workplace Arrangements ($N=356$ Known; 329 Unstated):**
+   - **54.8%** of known recent Pakistan tech postings are **on-site** (195), **36.0%** are **fully remote** (128), and **9.3%** are **hybrid** (33).
 
 ---
 
 ## 5. Reconciled Census & Statistical Integrity
 
-Every stage from raw ingestion to the **Confirmed Pakistan Tech** analytical dataset is mathematically reconciled (see [`reports/STATISTICAL_VALIDATION_REPORT.md`](reports/STATISTICAL_VALIDATION_REPORT.md)):
+Every stage from raw ingestion to the **Recent 12M Confirmed Pakistan Tech** analytical dataset is mathematically reconciled (see [`reports/STATISTICAL_VALIDATION_REPORT.md`](reports/STATISTICAL_VALIDATION_REPORT.md)):
 
 ```mermaid
 flowchart TD
     Raw["1. Raw Ingested Postings (N=4,491)"] -->|"784 URL Duplicates Removed"| Dedup["2. Deduplicated Dataset (N=3,707)"]
     Dedup --> PK["3. Confirmed Pakistan (N=3,362)"]
     Dedup --> Foreign["Foreign Listings (N=345)"]
-    PK --> PKTech["4. Confirmed Pakistan Tech (N=848)"]
+    PK --> PKTech["4. Confirmed PK Tech All Dates (N=848)"]
     PK --> PKNonTech["Pakistan Non-Tech (N=1,737)"]
     PK --> PKReview["Pakistan Uncertain / Review (N=777)"]
+    PKTech -->|"Last 12M: 2025-11-20 to 2026-11-20"| Recent["5. Recent 12M PK Tech (N=685)"]
+    PKTech -->|"163 Stale 2019–2025 Excluded"| Stale["Historical Only (N=163)"]
     
-    PKTech --> MappedLoc["Mapped PK Tech Cities (N=658)"]
-    MappedLoc --> LHE["Lahore: 291 (44.22%)"]
-    MappedLoc --> KHI["Karachi: 171 (25.99%)"]
-    MappedLoc --> ISB["Islamabad: 166 (25.23%)"]
-    MappedLoc --> Other["Other PK Cities: 30 (4.56%)"]
+    Recent --> MappedLoc["Mapped PK Tech Cities (N=551)"]
+    MappedLoc --> LHE["Lahore: 251 (45.55%)"]
+    MappedLoc --> ISB["Islamabad: 147 (26.68%)"]
+    MappedLoc --> KHI["Karachi: 133 (24.14%)"]
+    MappedLoc --> Other["Other PK Cities: 20 (3.63%)"]
 ```
 
 $$\begin{aligned}
 \text{Deduplicated } (3,707) &= \text{Pakistan } (3,362) + \text{Foreign } (345) + \text{Unknown } (0) \\
 \text{Pakistan-Only } (3,362) &= \text{Confirmed Tech } (848) + \text{Non-Tech } (1,737) + \text{Uncertain } (777) \\
-\text{PK Tech Mapped Cities } (658) &= \text{Lahore } (291) + \text{Karachi } (171) + \text{Islamabad } (166) + \text{Other } (30) \\
-\text{PK Tech Workplace Known } (455) &= \text{On-site } (229) + \text{Remote } (188) + \text{Hybrid } (38) \quad [393 \text{ unstated}]
+\text{PK Tech All Dates } (848) &= \text{Recent 12M } (685) + \text{Stale 2019–2025 } (163) \\
+\text{Recent PK Tech Mapped Cities } (551) &= \text{Lahore } (251) + \text{Islamabad } (147) + \text{Karachi } (133) + \text{Other } (20) \\
+\text{Recent PK Tech Workplace Known } (356) &= \text{On-site } (195) + \text{Remote } (128) + \text{Hybrid } (33) \quad [329 \text{ unstated}]
 \end{aligned}$$
 
 ---

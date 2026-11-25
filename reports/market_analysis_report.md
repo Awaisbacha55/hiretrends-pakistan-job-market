@@ -16,7 +16,7 @@ This report delivers empirical market intelligence on Pakistan's technology recr
 1. **Disclosed Compensation (Indicative Only — Low Disclosure):** Within Confirmed Pakistan Tech (`N=848`), only **11 postings (1.30%)** disclose salary (`7` native PKR, median **PKR 150,000/mo**; `4` USD, median **\$1,300/mo**, low sample). Across all deduplicated postings (`N=3,707`), **152 (4.10%)** disclose salary (`38` PKR, `113` USD incl. `70` hourly, `1` EUR).
 2. **The "Big Three" Geographic Concentration:** 93.3% of all mapped local Pakistani tech vacancies are concentrated in just three cities: **Lahore** (38.3%), **Karachi** (32.3%), and **Islamabad** (22.7%).
 3. **Core Foundational Stack Dominance:** Despite intense marketing around niche frameworks, market demand remains anchored by foundational pillars: **Excel** (13.7%), **SQL** (10.5%), **Python** (9.9%), **Cloud/DevOps (Azure, AWS, CI/CD, Git)** (8.4%–8.7%), and **JavaScript** (7.9%).
-4. **The Generative AI Transition:** While traditional Machine Learning appears in 5.0% of postings, **Large Language Models (LLMs)** already appear in 5.4% (243 listings), demonstrating unprecedented adoption velocity in Pakistani software export houses.
+4. **Generative AI Presence in Current Postings:** **Large Language Models (LLMs)** appear in **19.56%** (`134` of `685`) of recent 12-month Confirmed Pakistan Tech postings. *(Note: Because this is a single snapshot, no longitudinal growth rate or adoption velocity is claimed.)*
 
 ---
 

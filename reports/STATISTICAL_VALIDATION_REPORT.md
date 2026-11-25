@@ -25,12 +25,12 @@ This report establishes the empirical veracity, mathematical rigor, and census r
   N_{\text{dedup}} &= N_{\text{tech\_confirmed}} + N_{\text{non\_tech}} + N_{\text{manual\_review}} \\
   3,707 &= 921 + 1,950 + 836 \quad (\text{Exact balance: } 100.0\%)
   \end{aligned}$$
-- **Confirmed Pakistan Technology Dataset (`jobs_pakistan_tech.csv`):** **848** records (22.88% of deduplicated; primary dataset for Pakistan tech-market analysis).
-  - **Pakistan Non-Tech:** **1,737** | **Pakistan Uncertain:** **777** (`848 + 1,737 + 777 = 3,362`)
-- **Within Confirmed Pakistan Tech ($N=848$):**
-  - **Disclosed Salary Records:** **11** (1.30% disclosure rate)
-  - **Mapped Pakistani Cities:** **658** (Lahore 291, Karachi 171, Islamabad 166, Other 30)
-  - **Explicit Workplace Postings:** **455** (On-site 229, Remote 188, Hybrid 38; 393 unstated)
+- **Confirmed Pakistan Technology Dataset (`jobs_pakistan_tech.csv`, All Dates):** **848** records (`2019-10-02` to `2026-11-19`).
+- **Recent 12M Confirmed Pakistan Tech (`jobs_pakistan_tech_recent.csv`):** **685** records (**80.78%** retained within `2025-11-20` to `2026-11-20`, anchored to snapshot date; **163** stale 2019–2025 postings excluded, **19.22%**).
+- **Within Recent 12M Confirmed Pakistan Tech ($N=685$):**
+  - **Disclosed Salary Records:** **8** (1.17% disclosure rate: `6` native PKR, `2` USD)
+  - **Mapped Pakistani Cities:** **551** (Lahore 251, Islamabad 147, Karachi 133, Other 20)
+  - **Explicit Workplace Postings:** **356** (On-site 195, Remote 128, Hybrid 33; 329 unstated)
 
 ---
 

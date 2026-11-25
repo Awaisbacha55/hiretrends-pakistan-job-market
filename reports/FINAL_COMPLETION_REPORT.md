@@ -54,10 +54,11 @@ All 22 core project requirements have been verified and assigned a status of **P
 $$\begin{aligned}
 \mathbf{Raw\ Postings\ Ingested\ (4,491)} &\xrightarrow{-784\text{ URL duplicates}} \mathbf{Deduplicated\ Postings\ (N=3,707)} \\
 \mathbf{Deduplicated\ Postings\ (N=3,707)} &= \mathbf{Confirmed\ Pakistan\ (3,362)} + \mathbf{Foreign\ (345)} + \mathbf{Unknown\ (0)} \\
-\mathbf{Pakistan\text{-}Only\ (N=3,362)} &= \mathbf{Confirmed\ PK\ Tech\ (848)} + \mathbf{PK\ Non\text{-}Tech\ (1,737)} + \mathbf{PK\ Uncertain\ (777)} \\
-\mathbf{PK\ Tech\ Mapped\ Cities\ (N=658)} &= \mathbf{Lahore\ (291)} + \mathbf{Karachi\ (171)} + \mathbf{Islamabad\ (166)} + \mathbf{Other\ Cities\ (30)} \\
-\mathbf{PK\ Tech\ Workplace\ (N=848)} &= \mathbf{Known\ (455)} + \mathbf{Unspecified\ (393)} \\
-\text{where: } \mathbf{Known\ (455)} &= \mathbf{On\text{-}site\ (229)} + \mathbf{Remote\ (188)} + \mathbf{Hybrid\ (38)}
+\mathbf{Pakistan\text{-}Only\ (N=3,362)} &= \mathbf{Confirmed\ PK\ Tech\ All\ Dates\ (848)} + \mathbf{PK\ Non\text{-}Tech\ (1,737)} + \mathbf{PK\ Uncertain\ (777)} \\
+\mathbf{PK\ Tech\ All\ Dates\ (N=848)} &\xrightarrow{-163\text{ stale 2019–2025}} \mathbf{Recent\ 12M\ PK\ Tech\ (N=685)} \\
+\mathbf{Recent\ PK\ Tech\ Mapped\ Cities\ (N=551)} &= \mathbf{Lahore\ (251)} + \mathbf{Islamabad\ (147)} + \mathbf{Karachi\ (133)} + \mathbf{Other\ Cities\ (20)} \\
+\mathbf{Recent\ PK\ Tech\ Workplace\ (N=685)} &= \mathbf{Known\ (356)} + \mathbf{Unspecified\ (329)} \\
+\text{where: } \mathbf{Known\ (356)} &= \mathbf{On\text{-}site\ (195)} + \mathbf{Remote\ (128)} + \mathbf{Hybrid\ (33)}
 \end{aligned}$$
 
 ---
