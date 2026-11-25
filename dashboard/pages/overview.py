@@ -173,7 +173,7 @@ with col_sen:
 # 5. Dataset Attribution & Time-Period Clarification Callout
 st.info(
     "💡 **Dataset Provenance & Cohort Notice:** "
-    "Current dataset represents 4,491 live postings harvested from the Headcount Labs Pakistan API feed on November 20, 2026. "
+    f"Current dataset represents {len(df):,} unique, deduplicated postings harvested from the Headcount Labs Pakistan API feed on November 20, 2026. "
     "This cohort is kept strictly separate from the historical Open Data Pakistan dataset (Dec 2019 – Mar 2021)."
 )
 

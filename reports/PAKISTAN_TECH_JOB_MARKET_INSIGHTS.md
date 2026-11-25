@@ -4,7 +4,7 @@
 **Project:** HireTrends — Pakistan Tech Job Market Intelligence  
 **Author:** Senior Data Analyst, Career Strategist & Technical Project Reviewer  
 **Date:** November 2026  
-**Source Dataset:** 4,491 live job postings verified via Headcount Labs API  
+**Source Dataset:** 3,707 unique, deduplicated live job postings (from 4,491 raw records) verified via Headcount Labs API  
 
 ---
 
@@ -12,11 +12,11 @@
 
 The Pakistani technology ecosystem is currently undergoing a structural transformation. What was historically a domestic software services market dominated by local corporate IT departments has rapidly matured into an export-driven software engineering and remote labor hub.
 
-Empirical analysis of 4,491 active technology and knowledge-worker job postings reveals three defining characteristics of the 2025/2026 Pakistani tech employment landscape:
+Empirical analysis of 3,707 deduplicated active technology and knowledge-worker job postings reveals three defining characteristics of the 2025/2026 Pakistani tech employment landscape:
 
-1. **The Modern Web & Cloud Stack Dominance:** Python (33.3% of confirmed tech roles), SQL (29.9%), JavaScript (27.4%), React (20.8%), AWS (17.4%), and Docker (14.5%) constitute the indispensable foundational layer of modern software development in Pakistan.
-2. **The "Big Three" Metropolises Anchor 93.3% of Local Demand:** Lahore (38.3%), Karachi (32.3%), and Islamabad (22.7%) command virtually all localized tech postings, with Tier-2 cities (Faisalabad, Multan, Peshawar, Rawalpindi) serving primarily as emerging remote talent pools.
-3. **The Dual Economy (USD Remote vs. Domestic PKR):** Disclosed compensation exhibits a stark bifurcation: domestic software firms offer a median entry/mid-level wage of **PKR 75,000/month**, whereas international and export-focused companies offer remote contracts centered at **PKR 278,500/month** (~$1,000 USD/month).
+1. **The Modern Web & Cloud Stack Dominance:** Python (37.1% of confirmed tech roles), Microsoft Azure (34.7%), SQL (34.5%), CI/CD (34.0%), AWS (33.8%), Git (31.8%), JavaScript (28.8%), React (19.2%), and Docker (19.0%) constitute the indispensable foundational layer of modern software development in Pakistan.
+2. **The "Big Three" Metropolises Anchor 92.9% of Local Demand:** Lahore (39.7%), Karachi (31.3%), and Islamabad (21.9%) command virtually all localized tech postings, with Tier-2 cities (Rawalpindi, Peshawar, Multan, Faisalabad) serving primarily as emerging remote talent pools.
+3. **The Dual Economy (USD Remote vs. Domestic PKR):** Disclosed compensation ($N=152$) exhibits a stark bifurcation: domestic software firms ($N=38$) offer a median wage of **PKR 75,000/month**, whereas international and export-focused companies ($N=113$ USD) offer remote contracts with a median of **PKR 294,096/month**.
 
 This report breaks down these dynamics with actionable guidance for developers, university graduates, and engineering hiring managers.
 
@@ -80,27 +80,27 @@ The quality assurance landscape in Pakistan has largely shifted away from pure m
 
 ## 4. The Geographic Tech Landscape: Metropolises & Emerging Hubs
 
-The Pakistani tech market is characterized by extreme metropolitan concentration. Of the 2,684 postings with localized Pakistani municipal coordinates, **93.3%** are situated within three cities:
+The Pakistani tech market is characterized by extreme metropolitan concentration. Of the 2,409 postings with localized Pakistani municipal coordinates, **92.9%** are situated within three cities:
 
 ```mermaid
-pie title Pakistani Domestic Tech Postings by Hub (N=2,684)
-    "Lahore" : 1027
-    "Karachi" : 868
-    "Islamabad" : 609
-    "Other Cities" : 180
+pie title Pakistani Domestic Tech Postings by Hub (N=2,409)
+    "Lahore" : 957
+    "Karachi" : 753
+    "Islamabad" : 528
+    "Other Cities" : 171
 ```
 
-### 4.1 Lahore (1,027 Postings — 38.3%)
+### 4.1 Lahore (957 Postings — 39.7%)
 - **Character:** The software development and IT export capital of Pakistan.
 - **Ecosystem:** Dominated by large-scale software export houses, service-based digital agencies (Netsol, Systems Limited, Arbisoft, Devsinc), and startup incubators.
 - **Skill Focus:** Enterprise web applications, full-stack JavaScript/Python, mobile app development (Flutter), and UI/UX design.
 
-### 4.2 Karachi (868 Postings — 32.3%)
+### 4.2 Karachi (753 Postings — 31.3%)
 - **Character:** The financial, commercial, and enterprise infrastructure hub.
 - **Ecosystem:** Strong demand from FinTech companies, digital banking units, retail logistics, telcos, and international enterprise subsidiaries.
 - **Skill Focus:** Java, enterprise SQL, financial transaction systems, cybersecurity, and cloud migration.
 
-### 4.3 Islamabad / Rawalpindi (647 Postings — 24.1% Combined)
+### 4.3 Islamabad / Rawalpindi (565 Postings — 23.5% Combined)
 - **Character:** The high-tech, government, defense, and international R&D center.
 - **Ecosystem:** High density of international product engineering centers, AI research labs, telecom operators, and multinational technology contractors.
 - **Skill Focus:** AI/ML, cloud architecture, deep learning, Python, DevOps, and systems engineering.
@@ -114,9 +114,9 @@ Tier-2 cities collectively account for approximately 6.7% of localized postings.
 
 Workplace arrangements in the dataset highlight Pakistan's integration into global remote engineering teams:
 
-- **Remote (51.8% of known arrangements):** Over half of postings that explicitly state a workplace arrangement are fully remote. These roles are predominantly offered by overseas firms (United States, UAE, United Kingdom, Canada, Saudi Arabia) hiring Pakistani software engineers as independent contractors.
-- **On-site (40.8% of known arrangements):** Concentrated in domestic financial institutions, hardware/networking infrastructure providers, and traditional corporate headquarters in Karachi and Lahore.
-- **Hybrid (7.3% of known arrangements):** Growing in major Lahore and Islamabad software development centers that offer 2–3 days work-from-home flexibility to attract top talent.
+- **Remote (46.3% of known arrangements):** Nearly half of postings that explicitly state a workplace arrangement ($N=1,856$) are fully remote (860 postings). These roles are predominantly offered by overseas firms (United States, UAE, United Kingdom, Canada, Saudi Arabia) hiring Pakistani software engineers as independent contractors.
+- **On-site (46.6% of known arrangements):** 865 postings concentrated in domestic financial institutions, hardware/networking infrastructure providers, and traditional corporate headquarters in Karachi and Lahore.
+- **Hybrid (7.1% of known arrangements):** 131 postings in major Lahore and Islamabad software development centers that offer 2–3 days work-from-home flexibility to attract top talent.
 
 ---
 
@@ -157,7 +157,7 @@ Analysis of compensation by parsed experience bracket indicates strong upward mo
 
 ## 7. Actionable Roadmap for Pakistani Students & Job Seekers
 
-Based on empirical data from 4,491 job listings, here is a practical, strategic roadmap for university students and early-career developers in Pakistan:
+Based on empirical data from 3,707 deduplicated job listings, here is a practical, strategic roadmap for university students and early-career developers in Pakistan:
 
 ### Step 1: Master the Foundational Trinity
 Do not chase obscure frameworks until you have solid command of:

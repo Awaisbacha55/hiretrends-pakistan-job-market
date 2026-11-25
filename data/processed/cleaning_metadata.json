@@ -1,125 +1,138 @@
 {
   "pipeline_name": "HireTrends Data Cleaning & Normalization Engine",
-  "processed_at": "2026-11-20T16:32:42.882385+00:00",
+  "pipeline_version": "2.0.0",
+  "processed_at": "2026-11-25T18:23:15.125599+00:00",
   "input_records": 4491,
-  "output_records": 4491,
-  "removed_duplicates": 0,
-  "disclosed_salary_count": 174,
-  "parsed_experience_count": 3014,
-  "total_skills_extracted": 8622,
+  "unique_id_records": 4491,
+  "output_records": 3707,
+  "deduplication": {
+    "raw_id_duplicates_removed": 0,
+    "url_duplicates_removed": 784,
+    "fallback_duplicates_removed": 0,
+    "total_duplicates_removed": 784,
+    "dedup_method": "two_tier: normalized_job_url (primary) + normalized_title|company|city|date (fallback)",
+    "url_normalization": "lowercase scheme+host, strip trailing slashes, remove tracking params (utm_*), remove fragments, sort query params",
+    "selection_rule": "keep record with highest field-completeness score; earliest collected_at as tiebreaker"
+  },
+  "unique_job_urls_remaining": 3707,
+  "removed_duplicates": 784,
+  "tech_roles_count": 924,
+  "disclosed_salary_count": 152,
+  "parsed_experience_count": 2502,
+  "total_skills_extracted": 7297,
   "unique_skills_found": 69,
   "top_skills": [
     [
       "Excel",
-      616
+      507
     ],
     [
       "SQL",
-      473
+      406
     ],
     [
       "Python",
-      444
+      381
     ],
     [
       "Microsoft Azure",
-      391
-    ],
-    [
-      "Git",
-      389
+      349
     ],
     [
       "AWS",
-      383
+      333
     ],
     [
       "CI/CD",
-      376
+      332
+    ],
+    [
+      "Git",
+      318
     ],
     [
       "JavaScript",
-      355
-    ],
-    [
-      "Apache Spark",
-      278
+      301
     ],
     [
       "Large Language Models",
-      243
-    ],
-    [
-      "Machine Learning",
-      225
-    ],
-    [
-      "React",
-      215
-    ],
-    [
-      "Google Cloud Platform",
       211
     ],
     [
-      "Docker",
+      "Machine Learning",
       201
     ],
     [
+      "Google Cloud Platform",
+      187
+    ],
+    [
+      "React",
+      186
+    ],
+    [
+      "Apache Spark",
+      181
+    ],
+    [
+      "Docker",
+      177
+    ],
+    [
       "Java",
-      194
+      164
     ],
     [
       "CSS",
-      193
+      161
     ],
     [
       "HTML",
-      193
+      160
     ],
     [
       "PostgreSQL",
-      190
-    ],
-    [
-      "Power BI",
-      169
+      159
     ],
     [
       "TypeScript",
-      167
+      148
+    ],
+    [
+      "Kubernetes",
+      145
     ]
   ],
   "quality_metrics": {
-    "total_records": 4491,
-    "unique_job_ids": 4491,
+    "total_records": 3707,
+    "unique_job_ids": 3707,
     "duplicate_job_ids": 0,
-    "duplicate_job_urls": 777,
+    "duplicate_job_urls": 0,
     "missing_fields": {
-      "workplace_type": 2182,
-      "salary_min_pkr": 4317,
-      "experience_min_years": 1477,
-      "description": 4491,
-      "normalized_city": 1807,
-      "company": 37
+      "workplace_type": 1851,
+      "salary_min_pkr": 3555,
+      "experience_min_years": 1205,
+      "description": 3707,
+      "normalized_city": 1298,
+      "company": 25
     },
     "missing_percentages": {
-      "workplace_type": 48.59,
-      "salary_min_pkr": 96.13,
-      "experience_min_years": 32.89,
+      "workplace_type": 49.93,
+      "salary_min_pkr": 95.9,
+      "experience_min_years": 32.51,
       "description": 100.0,
-      "normalized_city": 40.24,
-      "company": 0.82
+      "normalized_city": 35.01,
+      "company": 0.67
     },
     "invalid_dates": 0,
     "invalid_salary_ranges": 0,
     "invalid_experience_ranges": 0,
-    "unmapped_cities": 1807,
-    "unknown_workplaces": 2182,
-    "records_with_skills": 2106,
-    "skill_coverage_pct": 46.89,
-    "manual_review_count": 1074,
-    "manual_review_pct": 23.91
+    "unmapped_cities": 1298,
+    "unknown_workplaces": 1851,
+    "records_with_skills": 1758,
+    "skill_coverage_pct": 47.42,
+    "manual_review_count": 900,
+    "manual_review_pct": 24.28
   },
   "source_license": "ODbL 1.0 & DbCL 1.0 (Headcount Labs)"
 }

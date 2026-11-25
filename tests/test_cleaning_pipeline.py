@@ -289,3 +289,129 @@ class TestQualityChecks:
         assert qm["invalid_salary_ranges"] == 0
         assert qm["records_with_skills"] == 1
         assert qm["manual_review_count"] == 0
+
+
+class TestTwoTierDeduplication:
+    """Test URL normalization and two-tier deterministic deduplication."""
+
+    def test_url_normalization(self):
+        from src.cleaning.clean_jobs import normalize_job_url
+
+        # Trailing slash, uppercase host, tracking params, fragment, query order
+        u1 = normalize_job_url("HTTPS://Example.COM/jobs/123/?utm_source=linkedin&b=2&a=1#top")
+        u2 = normalize_job_url("https://example.com/jobs/123?a=1&b=2")
+        assert u1 == "https://example.com/jobs/123?b=2&a=1" or u1 == "https://example.com/jobs/123?a=1&b=2"
+        assert normalize_job_url("https://example.com/jobs/123/") == normalize_job_url("https://EXAMPLE.com/jobs/123")
+        # Unusable URLs return None
+        assert normalize_job_url(None) is None
+        assert normalize_job_url("") is None
+        assert normalize_job_url("   ") is None
+        assert normalize_job_url("/relative/path") is None
+        assert normalize_job_url("not-a-url") is None
+
+    def _make_raw_job(self, job_id, title, company, city, url=None, posted_at="2026-10-28T00:00:00Z", pay=None):
+        posting = {"source": "test", "source_posted_at": posted_at}
+        if url is not None:
+            posting["application_url"] = {"state": "known", "value": url}
+        if pay is not None:
+            posting["pay"] = pay
+        return {
+            "job_id": job_id,
+            "title": {"state": "known", "value": title},
+            "employer_name": {"state": "known", "value": company},
+            "description": {"state": "source_omitted"},
+            "locations": [{"state": "known", "value": {"city": city, "country": "PK"}}],
+            "postings": [posting],
+            "job_first_seen_at": posted_at,
+        }
+
+    def test_duplicate_urls_removed_and_metadata_accurate(self, tmp_path):
+        from src.cleaning.clean_jobs import run_cleaning_pipeline
+
+        raw_file = tmp_path / "jobs_raw.jsonl"
+        out_csv = tmp_path / "jobs_cleaned.csv"
+        meta_json = tmp_path / "cleaning_metadata.json"
+        report_md = tmp_path / "report.md"
+
+        records = [
+            # Same URL (with trailing slash & tracking param), different UUIDs
+            self._make_raw_job("id-1", "AI Architect", "10Pearls", "Karachi", "https://10pearls.applytojob.com/apply/0c1Cq8CC03/AI-Architect"),
+            self._make_raw_job("id-2", "AI Architect", "10Pearls", "Karachi", "https://10pearls.applytojob.com/apply/0c1Cq8CC03/AI-Architect/?utm_source=x"),
+            # Distinct job
+            self._make_raw_job("id-3", "Backend Engineer", "Systems Ltd", "Lahore", "https://systemsltd.com/jobs/456"),
+        ]
+        raw_file.write_text("\n".join(json.dumps(r) for r in records), encoding="utf-8")
+
+        meta = run_cleaning_pipeline(
+            raw_path=str(raw_file),
+            output_csv=str(out_csv),
+            metadata_output=str(meta_json),
+            report_output=str(report_md),
+        )
+        assert meta["input_records"] == 3
+        assert meta["output_records"] == 2
+        assert meta["removed_duplicates"] == 1
+        assert meta["deduplication"]["url_duplicates_removed"] == 1
+        assert meta["deduplication"]["fallback_duplicates_removed"] == 0
+        assert meta["unique_job_urls_remaining"] == 2
+
+    def test_fallback_dedup_for_urlless_records(self, tmp_path):
+        from src.cleaning.clean_jobs import run_cleaning_pipeline
+
+        raw_file = tmp_path / "jobs_raw.jsonl"
+        out_csv = tmp_path / "jobs_cleaned.csv"
+        meta_json = tmp_path / "cleaning_metadata.json"
+        report_md = tmp_path / "report.md"
+
+        records = [
+            # Two URL-less duplicates differing only by whitespace and casing
+            self._make_raw_job("id-1", "Python   Developer", "Acme Corp", "Lahore", url=None, posted_at="2026-10-28T00:00:00Z"),
+            self._make_raw_job("id-2", "python developer", " acme corp ", "lahore", url="", posted_at="2026-10-28T12:00:00Z"),
+            # Different posted_date -> MUST NOT be removed
+            self._make_raw_job("id-3", "Python Developer", "Acme Corp", "Lahore", url=None, posted_at="2026-10-29T00:00:00Z"),
+            # Different city -> MUST NOT be removed
+            self._make_raw_job("id-4", "Python Developer", "Acme Corp", "Karachi", url=None, posted_at="2026-10-28T00:00:00Z"),
+            # Different company -> MUST NOT be removed
+            self._make_raw_job("id-5", "Python Developer", "Beta Ltd", "Lahore", url=None, posted_at="2026-10-28T00:00:00Z"),
+        ]
+        raw_file.write_text("\n".join(json.dumps(r) for r in records), encoding="utf-8")
+
+        meta = run_cleaning_pipeline(
+            raw_path=str(raw_file),
+            output_csv=str(out_csv),
+            metadata_output=str(meta_json),
+            report_output=str(report_md),
+        )
+        assert meta["input_records"] == 5
+        assert meta["output_records"] == 4
+        assert meta["removed_duplicates"] == 1
+        assert meta["deduplication"]["url_duplicates_removed"] == 0
+        assert meta["deduplication"]["fallback_duplicates_removed"] == 1
+
+    def test_deduplication_is_deterministic_and_rerunnable(self, tmp_path):
+        import pandas as pd
+        from src.cleaning.clean_jobs import run_cleaning_pipeline
+
+        raw_file = tmp_path / "jobs_raw.jsonl"
+        out_csv1 = tmp_path / "out1.csv"
+        out_csv2 = tmp_path / "out2.csv"
+        meta1 = tmp_path / "meta1.json"
+        meta2 = tmp_path / "meta2.json"
+        rep = tmp_path / "rep.md"
+
+        # One record has salary (higher completeness), so it should deterministically win
+        pay = {"state": "known", "value": {"currency": "PKR", "min_amount": 150000, "max_amount": 200000, "interval": "month"}}
+        records = [
+            self._make_raw_job("id-b", "Data Engineer", "CorpX", "Islamabad", "https://corpx.com/jobs/1", pay=None),
+            self._make_raw_job("id-a", "Data Engineer", "CorpX", "Islamabad", "https://corpx.com/jobs/1", pay=pay),
+        ]
+        raw_file.write_text("\n".join(json.dumps(r) for r in records), encoding="utf-8")
+
+        run_cleaning_pipeline(str(raw_file), str(out_csv1), str(meta1), str(rep))
+        run_cleaning_pipeline(str(raw_file), str(out_csv2), str(meta2), str(rep))
+
+        df1 = pd.read_csv(out_csv1)
+        df2 = pd.read_csv(out_csv2)
+        assert len(df1) == 1
+        assert df1["job_id"].iloc[0] == "id-a"  # Most complete record kept
+        assert df1["job_id"].tolist() == df2["job_id"].tolist()

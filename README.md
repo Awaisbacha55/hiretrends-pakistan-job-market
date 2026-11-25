@@ -16,7 +16,7 @@ An ethical, data-driven intelligence platform tracking technology job vacancies,
 **HireTrends** is an applied data engineering and market intelligence platform developed during the **LogicBlaze Technologies 8-Week Internship Learning Path**. It collects, cleans, standardizes, models, and visualizes tech recruitment listings across Pakistan. By transforming noisy, unstructured job descriptions into structured tabular schemas and interactive analytics, HireTrends empowers computer science students, software engineers, and hiring managers with empirical market data.
 
 > [!NOTE]
-> **Week 3 Production Deployment Complete:** All Day 1–5 implementations have undergone an exhaustive quality assurance audit. The primary dataset contains **4,491 live Pakistan job records** collected via the official **Headcount Labs Jobs API** (ODbL 1.0). The codebase features an extensible longitudinal trend engine (`src/analysis/trend_analysis.py`), a comprehensive 8-page interactive Streamlit dashboard (`dashboard/app.py`), CSV export capabilities, Playwright-automated visual regression tests, and a **125-test offline unit test suite with 100% pass rate**.
+> **Week 3 Production Deployment Complete:** All Day 1–5 implementations have undergone an exhaustive quality assurance audit. The primary dataset contains **3,707 unique, deduplicated Pakistan job records** (deduplicated from 4,491 raw records; 784 URL duplicates removed) collected via the official **Headcount Labs Jobs API** (ODbL 1.0). The codebase features an extensible longitudinal trend engine (`src/analysis/trend_analysis.py`), a comprehensive 8-page interactive Streamlit dashboard (`dashboard/app.py`), CSV export capabilities, Playwright-automated visual regression tests, and a **100% passing offline unit test suite**.
 
 ---
 
@@ -72,7 +72,7 @@ The complete 8-page Streamlit dashboard runs live on Streamlit Cloud or locally:
 ## 3. Project Objectives
 
 1. **Ethical & Compliant Data Ingestion:** Establish an automated collection pipeline respecting platform terms, avoiding unauthorized scraping, and utilizing official API licensing (ODbL 1.0).
-2. **Standardized Target Baseline:** Ingest and maintain a high-integrity census exceeding 2,000+ technology listings (curated 4,491 total records, 1,075 verified tech roles).
+2. **Standardized Target Baseline:** Ingest and maintain a high-integrity census exceeding 2,000+ technology listings (curated 3,707 unique deduplicated records from 4,491 raw records, 924 verified tech roles).
 3. **Data Cleaning & Normalization:** Standardize disparate job titles, parse seniority, canonicalize Pakistani cities, and normalize international compensation into Monthly PKR using official State Bank of Pakistan (SBP) exchange rates.
 4. **NLP Skill Extraction:** Systematically extract 69 programming languages, cloud platforms, and developer frameworks using word-boundary regular expressions without substring false positives.
 5. **Interactive Multipage Dashboard:** Deliver a modern SaaS analytics dashboard with global filtering, responsive Plotly visualizations, sample size transparency, and CSV data export.
@@ -82,54 +82,54 @@ The complete 8-page Streamlit dashboard runs live on Streamlit Cloud or locally:
 
 ## 4. Key Findings & Market Intelligence Summary
 
-Empirical analysis of 4,491 job postings reveals defining characteristics of Pakistan's 2025/2026 tech employment landscape (detailed in [`reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md`](reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md)):
+Empirical analysis of 3,707 unique deduplicated job postings reveals defining characteristics of Pakistan's 2025/2026 tech employment landscape (detailed in [`reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md`](reports/PAKISTAN_TECH_JOB_MARKET_INSIGHTS.md)):
 
-1. **Top In-Demand Technical Skills:**
-   - **Python leads overall:** Demanded in **33.3%** of all confirmed tech roles (358 unique jobs), driven by backend web services (FastAPI/Django) and AI/Data Science workloads.
-   - **SQL ranks #2:** Essential across **29.9%** of tech jobs (321 postings) for relational data modeling and database management.
-   - **Modern Web Stack:** JavaScript (27.4%), React (20.8%), TypeScript (12.9%), and Node.js (13.8%).
-   - **Cloud & DevOps:** AWS (17.4%) and Docker (14.5%) constitute the baseline cloud expectation for modern developers.
-2. **The "Big Three" Metropolises Command 93.3% of Domestic Tech Demand:**
-   - **Lahore (38.3% / 1,027 jobs):** Software export houses, agencies, and full-stack/mobile web.
-   - **Karachi (32.3% / 868 jobs):** FinTech, corporate enterprise, banking, and data systems.
-   - **Islamabad (22.7% / 609 jobs):** AI/ML consultancies, cloud architecture, and multinational R&D.
-3. **The USD-PKR Remote Divide:**
-   - **Domestic PKR Postings ($N=42$):** Median wage of **PKR 75,000 / month** (IQR: 50k–150k PKR).
-   - **Overseas USD Remote Contracts ($N=131$):** Median wage of **PKR 278,500 / month** (~$1,000 USD/mo).
-   - Remote developers capture an immediate **3.7x median salary multiplier** compared to local peers.
-4. **Remote Work Dominance:**
-   - **51.8%** of postings with explicit workplace policies are **fully remote**, demonstrating Pakistan's role as a major global software engineering talent exporter.
+1. **Top In-Demand Technical Skills (Tech Roles, $N=924$):**
+   - **Python leads overall:** Demanded in **37.1%** of all confirmed tech roles (343 unique jobs), driven by backend web services (FastAPI/Django) and AI/Data Science workloads.
+   - **Microsoft Azure & SQL:** Demanded in **34.7%** (321 postings) and **34.5%** (319 postings) of tech roles respectively.
+   - **Modern Web Stack:** JavaScript (28.8%), React (19.2%).
+   - **Cloud & DevOps:** CI/CD (34.0%), AWS (33.8%), Git (31.8%), and Docker (19.0%) constitute the baseline cloud expectation for modern developers.
+2. **The "Big Three" Metropolises Command 92.9% of Domestic Mapped Demand:**
+   - **Lahore (39.7% / 957 jobs):** Software export houses, agencies, and full-stack/mobile web.
+   - **Karachi (31.3% / 753 jobs):** FinTech, corporate enterprise, banking, and data systems.
+   - **Islamabad (21.9% / 528 jobs):** AI/ML consultancies, cloud architecture, and multinational R&D.
+3. **The USD-PKR Remote Divide ($N=152$ Disclosed Salaries):**
+   - **Domestic PKR Postings ($N=38$):** Median wage of **PKR 75,000 / month** (IQR: 51.3k–150k PKR).
+   - **Overseas USD Remote Contracts ($N=113$):** Standardized monthly PKR equivalent median of **PKR 269,588 / month** overall across all 152 disclosed postings.
+4. **Remote vs. On-site Parity:**
+   - Among postings with explicit workplace policies ($N=1,856$), **46.6%** are **on-site** (865) and **46.3%** are **fully remote** (860), with **7.1%** **hybrid** (131).
 
 ---
 
 ## 5. Reconciled Census & Statistical Integrity
 
-Every statistic is mathematically balanced across the 4,491 primary records (see [`reports/STATISTICAL_VALIDATION_REPORT.md`](reports/STATISTICAL_VALIDATION_REPORT.md)):
+Every statistic is mathematically balanced across the 3,707 deduplicated primary records (see [`reports/STATISTICAL_VALIDATION_REPORT.md`](reports/STATISTICAL_VALIDATION_REPORT.md)):
 
 ```mermaid
 flowchart TD
-    Total["Total Ingested Postings (N=4,491)"] --> Tech["Confirmed Tech Roles: 1,075 (23.94%)"]
-    Total --> NonTech["Non-Technology Postings: 2,342 (52.15%)"]
-    Total --> Review["Manual Review Required: 1,074 (23.91%)"]
+    Raw["Raw Ingested Postings (N=4,491)"] -->|"784 URL Duplicates Removed"| Total["Deduplicated Postings (N=3,707)"]
+    Total --> Tech["Confirmed Tech Roles: 924 (24.93%)"]
+    Total --> NonTech["Non-Technology Postings: 1,883 (50.80%)"]
+    Total --> Review["Manual Review Required: 900 (24.28%)"]
     
-    Total --> MappedLoc["Domestic Mapped Cities (N=2,684)"]
-    MappedLoc --> LHE["Lahore: 1,027 (38.26%)"]
-    MappedLoc --> KHI["Karachi: 868 (32.34%)"]
-    MappedLoc --> ISB["Islamabad: 609 (22.69%)"]
-    MappedLoc --> Other["Other Towns: 180 (6.71%)"]
+    Total --> MappedLoc["Domestic Mapped Cities (N=2,409)"]
+    MappedLoc --> LHE["Lahore: 957 (39.73%)"]
+    MappedLoc --> KHI["Karachi: 753 (31.26%)"]
+    MappedLoc --> ISB["Islamabad: 528 (21.92%)"]
+    MappedLoc --> Other["Other Towns: 171 (7.10%)"]
     
-    Total --> WP["Workplace Arrangements (N=4,491)"]
-    WP --> Known["Known Policies: 2,309 (51.41%)"]
-    Known --> Remote["Remote: 1,197 (51.84%)"]
-    Known --> Onsite["On-site: 943 (40.84%)"]
-    Known --> Hybrid["Hybrid: 169 (7.32%)"]
-    WP --> Unstated["Unstated Policies: 2,182 (48.59%)"]
+    Total --> WP["Workplace Arrangements (N=3,707)"]
+    WP --> Known["Known Policies: 1,856 (50.07%)"]
+    Known --> Remote["Remote: 860 (46.34%)"]
+    Known --> Onsite["On-site: 865 (46.61%)"]
+    Known --> Hybrid["Hybrid: 131 (7.06%)"]
+    WP --> Unstated["Unstated Policies: 1,851 (49.93%)"]
 ```
 
 $$\begin{aligned}
-\text{Total Dataset } (N=4,491) &= \text{Confirmed Tech } (1,075) + \text{Non-Tech } (2,342) + \text{Manual Review } (1,074) \\
-\text{Domestic Mapped } (N=2,684) &= \text{Lahore } (1,027) + \text{Karachi } (868) + \text{Islamabad } (609) + \text{Other Towns } (180) \\
-\text{Workplace Known } (N=2,309) &= \text{Remote } (1,197) + \text{On-site } (943) + \text{Hybrid } (169) \quad [2,182 \text{ unstated}]
+\text{Deduplicated Dataset } (N=3,707) &= \text{Confirmed Tech } (924) + \text{Non-Tech } (1,883) + \text{Manual Review } (900) \\
+\text{Domestic Mapped } (N=2,409) &= \text{Lahore } (957) + \text{Karachi } (753) + \text{Islamabad } (528) + \text{Other Towns } (171) \\
+\text{Workplace Known } (N=1,856) &= \text{Remote } (860) + \text{On-site } (865) + \text{Hybrid } (131) \quad [1,851 \text{ unstated}]
 \end{aligned}$$
 
 ---
@@ -155,7 +155,7 @@ $$\begin{aligned}
 3. **💼 Role Explorer (`role_explorer.py`):** In-depth skill, experience, location, and salary profiles for 12 key tech occupations with CSV download.
 4. **💰 Salary Insights (`salary_insights.py`):** Non-parametric compensation benchmarking, currency distribution (USD vs. PKR), experience scaling, and quartile tables with CSV download.
 5. **📍 Location Analysis (`location_analysis.py`):** Geographic tech hub rankings (Lahore, Karachi, Islamabad), interactive city comparison, and foreign posting isolation.
-6. **🏢 Workplace Analysis (`workplace_analysis.py`):** Remote vs. On-site vs. Hybrid trends computed against verified known denominators ($N=2,309$) with transparent unstated disclosures.
+6. **🏢 Workplace Analysis (`workplace_analysis.py`):** Remote vs. On-site vs. Hybrid trends computed against verified known denominators ($N=1,856$) with transparent unstated disclosures.
 7. **🔗 Skill Co-occurrence (`skill_cooccurrence.py`):** 12x12 symmetric correlation heatmap, Jaccard affinity index, and companion technology stack explorer.
 8. **📜 Data & Methodology (`methodology.py`):** Complete data lineage, census balance equations, official SBP exchange rate benchmarks, and legal attribution notices.
 

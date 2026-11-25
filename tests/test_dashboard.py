@@ -126,7 +126,8 @@ class TestDashboardDataLoading:
 
     def test_load_clean_data_actual_dataset(self):
         df = load_clean_data("data/processed/jobs_cleaned.csv")
-        assert len(df) == 4491
+        assert len(df) == 3707
+        assert df["job_url"].dropna().nunique() == len(df)
         for col in ["job_id", "job_title", "normalized_city", "parsed_skills", "has_salary"]:
             assert col in df.columns
         assert isinstance(df.iloc[0]["parsed_skills"], list)

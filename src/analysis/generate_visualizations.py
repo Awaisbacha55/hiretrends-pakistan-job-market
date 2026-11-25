@@ -65,7 +65,7 @@ def generate_all_visualizations(
         text="job_count",
         color="percentage_of_jobs",
         color_continuous_scale="Viridis",
-        title="Top 20 Technical Skills Demanded in Pakistan Job Market (N=4,491)",
+        title=f"Top 20 Technical Skills Demanded in Pakistan Job Market (N={len(df):,})",
         labels={"job_count": "Unique Job Postings Count", "skill": "Technical Skill", "percentage_of_jobs": "% of All Postings"},
     )
     fig1.update_layout(yaxis={"categoryorder": "total ascending"}, height=700, margin={"l": 150, "r": 30, "t": 60, "b": 50})
@@ -76,7 +76,7 @@ def generate_all_visualizations(
     # Matplotlib PNG
     fig_m1, ax_m1 = plt.subplots(figsize=(10, 8))
     sns.barplot(data=skills_df, x="job_count", y="skill", ax=ax_m1, palette="mako")
-    ax_m1.set_title("Top 20 Technical Skills Demanded in Pakistan (N=4,491)", weight="bold")
+    ax_m1.set_title(f"Top 20 Technical Skills Demanded in Pakistan (N={len(df):,})", weight="bold")
     ax_m1.set_xlabel("Unique Job Postings Count")
     ax_m1.set_ylabel("Technical Skill")
     for p in ax_m1.patches:
@@ -146,7 +146,7 @@ def generate_all_visualizations(
         y="salary_min_pkr",
         color="salary_currency",
         log_y=True,
-        title="Disclosed Monthly Salary Distribution by Currency (PKR Equivalent, Log Scale, N=174)",
+        title=f"Disclosed Monthly Salary Distribution by Currency (PKR Equivalent, Log Scale, N={len(sal_sub):,})",
         labels={"salary_min_pkr": "Monthly Equivalent (PKR, Log Scale)", "salary_currency": "Native Quoted Currency"},
     )
     fig3.update_layout(height=550)
@@ -157,13 +157,13 @@ def generate_all_visualizations(
     # Matplotlib PNG
     fig_m3, (ax_m3_1, ax_m3_2) = plt.subplots(1, 2, figsize=(13, 5))
     sns.histplot(data=sal_inliers, x="salary_min_pkr", bins=25, kde=True, ax=ax_m3_1, color="#2b5c8f")
-    ax_m3_1.set_title("Monthly PKR Compensation (20k - 2.5M PKR, N=155)", weight="bold")
+    ax_m3_1.set_title(f"Monthly PKR Compensation (20k - 2.5M PKR, N={len(sal_inliers):,})", weight="bold")
     ax_m3_1.set_xlabel("Monthly Compensation (PKR)")
     ax_m3_1.set_ylabel("Job Postings Count")
 
     sns.boxplot(data=sal_sub, x="salary_currency", y="salary_min_pkr", ax=ax_m3_2, palette="Set2")
     ax_m3_2.set_yscale("log")
-    ax_m3_2.set_title("Quoted Currency Comparison (Log-10 Scale, N=174)", weight="bold")
+    ax_m3_2.set_title(f"Quoted Currency Comparison (Log-10 Scale, N={len(sal_sub):,})", weight="bold")
     ax_m3_2.set_ylabel("Monthly Equivalent (PKR)")
     fig_m3.tight_layout()
     p3_png = os.path.join(output_dir, "salary_distribution.png")
@@ -179,14 +179,14 @@ def generate_all_visualizations(
     sal_sub.loc[(sal_sub["experience_min_years"] >= 2.0) & (sal_sub["experience_min_years"] <= 4.0), "experience_bracket"] = "2-4 yrs (Mid)"
     sal_sub.loc[sal_sub["experience_min_years"] >= 5.0, "experience_bracket"] = "5+ yrs (Senior)"
 
-    # Plotly Box Plot
+    exp_filtered = sal_sub[sal_sub["experience_bracket"] != "Unspecified"]
     fig4 = px.box(
-        sal_sub[sal_sub["experience_bracket"] != "Unspecified"],
+        exp_filtered,
         x="experience_bracket",
         y="salary_min_pkr",
         color="experience_bracket",
         category_orders={"experience_bracket": ["0-1 yrs (Junior)", "2-4 yrs (Mid)", "5+ yrs (Senior)"]},
-        title="Monthly PKR Salary by Experience Bracket (N=117 Disclosed with Experience)",
+        title=f"Monthly PKR Salary by Experience Bracket (N={len(exp_filtered):,} Disclosed with Experience)",
         labels={"salary_min_pkr": "Monthly Salary (PKR)", "experience_bracket": "Experience Level"},
     )
     fig4.update_layout(height=550)
@@ -196,7 +196,6 @@ def generate_all_visualizations(
 
     # Matplotlib PNG
     fig_m4, ax_m4 = plt.subplots(figsize=(9, 6))
-    exp_filtered = sal_sub[sal_sub["experience_bracket"] != "Unspecified"]
     sns.boxplot(
         data=exp_filtered,
         x="experience_bracket",
@@ -230,7 +229,7 @@ def generate_all_visualizations(
         text="count",
         color="percentage_of_mapped_cities",
         color_continuous_scale="Teal",
-        title="Top Hiring Technology Cities in Pakistan (N=2,684 Mapped Local Listings)",
+        title=f"Top Hiring Technology Cities in Pakistan (N={loc_analysis['total_mapped_pk_cities']:,} Mapped Local Listings)",
         labels={"count": "Job Postings Count", "city": "City", "percentage_of_mapped_cities": "% of Mapped Cities"},
     )
     fig5.update_layout(height=550)

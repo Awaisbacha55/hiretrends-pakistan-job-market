@@ -26,7 +26,7 @@ All 22 core project requirements have been verified and assigned a status of **P
 2. **Polite Crawling & Fail-Closed Scraper (PASS):** 3.0s minimum delay, user-agent transparency, halts on 403 Forbidden (`src/collection/scraper.py`).
 3. **Headcount Labs API Integration (PASS):** Authenticated REST client with cursor pagination and snapshot watermark locking (`src/collection/headcount_client.py`).
 4. **Historical vs. Current Separation (PASS):** Current 2026 dataset strictly distinguished from 2019–2021 historical data.
-5. **Collection Integrity & Deduplication (PASS):** 4,491 total records, 4,491 unique Job IDs, 0 duplicates.
+5. **Collection Integrity & Deduplication (PASS):** 4,491 raw API records deduplicated via two-tier normalized URL + fallback logic into **3,707 unique job postings** (784 URL duplicates removed, 0 duplicate normalized URLs remaining).
 6. **State Unwrapping & Null Preservation (PASS):** Missing values preserved strictly as `null` / `NaN`, never defaulted to 0.
 7. **Job Title & Seniority Standardization (PASS):** Standardized titles with separate verbatim preservation (`src/cleaning/title_normalizer.py`).
 8. **Pakistani City Canonicalization (PASS):** Remote classified as workplace, not city; foreign entries partitioned (`src/cleaning/city_normalizer.py`).
@@ -52,10 +52,11 @@ All 22 core project requirements have been verified and assigned a status of **P
 ## 3. Census Reconciliation: The Definitive Equation
 
 $$\begin{aligned}
-\mathbf{Total\ Postings\ Ingested\ (N=4,491)} &= \mathbf{Confirmed\ Tech\ (1,075)} + \mathbf{Non\text{-}Tech\ (2,342)} + \mathbf{Manual\ Review\ (1,074)} \\
-\mathbf{Domestic\ Mapped\ Postings\ (N=2,684)} &= \mathbf{Lahore\ (1,027)} + \mathbf{Karachi\ (868)} + \mathbf{Islamabad\ (609)} + \mathbf{Other\ Cities\ (180)} \\
-\mathbf{Workplace\ Arrangements\ (N=4,491)} &= \mathbf{Known\ (2,309)} + \mathbf{Unspecified\ (2,182)} \\
-\text{where: } \mathbf{Known\ (2,309)} &= \mathbf{Remote\ (1,197)} + \mathbf{On\text{-}site\ (943)} + \mathbf{Hybrid\ (169)}
+\mathbf{Raw\ Postings\ Ingested\ (4,491)} &\xrightarrow{-784\text{ URL duplicates}} \mathbf{Deduplicated\ Postings\ (N=3,707)} \\
+\mathbf{Deduplicated\ Postings\ (N=3,707)} &= \mathbf{Confirmed\ Tech\ (924)} + \mathbf{Non\text{-}Tech\ (1,883)} + \mathbf{Manual\ Review\ (900)} \\
+\mathbf{Domestic\ Mapped\ Postings\ (N=2,409)} &= \mathbf{Lahore\ (957)} + \mathbf{Karachi\ (753)} + \mathbf{Islamabad\ (528)} + \mathbf{Other\ Cities\ (171)} \\
+\mathbf{Workplace\ Arrangements\ (N=3,707)} &= \mathbf{Known\ (1,856)} + \mathbf{Unspecified\ (1,851)} \\
+\text{where: } \mathbf{Known\ (1,856)} &= \mathbf{Remote\ (860)} + \mathbf{On\text{-}site\ (865)} + \mathbf{Hybrid\ (131)}
 \end{aligned}$$
 
 ---

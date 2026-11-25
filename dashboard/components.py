@@ -109,11 +109,12 @@ def render_sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
         )
 
         # 6. Salary filter
+        salary_count = int(df["has_salary"].sum()) if "has_salary" in df.columns else 0
         salary_only = st.checkbox(
             "💵 Disclosed Salary Only",
             value=st.session_state.get("salary_only", False),
             key="filter_salary_only",
-            help="Filter for records with explicit compensation ranges (N=174)",
+            help=f"Filter for records with explicit compensation ranges (N={salary_count:,})",
         )
 
         # 7. Keyword search

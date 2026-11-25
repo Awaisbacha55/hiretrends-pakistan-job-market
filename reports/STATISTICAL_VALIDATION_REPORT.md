@@ -13,19 +13,19 @@
 
 This report establishes the empirical veracity, mathematical rigor, and census reconciliation of the HireTrends Pakistan Tech Job Market Intelligence dataset. Every statistic, percentage, quartile, and aggregate presented in the HireTrends analytics pipeline and Streamlit dashboard has been audited against raw source records to eliminate statistical bias, fabricated metrics, denominator drift, and non-reproducible calculations.
 
-### Core Dataset Constants:
-- **Total Ingested Records ($N_{\text{total}}$):** **4,491** genuine job postings.
-- **Unique Job IDs:** **4,491** (0 duplicate records).
-- **Available Job Descriptions ($N_{\text{desc}}$):** **4,340** (96.64% text coverage).
+### Core Dataset Constants (Post-Deduplication):
+- **Total Raw Ingested Records:** **4,491** raw API records (784 normalized `job_url` duplicates removed).
+- **Deduplicated Records ($N_{\text{total}}$):** **3,707** unique job postings (0 duplicate URLs remaining).
+- **Unique Job IDs:** **3,707** (0 duplicate records).
 - **Technology Role Census:**
   $$\begin{aligned}
   N_{\text{total}} &= N_{\text{tech\_confirmed}} + N_{\text{non\_tech}} + N_{\text{manual\_review}} \\
-  4,491 &= 1,075 + 2,342 + 1,074 \quad (\text{Exact balance: } 100.0\%)
+  3,707 &= 924 + 1,883 + 900 \quad (\text{Exact balance: } 100.0\%)
   \end{aligned}$$
-- **Disclosed Salary Records ($N_{\text{sal}}$):** **174** parsed compensation bounds (3.87% disclosure rate).
-- **Localized Pakistani Records ($N_{\text{PK\_loc}}$):** **2,684** postings mapped to canonical Pakistani cities.
-- **Foreign / Regional Postings ($N_{\text{foreign}}$):** **453** listings (10.09% of dataset) partitioned separately.
-- **Explicit Workplace Postings ($N_{\text{workplace\_known}}$):** **2,309** records (51.41% explicit; 2,182 unstated).
+- **Disclosed Salary Records ($N_{\text{sal}}$):** **152** parsed compensation bounds (4.10% disclosure rate).
+- **Localized Pakistani Records ($N_{\text{PK\_loc}}$):** **2,409** postings mapped to canonical Pakistani cities.
+- **Foreign / Regional Postings ($N_{\text{foreign}}$):** **340** listings (9.17% of dataset) partitioned separately.
+- **Explicit Workplace Postings ($N_{\text{workplace\_known}}$):** **1,856** records (50.07% explicit; 1,851 unstated).
 
 ---
 
@@ -40,14 +40,14 @@ During project development, an initial Phase 2 filter reported 1,075 technology 
 
 ### 2.2 Census Reconciliation Table
 
-| Classification Tier | Count ($N$) | Percentage of Total ($4,491$) | Confidence Score Range | Action in Analytics Pipeline |
+| Classification Tier | Count ($N$) | Percentage of Total ($3,707$) | Confidence Score Range | Action in Analytics Pipeline |
 | :--- | :---: | :---: | :---: | :--- |
-| **Confirmed Technology Roles** | **1,075** | **23.94%** | $0.85 \le c \le 1.00$ | Primary focus for tech role benchmarking and skill penetration. |
-| **Non-Technology Postings** | **2,342** | **52.15%** | $0.90 \le c \le 1.00$ | Excluded from tech skill analysis; preserved in census. |
-| **Manual Review Required** | **1,074** | **23.91%** | $0.40 \le c \le 0.75$ | Separately flagged; selectable via sidebar filters. |
-| **Total Ingested Census** | **4,491** | **100.00%** | — | Fully accounted for in `cleaning_metadata.json`. |
+| **Confirmed Technology Roles** | **924** | **24.93%** | $0.85 \le c \le 1.00$ | Primary focus for tech role benchmarking and skill penetration. |
+| **Non-Technology Postings** | **1,883** | **50.80%** | $0.90 \le c \le 1.00$ | Excluded from tech skill analysis; preserved in census. |
+| **Manual Review Required** | **900** | **24.28%** | $0.40 \le c \le 0.75$ | Separately flagged; selectable via sidebar filters. |
+| **Total Deduplicated Census** | **3,707** | **100.00%** | — | Fully accounted for in `cleaning_metadata.json`. |
 
-$$\text{Reconciliation Check: } 1,075 + 2,342 + 1,074 = 4,491 \equiv N_{\text{total}} \quad [\mathbf{VERIFIED}]$$
+$$\text{Reconciliation Check: } 924 + 1,883 + 900 = 3,707 \equiv N_{\text{total}} \quad [\mathbf{VERIFIED}]$$
 
 ---
 

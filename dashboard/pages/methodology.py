@@ -26,8 +26,8 @@ st.markdown(
 
     1. **Primary Dataset — Headcount Labs Jobs API (Current Baseline):**
        - **Collection Date:** November 20, 2026 (Snapshot Watermark: `2026-11-20T16:16:45.703Z`)
-       - **Volume:** 4,491 total Pakistan job listings retrieved across 18 cursor-paginated pages.
-       - **Deduplication:** SHA-256 and UUIDv4 integrity check (0 duplicates).
+       - **Volume:** 3,707 unique Pakistan job listings (deduplicated from 4,491 raw API records retrieved across 18 cursor-paginated pages; 784 URL duplicates removed).
+       - **Deduplication:** Two-tier deterministic deduplication — Tier 1 normalizes `job_url` (scheme/host lowercasing, trailing slash removal, tracking parameter stripping, sorted query params); Tier 2 applies a normalized `(title, company, city, posted_date)` fallback for records without a usable URL.
        - **Licensing:** Provided courtesy of [Headcount Labs](https://headcountlabs.com) under the **Open Database License (ODbL) 1.0**. Database contents are subject to the **Database Contents License (DbCL) 1.0**.
 
     2. **Historical Baseline — Open Data Pakistan (Dec 2019 – Mar 2021):**
